@@ -1,5 +1,6 @@
 package com.carlos.gestorfinancas.services;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,32 +55,52 @@ public class SubcategoriaService {
 	}
 	
 	public void atualiza(Subcategoria subcategoria) {
-		if(repository.findByNomeAndAtivo(subcategoria.getNome(), true).size() <= 1) {
-			subcategoria.setEditavel(true);
-			subcategoria.setAtivo(true);
-			
-			repository.save(subcategoria);
+		if(subcategoria.isEditavel()) {
+			if(repository.findByNomeAndAtivo(subcategoria.getNome(), true).size() <= 1) {
+				subcategoria.setAtivo(true);
+				
+				repository.save(subcategoria);
+			} else {
+				throw new OperacaoInvalidaException(String.format("Já existe uma subcategoria com o nome %s", subcategoria.getNome()));
+			}
 		} else {
-			throw new OperacaoInvalidaException(String.format("Já existe uma subcategoria com o nome %s", subcategoria.getNome()));
+			throw new OperacaoInvalidaException("Esta subcategoria foi gerada automaticamente e não pode ser alterada.");
 		}
 	}
 	
 	public void remove(Long id) {
 		Subcategoria obj = getById(id);
 		
-		obj.setAtivo(false);
-		repository.save(obj);
+		if(obj.isEditavel()) {
+			if(obj.isAtivo()) {
+				obj.setAtivo(false);
+				repository.save(obj);
+			}
+		} else {
+			throw new OperacaoInvalidaException("Esta subcategoria foi gerada automaticamente e não pode ser excluída.");
+		}
 	}
 	
 	public void remove(Subcategoria subcategoria) {
-		if(subcategoria.isAtivo()) {
-			subcategoria.setAtivo(true);
-			repository.save(subcategoria);
+		if(subcategoria.isEditavel()) {
+			if(subcategoria.isAtivo()) {
+				subcategoria.setAtivo(true);
+				repository.save(subcategoria);
+			}
+		} else {
+			throw new OperacaoInvalidaException("Esta subcategoria foi gerada automaticamente e não pode ser excluída.");
 		}
 	}
 	
 	public void remove(List<Subcategoria> subcategorias) {
-		subcategorias.forEach((subcategoria) -> subcategoria.setAtivo(false));
-		repository.saveAll(subcategorias);
+		List<Subcategoria> subcategoriasParaExcluir = new ArrayList<Subcategoria>();
+		
+		subcategorias.forEach((subcategoria) -> {
+			if(subcategoria.isAtivo() && subcategoria.isEditavel()) {
+				subcategoriasParaExcluir.add(subcategoria);
+			}
+		});
+		
+		repository.saveAll(subcategoriasParaExcluir);
 	}
 }
