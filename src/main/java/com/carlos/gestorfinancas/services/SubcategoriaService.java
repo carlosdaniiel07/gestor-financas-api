@@ -53,7 +53,7 @@ public class SubcategoriaService {
 		}
 	}
 	
-	public void atualizar(Subcategoria subcategoria) {
+	public void atualiza(Subcategoria subcategoria) {
 		if(repository.findByNomeAndAtivo(subcategoria.getNome(), true).size() <= 1) {
 			subcategoria.setEditavel(true);
 			subcategoria.setAtivo(true);
@@ -64,21 +64,21 @@ public class SubcategoriaService {
 		}
 	}
 	
-	public void remover(Long id) {
+	public void remove(Long id) {
 		Subcategoria obj = getById(id);
 		
 		obj.setAtivo(false);
 		repository.save(obj);
 	}
 	
-	public void remover(Subcategoria subcategoria) {
+	public void remove(Subcategoria subcategoria) {
 		if(subcategoria.isAtivo()) {
 			subcategoria.setAtivo(true);
 			repository.save(subcategoria);
 		}
 	}
 	
-	public void remover(List<Subcategoria> subcategorias) {
+	public void remove(List<Subcategoria> subcategorias) {
 		subcategorias.forEach((subcategoria) -> subcategoria.setAtivo(false));
 		repository.saveAll(subcategorias);
 	}
