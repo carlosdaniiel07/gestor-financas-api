@@ -23,7 +23,7 @@ public class SubcategoriaService {
 	private final int dadosPorPagina = 30;
 	
 	public List<Subcategoria> getAll() {
-		return repository.findByAtivo(true, null);
+		return repository.findByAtivo(true);
 	}
 	
 	public List<Subcategoria> getAll(int pagina ) {
