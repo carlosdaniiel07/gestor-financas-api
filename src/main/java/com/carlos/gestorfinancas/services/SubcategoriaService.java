@@ -44,6 +44,9 @@ public class SubcategoriaService {
 	
 	public Subcategoria insere(Subcategoria subcategoria) {
 		if(repository.findByNomeAndAtivo(subcategoria.getNome(), true).isEmpty()) {
+			subcategoria.setEditavel(true);
+			subcategoria.setAtivo(true);
+			
 			return repository.save(subcategoria);
 		} else {
 			throw new OperacaoInvalidaException(String.format("Já existe uma subcategoria com o nome %s", subcategoria.getNome()));
@@ -52,6 +55,9 @@ public class SubcategoriaService {
 	
 	public void atualizar(Subcategoria subcategoria) {
 		if(repository.findByNomeAndAtivo(subcategoria.getNome(), true).size() <= 1) {
+			subcategoria.setEditavel(true);
+			subcategoria.setAtivo(true);
+			
 			repository.save(subcategoria);
 		} else {
 			throw new OperacaoInvalidaException(String.format("Já existe uma subcategoria com o nome %s", subcategoria.getNome()));
