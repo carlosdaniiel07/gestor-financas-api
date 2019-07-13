@@ -34,6 +34,7 @@ public class CartaoCreditoService {
 	}
 	
 	public CartaoCredito insere(CartaoCredito cartaoCredito) {
+		cartaoCredito.setAtivo(true);
 		return repository.save(cartaoCredito);
 	}
 	

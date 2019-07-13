@@ -46,6 +46,22 @@ public class TipoConta implements Serializable {
 		this.nome = nome;
 		this.ativo = ativo;
 	}
+	
+	/**
+	 * Retorna o saldo do tipo da conta (soma os saldos de todas as contas pertencentes)
+	 * @return
+	 */
+	@JsonIgnore
+	public double getSaldo() {
+		double saldoTotal = 0;
+		List<Conta> contas = this.getContas();
+		
+		for (Conta conta : contas) {
+			saldoTotal += conta.getSaldo();
+		}
+		
+		return saldoTotal;
+	}
 
 	public Long getId() {
 		return id;
