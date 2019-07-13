@@ -55,7 +55,33 @@ public class CartaoCredito implements Serializable {
 		this.limite = limite;
 		this.ativo = ativo;
 	}
-
+	
+	/**
+	 * Retorna o limite restante do cartão de crédito com base no valor em aberto de suas faturas
+	 * @param cartaoCredito
+	 * @return
+	 */
+	@JsonIgnore
+	public double getLimiteRestante() {
+		double limiteRestante = this.getLimite();
+		List<Fatura> faturas = this.getFaturas();
+		
+		for(Fatura fatura : faturas) {
+			limiteRestante -= fatura.getSaldoRestante();
+		}
+		
+		return limiteRestante;
+	}
+	
+	/**
+	 * Verifica se ainda há crédito disponível (limite) no cartão de crédito
+	 * @return
+	 */
+	@JsonIgnore
+	public boolean hasLimite() {
+		return getLimiteRestante() > 0;
+	}
+	
 	public Long getId() {
 		return id;
 	}

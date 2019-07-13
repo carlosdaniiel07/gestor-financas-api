@@ -69,6 +69,10 @@ public class Fatura implements Serializable {
 		this.cartao = cartao;
 	}
 
+	public double getSaldoRestante() {
+		return getValor() - getValorPago();
+	}
+	
 	public Long getId() {
 		return id;
 	}
