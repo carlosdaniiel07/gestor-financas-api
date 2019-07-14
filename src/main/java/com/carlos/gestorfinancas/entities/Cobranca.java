@@ -80,6 +80,10 @@ public class Cobranca implements Serializable {
 		this.beneficiario = beneficiario;
 	}
 
+	public double getValorTotal() {
+		return this.getValor() + this.getJuros() - this.getDesconto();
+	}
+	
 	public Long getId() {
 		return id;
 	}
