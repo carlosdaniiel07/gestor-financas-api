@@ -53,11 +53,11 @@ public class MovimentoService {
 	 * @param origem => O módulo que originou tal movimento
 	 * @return
 	 */
-	public Movimento insere(Movimento movimento, String origem) {
+	public Movimento insere(Movimento movimento) {
 		Movimento movimentoGerado = null;
 		
-		movimento.setDataInclusao(DateUtils.getCurrentDate());
-		movimento.setOrigem(origem.isEmpty() ? modulo : origem);
+		movimento.setDataInclusao(DateUtils.getDataAtual());
+		movimento.setOrigem(movimento.getOrigem().isEmpty() ? modulo : movimento.getOrigem());
 		
 		if(movimento.hasCartaoCredito()) {
 			movimento.setStatus(StatusMovimento.EFETIVADO);

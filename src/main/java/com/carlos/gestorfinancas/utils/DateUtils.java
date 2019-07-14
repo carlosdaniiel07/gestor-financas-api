@@ -13,7 +13,7 @@ public class DateUtils {
 	 * Retorna a data atual no formato dd/MM/yyyy
 	 * @return
 	 */
-	public static Date getCurrentDate() {
+	public static Date getDataAtual() {
 		SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
 		
 		try {

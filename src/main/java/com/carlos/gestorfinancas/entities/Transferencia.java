@@ -14,6 +14,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 import com.carlos.gestorfinancas.entities.enums.StatusTransferencia;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * @author Carlos Daniel Martins de Almeida
@@ -69,6 +70,25 @@ public class Transferencia implements Serializable {
 		this.contaDestino = contaDestino;
 	}
 
+	/**
+	 * Verifica se a transferência está efetivada
+	 * @return
+	 */
+	@JsonIgnore
+	public boolean isEfetivado() {
+		return this.getStatus() == StatusTransferencia.EFETIVADO;
+	}
+	
+	/**
+	 * Verifica se a transferência é futura em relação a uma dada data
+	 * @param data => A data a ser comparada
+	 * @return
+	 */
+	@JsonIgnore
+	public boolean isFuturo(Date data) {
+		return this.getDataContabilizacao().after(data);
+	}
+	
 	public Long getId() {
 		return id;
 	}

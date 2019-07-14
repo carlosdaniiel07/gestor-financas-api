@@ -37,7 +37,7 @@ public class ProjetoService {
 	}
 	
 	public Projeto insere(Projeto projeto) {
-		projeto.setDataInicial(DateUtils.getCurrentDate());
+		projeto.setDataInicial(DateUtils.getDataAtual());
 		projeto.setAtivo(true);
 		projeto.setStatus(StatusProjeto.EM_ANDAMENTO);
 		
