@@ -93,6 +93,42 @@ public class Movimento implements Serializable {
 		this.fatura = fatura;
 	}
 
+	/**
+	 * Verifica se o movimento está relacionado a uma fatura de cartão de crédito
+	 * @return
+	 */
+	@JsonIgnore
+	public boolean hasCartaoCredito() {
+		return this.getFatura() != null;
+	}
+	
+	/**
+	 * Retorna o valor total do movimento (considera acréscimos e decréscimos)
+	 * @return
+	 */
+	public double getValorTotal() {
+		return this.getValor() + this.getAcrescimo() - this.getDecrescimo();
+	}
+	
+	/**
+	 * Verifica se o movimento está efetivado
+	 * @return
+	 */
+	@JsonIgnore
+	public boolean isEfetivado() {
+		return this.getStatus() == StatusMovimento.EFETIVADO;
+	}
+	
+	/**
+	 * Verifica se o movimento é futuro em relação a uma dada data
+	 * @param data => A data a ser comparada
+	 * @return
+	 */
+	@JsonIgnore
+	public boolean isFuturo(Date data) {
+		return this.getDataContabilizacao().after(data);
+	}
+	
 	public Long getId() {
 		return id;
 	}
