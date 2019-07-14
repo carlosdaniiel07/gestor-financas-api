@@ -50,7 +50,6 @@ public class MovimentoService {
 	/**
 	 * Gera um movimento bancário
 	 * @param movimento => O movimento a ser gerado
-	 * @param origem => O módulo que originou tal movimento
 	 * @return
 	 */
 	public Movimento insere(Movimento movimento) {

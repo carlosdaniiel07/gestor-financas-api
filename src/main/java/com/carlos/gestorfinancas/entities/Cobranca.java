@@ -83,6 +83,16 @@ public class Cobranca implements Serializable {
 	public double getValorTotal() {
 		return this.getValor() + this.getJuros() - this.getDesconto();
 	}
+
+	/**
+	 * Verifica se cobrança é futura (baseia-se na data de agendamento) em relação a uma dada data
+	 * @param data => A data a ser comparada
+	 * @return
+	 */
+	@JsonIgnore
+	public boolean isFuturo(Date data) {
+		return this.getDataAgendamento().after(data);
+	}
 	
 	public Long getId() {
 		return id;
