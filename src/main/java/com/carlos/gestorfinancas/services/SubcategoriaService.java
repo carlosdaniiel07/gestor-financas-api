@@ -56,7 +56,10 @@ public class SubcategoriaService {
 	
 	public void atualiza(Subcategoria subcategoria) {
 		if(subcategoria.isEditavel()) {
-			if(repository.findByNomeAndAtivo(subcategoria.getNome(), true).size() <= 1) {
+			List<Subcategoria> subcategorias = repository.findByNomeAndAtivo(subcategoria.getNome(), true);
+			subcategorias.remove(subcategoria);
+			
+			if(subcategorias.isEmpty()) {
 				subcategoria.setAtivo(true);
 				
 				repository.save(subcategoria);
