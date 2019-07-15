@@ -63,7 +63,10 @@ public class CategoriaService {
 	
 	public void atualiza(Categoria categoria) {
 		if(categoria.isEditavel()) {
-			if(repository.findByNomeAndTipoAndAtivo(categoria.getNome(), categoria.getTipo(), true).size() <= 1) {
+			List<Categoria> categorias = repository.findByNomeAndTipoAndAtivo(categoria.getNome(), categoria.getTipo(), true);
+			categorias.remove(categoria);
+			
+			if(categorias.isEmpty()) {
 				categoria.setAtivo(true);
 				
 				repository.save(categoria);
