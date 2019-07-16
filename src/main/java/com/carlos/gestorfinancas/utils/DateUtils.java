@@ -1,7 +1,5 @@
 package com.carlos.gestorfinancas.utils;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -10,17 +8,10 @@ import java.util.Date;
  */
 public class DateUtils {
 	/**
-	 * Retorna a data atual no formato dd/MM/yyyy
+	 * Retorna a data e hora atual
 	 * @return
 	 */
 	public static Date getDataAtual() {
-		SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
-		
-		try {
-			return formato.parse(new Date().toString());
-		} catch (ParseException e) {
-			e.printStackTrace();
-			return null;
-		}
+		return new Date(System.currentTimeMillis());
 	}
 }
