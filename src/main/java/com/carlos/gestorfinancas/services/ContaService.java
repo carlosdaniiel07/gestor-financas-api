@@ -46,7 +46,10 @@ public class ContaService {
 	}
 	
 	public void atualiza(Conta conta) {
-		if(repository.findByNomeAndAtivo(conta.getNome(), true).size() <= 1) {
+		List<Conta> contas = repository.findByNomeAndAtivo(conta.getNome(), true);
+		contas.remove(conta);
+		
+		if(contas.isEmpty()) {
 			conta.setAtivo(true);
 			repository.save(conta);
 		} else {
@@ -70,7 +73,7 @@ public class ContaService {
 	public void ajustaSaldo(Long contaId) {
 		Conta conta = getById(contaId);
 		List<Movimento> movimentos = conta.getMovimentos();
-		
+
 		double totalCredito = 0;
 		double totalDebito = 0;
 		
