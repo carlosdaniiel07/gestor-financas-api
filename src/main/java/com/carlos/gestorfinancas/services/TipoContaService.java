@@ -37,7 +37,10 @@ public class TipoContaService {
 	}
 	
 	public void atualiza(TipoConta tipoConta) {
-		if(repository.findByNomeAndAtivo(tipoConta.getNome(), true).size() <= 1) {
+		List<TipoConta> tiposConta = repository.findByNomeAndAtivo(tipoConta.getNome(), true);
+		tiposConta.remove(tipoConta);
+		
+		if(tiposConta.isEmpty()) {
 			tipoConta.setAtivo(true);
 			repository.save(tipoConta);
 		} else {
