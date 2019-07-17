@@ -50,6 +50,7 @@ public class CobrancaService {
 	
 	public Cobranca insere(Cobranca cobranca) {
 		if(cobranca.getValorTotal() <= cobranca.getBeneficiario().getLimite()) {
+			cobranca.setParcela(cobranca.getParcela() == 0 ? 1 : cobranca.getParcela());
 			cobranca.setDataPagamento(null);
 			cobranca.setStatus(StatusCobranca.PENDENTE);
 			cobranca.setSaldo(cobranca.getValorTotal());
@@ -59,6 +60,10 @@ public class CobrancaService {
 		} else {
 			throw new OperacaoInvalidaException(String.format("O valor da cobrança é superior ao limite deste beneficiário (%f)", cobranca.getValorTotal()));
 		}		
+	}
+	
+	public void atualiza(Cobranca cobranca) {
+		repository.save(cobranca);
 	}
 	
 	public void efetuaPagamento(CobrancaPagamentoDTO pagamentoDTO) {

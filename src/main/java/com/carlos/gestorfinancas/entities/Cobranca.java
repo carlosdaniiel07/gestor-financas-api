@@ -17,6 +17,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
 import com.carlos.gestorfinancas.entities.enums.StatusCobranca;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonFormat.Shape;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
@@ -37,9 +39,16 @@ public class Cobranca implements Serializable {
 	
 	private String descricao;
 	private int parcela;
+	
+	@JsonFormat(shape = Shape.STRING, pattern = "dd/MM/yyyy")
 	private Date dataVencimento;
+	
+	@JsonFormat(shape = Shape.STRING, pattern = "dd/MM/yyyy")
 	private Date dataAgendamento;
+	
+	@JsonFormat(shape = Shape.STRING, pattern = "dd/MM/yyyy")
 	private Date dataPagamento;
+	
 	private double valor;
 	private double juros;
 	private double desconto;
