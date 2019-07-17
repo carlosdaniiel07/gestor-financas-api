@@ -15,7 +15,9 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
 import com.carlos.gestorfinancas.entities.enums.StatusProjeto;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonFormat.Shape;
 
 /**
  * @author Carlos Daniel Martins de Almeida
@@ -35,7 +37,10 @@ public class Projeto implements Serializable {
 	
 	private String nome;
 	private Date dataInicial;
+	
+	@JsonFormat(shape = Shape.STRING, pattern = "dd/MM/yyyy")
 	private Date dataFinal;
+	
 	private Double orcamento;
 	private String descricao;
 	
