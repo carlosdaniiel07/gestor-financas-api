@@ -44,7 +44,10 @@ public class BeneficiarioService {
 	}
 	
 	public void atualiza(Beneficiario beneficiario) {
-		if(repository.findByNomeAndAtivo(beneficiario.getNome(), true).size() <= 1) {
+		List<Beneficiario> beneficiarios = repository.findByNomeAndAtivo(beneficiario.getNome(), true);
+		beneficiarios.remove(beneficiario);
+		
+		if(beneficiarios.isEmpty()) {
 			beneficiario.setAtivo(true);
 			repository.save(beneficiario);
 		} else {
