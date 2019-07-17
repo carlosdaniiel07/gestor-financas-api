@@ -21,11 +21,11 @@ public class CartaoCreditoService {
 
 	private final int dadosPorPagina = 30;
 	
-	List<CartaoCredito> getAll() {
+	public List<CartaoCredito> getAll() {
 		return repository.findByAtivo(true);
 	}
 	
-	List<CartaoCredito> getAll(int pagina) {
+	public List<CartaoCredito> getAll(int pagina) {
 		return repository.findByAtivo(true, PageRequest.of(pagina, dadosPorPagina));
 	}
 	
