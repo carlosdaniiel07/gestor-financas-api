@@ -1,4 +1,4 @@
-package com.carlos.gestorfinancas.entities.dtos;
+package com.carlos.gestorfinancas.dtos;
 
 import java.io.Serializable;
 import java.util.Date;

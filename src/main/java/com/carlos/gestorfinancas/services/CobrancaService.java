@@ -6,10 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Repository;
 
+import com.carlos.gestorfinancas.dtos.CobrancaPagamentoDTO;
 import com.carlos.gestorfinancas.entities.Cobranca;
 import com.carlos.gestorfinancas.entities.Movimento;
 import com.carlos.gestorfinancas.entities.OperacaoCobranca;
-import com.carlos.gestorfinancas.entities.dtos.CobrancaPagamentoDTO;
 import com.carlos.gestorfinancas.entities.enums.StatusCobranca;
 import com.carlos.gestorfinancas.entities.enums.StatusMovimento;
 import com.carlos.gestorfinancas.entities.enums.TipoOperacaoCobranca;
