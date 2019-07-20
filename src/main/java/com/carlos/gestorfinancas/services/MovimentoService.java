@@ -115,11 +115,15 @@ public class MovimentoService {
 	public void remove(Long id) {
 		Movimento obj = getById(id);
 		
-		repository.delete(obj);
-		
-		// Ajusta saldo da conta, se necessário..
-		if(obj.isEfetivado()) {
-			contaService.ajustaSaldo(obj.getConta().getId());
+		if(obj.getOrigem().equals(modulo)) {
+			repository.delete(obj);
+			
+			// Ajusta saldo da conta, se necessário..
+			if(obj.isEfetivado()) {
+				contaService.ajustaSaldo(obj.getConta().getId());
+			}
+		} else {
+			throw new OperacaoInvalidaException("Este movimento foi gerado por outra rotina, portanto não pode ser alterado.");
 		}
 	}
 }
