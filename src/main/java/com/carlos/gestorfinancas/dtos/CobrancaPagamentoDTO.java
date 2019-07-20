@@ -9,6 +9,8 @@ import com.carlos.gestorfinancas.entities.Conta;
 import com.carlos.gestorfinancas.entities.Fatura;
 import com.carlos.gestorfinancas.entities.Projeto;
 import com.carlos.gestorfinancas.entities.Subcategoria;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonFormat.Shape;
 
 /**
  * @author Carlos Daniel Martins de Almeida
@@ -21,8 +23,11 @@ public class CobrancaPagamentoDTO implements Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	private Cobranca Cobranca;
+	private Cobranca cobranca;
+	
+	@JsonFormat(pattern = "dd/MM/yyyy", shape = Shape.STRING)
 	private Date dataPagamento;
+	
 	private Conta conta;
 	private double valorPago;
 	private Categoria categoria;
@@ -37,7 +42,7 @@ public class CobrancaPagamentoDTO implements Serializable {
 	public CobrancaPagamentoDTO(com.carlos.gestorfinancas.entities.Cobranca cobranca, Date dataPagamento, Conta conta,
 			double valorPago, Categoria categoria, Subcategoria subcategoria, Projeto projeto, Fatura fatura) {
 		super();
-		Cobranca = cobranca;
+		this.cobranca = cobranca;
 		this.dataPagamento = dataPagamento;
 		this.conta = conta;
 		this.valorPago = valorPago;
@@ -48,11 +53,11 @@ public class CobrancaPagamentoDTO implements Serializable {
 	}
 
 	public Cobranca getCobranca() {
-		return Cobranca;
+		return cobranca;
 	}
 
 	public void setCobranca(Cobranca cobranca) {
-		Cobranca = cobranca;
+		this.cobranca = cobranca;
 	}
 
 	public Date getDataPagamento() {

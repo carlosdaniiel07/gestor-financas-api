@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import com.carlos.gestorfinancas.dtos.CobrancaPagamentoDTO;
+import com.carlos.gestorfinancas.dtos.CobrancaRemocaoDTO;
 import com.carlos.gestorfinancas.entities.Cobranca;
 import com.carlos.gestorfinancas.services.CobrancaService;
 
@@ -49,6 +52,18 @@ public class CobrancasResource {
 	@PutMapping
 	public ResponseEntity<Void> atualiza(@RequestBody Cobranca obj) {
 		service.atualiza(obj);
+		return ResponseEntity.ok().body(null);
+	}
+	
+	@PutMapping(value = "/efetua-pagamento")
+	public ResponseEntity<Void> paga(@RequestBody CobrancaPagamentoDTO obj) {
+		service.efetuaPagamento(obj);
+		return ResponseEntity.ok().body(null);
+	}
+	
+	@DeleteMapping
+	public ResponseEntity<Void> remove(@RequestBody CobrancaRemocaoDTO obj) {
+		service.remove(obj);
 		return ResponseEntity.ok().body(null);
 	}
 }

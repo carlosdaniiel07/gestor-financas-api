@@ -7,6 +7,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Repository;
 
 import com.carlos.gestorfinancas.dtos.CobrancaPagamentoDTO;
+import com.carlos.gestorfinancas.dtos.CobrancaRemocaoDTO;
 import com.carlos.gestorfinancas.entities.Cobranca;
 import com.carlos.gestorfinancas.entities.Movimento;
 import com.carlos.gestorfinancas.entities.OperacaoCobranca;
@@ -63,9 +64,17 @@ public class CobrancaService {
 	}
 	
 	public void atualiza(Cobranca cobranca) {
-		repository.save(cobranca);
+		if(cobranca.getStatus() == StatusCobranca.AGENDADO || cobranca.getStatus() == StatusCobranca.PENDENTE) {
+			repository.save(cobranca);
+		} else {
+			throw new OperacaoInvalidaException("Não é possível alterar uma cobrança já paga.");
+		}
 	}
 	
+	/**
+	 * Efetua o pagamento de uma cobrança
+	 * @param pagamentoDTO
+	 */
 	public void efetuaPagamento(CobrancaPagamentoDTO pagamentoDTO) {
 		Cobranca cobranca = pagamentoDTO.getCobranca();
 		
@@ -88,14 +97,30 @@ public class CobrancaService {
 					// Gera operação de baixa na cobrança
 					operacaoCobrancaService.insere(this.geraOperacaoCobranca(pagamentoDTO, cobranca));				
 				} else {
-					throw new OperacaoInvalidaException(String.format("O valor da cobrança é superior ao limite deste beneficiário (%f)", cobranca.getValorTotal()));
+					throw new OperacaoInvalidaException(String.format("O valor da cobrança é superior ao limite deste beneficiário (%.2f)", cobranca.getValorTotal()));
 				}
 			} else {
-				throw new OperacaoInvalidaException(String.format("O valor informado é superior ao valor da cobrança (%f)", cobranca.getSaldo()));
+				throw new OperacaoInvalidaException(String.format("O valor informado é superior ao valor da cobrança (%.2f)", cobranca.getSaldo()));
 			}
 		} else {
 			throw new OperacaoInvalidaException("Não há saldo a pagar nesta cobrança.");
 		}
+	}
+	
+	public void remove(CobrancaRemocaoDTO remocaoDTO) {
+		Cobranca cobranca = remocaoDTO.getCobranca();
+
+		// Remove a cobrança do banco de dados
+		repository.delete(cobranca);
+		
+		// Insere os movimentos bancários e remove as operações de baixa, se necessário..
+		if(cobranca.getStatus() == StatusCobranca.PAGO || cobranca.getStatus() == StatusCobranca.PAGO_PARCIAL) {
+			Movimento movimentoCredito = this.geraMovimentoCredito(cobranca, remocaoDTO);
+			List<OperacaoCobranca> operacoesCobranca = cobranca.getOperacoes();
+			
+			movimentoService.insere(movimentoCredito);
+			operacaoCobrancaService.remove(operacoesCobranca);
+		} 
 	}
 	
 	private Movimento geraMovimentoDebito(CobrancaPagamentoDTO pagamentoDTO, Cobranca cobranca) {
@@ -119,11 +144,37 @@ public class CobrancaService {
 		); 
 	}
 	
+	/**
+	 * Gera um movimento de crédito (usado somente na remoção da cobrança)
+	 * @param cobranca
+	 * @return
+	 */
+	private Movimento geraMovimentoCredito(Cobranca cobranca, CobrancaRemocaoDTO remocaoDTO) {
+		return new Movimento(
+				null, 
+				"Estorno " + cobranca.getDescricao(),
+				'C', 
+				DateUtils.getDataAtual(),
+				DateUtils.getDataAtual(), 
+				cobranca.getValorTotal() - cobranca.getSaldo(),
+				0, 
+				0, 
+				StatusMovimento.EFETIVADO,
+				modulo, 
+				cobranca.getObservacao(), 
+				remocaoDTO.getConta(),
+				remocaoDTO.getCategoria(), 
+				remocaoDTO.getSubcategoria(), 
+				remocaoDTO.getProjeto(), 
+				null
+		);
+	}
+	
 	private OperacaoCobranca geraOperacaoCobranca(CobrancaPagamentoDTO pagamentoDTO, Cobranca cobranca) {
 		return new OperacaoCobranca(
 				null, 
 				TipoOperacaoCobranca.BAIXA, 
-				String.format("BAIXA REF. VALOR PAGO S/ COBRANÇA ID %d", cobranca.getId()), 
+				String.format("BAIXA REF. VALOR PAGO S/ COBRANÇA #%d", cobranca.getId()), 
 				pagamentoDTO.getDataPagamento(), 
 				pagamentoDTO.getValorPago(), 
 				cobranca
