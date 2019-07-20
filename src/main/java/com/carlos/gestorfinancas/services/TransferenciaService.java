@@ -59,8 +59,8 @@ public class TransferenciaService {
 			
 			// Gera os movimentos bancários, se necessário..
 			if(transferencia.isEfetivado()) {
-				Movimento movtoDebito = this.geraMovimentoDebito(transferencia);
-				Movimento movtoCredito = this.geraMovimentoCredito(transferencia);
+				Movimento movtoDebito = this.geraMovimentoDebito(transferencia, false);
+				Movimento movtoCredito = this.geraMovimentoCredito(transferencia, false);
 				
 				movimentoService.insere(movtoDebito);
 				movimentoService.insere(movtoCredito);
@@ -70,6 +70,14 @@ public class TransferenciaService {
 		}
 		
 		return transferenciaGerada;
+	}
+	
+	public void atualiza(Transferencia transferencia) {
+		if(transferencia.getStatus() != StatusTransferencia.AGENDADO) {
+			throw new OperacaoInvalidaException("Não é possível atualizar uma transferência já efetivada.");
+		} else {
+			repository.save(transferencia);
+		}
 	}
 	
 	public void efetiva(Long id) {
@@ -82,28 +90,53 @@ public class TransferenciaService {
 			repository.save(obj);
 			
 			// Gera os movimentos bancários..
-			Movimento movtoDebito = this.geraMovimentoDebito(obj);
-			Movimento movtoCredito = this.geraMovimentoCredito(obj);
+			Movimento movtoDebito = this.geraMovimentoDebito(obj, false);
+			Movimento movtoCredito = this.geraMovimentoCredito(obj, false);
 			
 			movimentoService.insere(movtoDebito);
 			movimentoService.insere(movtoCredito);
+		} else {
+			throw new OperacaoInvalidaException("Esta transferência já foi efetivada anteriormente.");
 		}
 	}
 	
-	private Movimento geraMovimentoDebito(Transferencia transferencia) {
+	public void estorna(Long id) {
+		Transferencia transferencia = getById(id);
+		
+		if(transferencia.getStatus() == StatusTransferencia.EFETIVADO) {
+			transferencia.setStatus(StatusTransferencia.ESTORNADO);
+			
+			// Atualiza status da transferência
+			repository.save(transferencia);
+			
+			// Gera os movimentos bancários de estorno
+			movimentoService.insere(this.geraMovimentoCredito(transferencia, true));
+			movimentoService.insere(this.geraMovimentoDebito(transferencia, true));
+		} else {
+			throw new OperacaoInvalidaException("Não é possível estornar uma transferência que ainda não foi efetivada.");
+		}
+	}
+	
+	/**
+	 * Gera um objeto do tipo Movimento, com base em uma transferência bancária
+	 * @param transferencia
+	 * @param estorno
+	 * @return
+	 */
+	private Movimento geraMovimentoDebito(Transferencia transferencia, boolean estorno) {
 		return new Movimento(
 				null, 
-				transferencia.getDescricao(), 
+				(estorno) ? "Estorno " + transferencia.getDescricao() : transferencia.getDescricao(), 
 				'D', 
 				DateUtils.getDataAtual(), 
 				transferencia.getDataContabilizacao(), 
-				transferencia.getValor() + transferencia.getTaxa(), 
+				(estorno) ? transferencia.getValor() : transferencia.getValor() + transferencia.getTaxa(), 
 				0, 
 				0, 
 				StatusMovimento.EFETIVADO,
 				modulo, 
 				transferencia.getObservacao(), 
-				transferencia.getContaOrigem(), 
+				(estorno) ? transferencia.getContaDestino() : transferencia.getContaOrigem(), 
 				null, 
 				null, 
 				null, 
@@ -111,20 +144,26 @@ public class TransferenciaService {
 		);
 	}
 	
-	private Movimento geraMovimentoCredito(Transferencia transferencia) {
+	/**
+	 * Gera um objeto do tipo Movimento, com base em uma transferência bancária
+	 * @param transferencia
+	 * @param estorno
+	 * @return
+	 */
+	private Movimento geraMovimentoCredito(Transferencia transferencia, boolean estorno) {
 		return new Movimento(
 				null, 
-				transferencia.getDescricao(), 
+				(estorno) ? "Estorno " + transferencia.getDescricao() : transferencia.getDescricao(), 
 				'C', 
 				DateUtils.getDataAtual(),
 				transferencia.getDataContabilizacao(), 
-				transferencia.getValor(),
+				(estorno) ? transferencia.getValor() + transferencia.getTaxa() : transferencia.getValor(),
 				0, 
 				0, 
 				StatusMovimento.EFETIVADO,
 				modulo, 
 				transferencia.getObservacao(), 
-				transferencia.getContaDestino(), 
+				(estorno) ? transferencia.getContaOrigem() : transferencia.getContaDestino(), 
 				null, 
 				null, 
 				null, 

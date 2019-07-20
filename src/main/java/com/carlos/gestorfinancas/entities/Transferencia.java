@@ -14,7 +14,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 import com.carlos.gestorfinancas.entities.enums.StatusTransferencia;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonFormat.Shape;
 
 /**
  * @author Carlos Daniel Martins de Almeida
@@ -35,8 +37,13 @@ public class Transferencia implements Serializable {
 	private String descricao;
 	private double valor;
 	private double taxa;
+	
+	@JsonFormat(pattern = "dd/MM/yyyy", shape = Shape.STRING)
 	private Date dataInclusao;
+	
+	@JsonFormat(pattern = "dd/MM/yyyy", shape = Shape.STRING)
 	private Date dataContabilizacao;
+	
 	private String observacao;
 	
 	@Enumerated(EnumType.STRING)
