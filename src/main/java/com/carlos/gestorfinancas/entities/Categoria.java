@@ -29,7 +29,7 @@ public class Categoria implements Serializable {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 	
-	private String nome;
+	private String nome;	
 	private char tipo;
 	private boolean editavel;
 	private boolean ativo;

@@ -3,6 +3,8 @@ package com.carlos.gestorfinancas.resources;
 import java.net.URI;
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import com.carlos.gestorfinancas.dtos.ContaDTO;
 import com.carlos.gestorfinancas.entities.Conta;
 import com.carlos.gestorfinancas.services.ContaService;
 
@@ -39,8 +42,8 @@ public class ContasResource {
 	}
 	
 	@PostMapping
-	public ResponseEntity<Conta> insere(@RequestBody Conta obj) {
-		obj = service.insere(obj);
+	public ResponseEntity<Conta> insere(@Valid @RequestBody ContaDTO objDTO) {
+		Conta obj = service.insere(objDTO.toConta());
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(obj.getId()).toUri();
 		
 		return ResponseEntity.created(uri).body(obj);

@@ -3,6 +3,8 @@ package com.carlos.gestorfinancas.resources;
 import java.net.URI;
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import com.carlos.gestorfinancas.dtos.CobrancaDTO;
 import com.carlos.gestorfinancas.dtos.CobrancaPagamentoDTO;
 import com.carlos.gestorfinancas.dtos.CobrancaRemocaoDTO;
 import com.carlos.gestorfinancas.entities.Cobranca;
@@ -42,8 +45,8 @@ public class CobrancasResource {
 	}
 	
 	@PostMapping
-	public ResponseEntity<Cobranca> insere(@RequestBody Cobranca obj) {
-		obj = service.insere(obj);
+	public ResponseEntity<Cobranca> insere(@Valid @RequestBody CobrancaDTO objDTO) {
+		Cobranca obj = service.insere(objDTO.toCobranca());
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(obj.getId()).toUri();
 		
 		return ResponseEntity.created(uri).body(obj);

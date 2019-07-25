@@ -57,9 +57,10 @@ public class Projeto implements Serializable {
 		super();
 	}
 
-	public Projeto(String nome, Date dataInicial, Date dataFinal, Double orcamento,
-			String descricao, StatusProjeto status, boolean ativo) {
+	public Projeto(Long id, String nome, Date dataInicial, Date dataFinal, Double orcamento, String descricao,
+			StatusProjeto status, boolean ativo) {
 		super();
+		this.id = id;
 		this.nome = nome;
 		this.dataInicial = dataInicial;
 		this.dataFinal = dataFinal;
