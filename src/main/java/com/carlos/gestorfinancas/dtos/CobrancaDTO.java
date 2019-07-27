@@ -36,10 +36,10 @@ public class CobrancaDTO implements Serializable {
 	@PositiveOrZero(message = "O valor deve ser igual ou superior a 0 (zero)")
 	private double valor;
 	
-	@PositiveOrZero(message = "O valor deve ser igual ou superior a 0 (zero)")
+	@PositiveOrZero(message = "O valor do juros deve ser igual ou superior a 0 (zero)")
 	private double juros;
 	
-	@PositiveOrZero(message = "O valor deve ser igual ou superior a 0 (zero)")
+	@PositiveOrZero(message = "O valor do desconto deve ser igual ou superior a 0 (zero)")
 	private double desconto;
 	
 	private String observacao;
