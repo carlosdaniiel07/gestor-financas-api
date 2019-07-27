@@ -2,10 +2,11 @@ package com.carlos.gestorfinancas.resources.exceptions;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import com.carlos.gestorfinancas.entities.RequestError;
 import com.carlos.gestorfinancas.services.exceptions.ObjetoNaoEncontradoException;
 import com.carlos.gestorfinancas.services.exceptions.OperacaoInvalidaException;
 
@@ -26,5 +27,17 @@ public class ResourceHandler {
 	public ResponseEntity<RequestError> objetoNaoEncontradoHandler(ObjetoNaoEncontradoException ex) {
 		RequestError requestError = new RequestError(System.currentTimeMillis(), HttpStatus.NOT_FOUND.value(), ex.getMessage());
 		return ResponseEntity.status(requestError.getHttpStatus()).body(requestError);
+	}
+	
+	@ExceptionHandler(MethodArgumentNotValidException.class)
+	public ResponseEntity<RequestError> validacaoHandler(MethodArgumentNotValidException ex) {
+		ValidationError validationError = new ValidationError(System.currentTimeMillis(), HttpStatus.BAD_REQUEST.value(), "Erro de validação");
+		
+		// Obtem os erros
+		for(FieldError fieldError : ex.getBindingResult().getFieldErrors()) {
+			validationError.addError(fieldError.getDefaultMessage());
+		}
+		
+		return ResponseEntity.status(validationError.getHttpStatus()).body(validationError);
 	}
 }

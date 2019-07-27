@@ -1,4 +1,4 @@
-package com.carlos.gestorfinancas.entities;
+package com.carlos.gestorfinancas.resources.exceptions;
 
 import java.io.Serializable;
 
