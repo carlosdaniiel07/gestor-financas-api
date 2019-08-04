@@ -35,12 +35,8 @@ public class BeneficiarioService {
 	}
 	
 	public Beneficiario insere(Beneficiario beneficiario) {
-		if(repository.findByNomeAndAtivo(beneficiario.getNome(), true).isEmpty()) {
-			beneficiario.setAtivo(true);
-			return repository.save(beneficiario);
-		} else {
-			throw new OperacaoInvalidaException(String.format("Já existe um beneficiário cadastrado com o nome %s", beneficiario.getNome()));
-		}
+		beneficiario.setAtivo(true);
+		return repository.save(beneficiario);
 	}
 	
 	public void atualiza(Beneficiario beneficiario) {

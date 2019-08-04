@@ -44,19 +44,15 @@ public class SubcategoriaService {
 	}
 	
 	public Subcategoria insere(Subcategoria subcategoria) {
-		if(repository.findByNomeAndAtivo(subcategoria.getNome(), true).isEmpty()) {
-			subcategoria.setEditavel(true);
-			subcategoria.setAtivo(true);
-			
-			return repository.save(subcategoria);
-		} else {
-			throw new OperacaoInvalidaException(String.format("Já existe uma subcategoria com o nome %s", subcategoria.getNome()));
-		}
+		subcategoria.setEditavel(true);
+		subcategoria.setAtivo(true);
+		
+		return repository.save(subcategoria);
 	}
 	
 	public void atualiza(Subcategoria subcategoria) {
 		if(subcategoria.isEditavel()) {
-			List<Subcategoria> subcategorias = repository.findByNomeAndAtivo(subcategoria.getNome(), true);
+			List<Subcategoria> subcategorias = repository.findByNomeAndCategoriaIdAndAtivo(subcategoria.getNome(), subcategoria.getCategoria().getId(), true);
 			subcategorias.remove(subcategoria);
 			
 			if(subcategorias.isEmpty()) {
@@ -64,7 +60,7 @@ public class SubcategoriaService {
 				
 				repository.save(subcategoria);
 			} else {
-				throw new OperacaoInvalidaException(String.format("Já existe uma subcategoria com o nome %s", subcategoria.getNome()));
+				throw new OperacaoInvalidaException(String.format("Já existe uma subcategoria com o nome %s pertencendo a categoria %s", subcategoria.getNome(), subcategoria.getCategoria().getNome()));
 			}
 		} else {
 			throw new OperacaoInvalidaException("Esta subcategoria foi gerada automaticamente e não pode ser alterada.");

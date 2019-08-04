@@ -7,11 +7,13 @@ import javax.validation.constraints.NotNull;
 
 import com.carlos.gestorfinancas.entities.Categoria;
 import com.carlos.gestorfinancas.entities.Subcategoria;
+import com.carlos.gestorfinancas.services.validations.NovaSubcategoria;
 
 /**
  * @author Carlos Daniel Martins de Almeida
  * @date 21/07/2019
  */
+@NovaSubcategoria
 public class SubcategoriaDTO implements Serializable {
 
 	/**

@@ -5,11 +5,13 @@ import java.io.Serializable;
 import javax.validation.constraints.NotEmpty;
 
 import com.carlos.gestorfinancas.entities.Categoria;
+import com.carlos.gestorfinancas.services.validations.NovaCategoria;
 
 /**
  * @author Carlos Daniel Martins de Almeida
  * @date 21/07/2019
  */
+@NovaCategoria
 public class CategoriaDTO implements Serializable {
 
 	/**

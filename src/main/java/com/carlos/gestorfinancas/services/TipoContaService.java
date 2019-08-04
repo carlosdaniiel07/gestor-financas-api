@@ -28,12 +28,8 @@ public class TipoContaService {
 	}
 	
 	public TipoConta insere(TipoConta tipoConta) {
-		if(repository.findByNomeAndAtivo(tipoConta.getNome(), true).isEmpty()) {
-			tipoConta.setAtivo(true);
-			return repository.save(tipoConta);
-		} else {
-			throw new OperacaoInvalidaException(String.format("Já existe um tipo de conta com o nome %s", tipoConta.getNome()));
-		}
+		tipoConta.setAtivo(true);
+		return repository.save(tipoConta);
 	}
 	
 	public void atualiza(TipoConta tipoConta) {

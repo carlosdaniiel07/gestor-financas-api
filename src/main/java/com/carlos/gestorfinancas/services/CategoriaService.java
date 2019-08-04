@@ -53,14 +53,10 @@ public class CategoriaService {
 	}
 	
 	public Categoria insere (Categoria categoria ) {
-		if(repository.findByNomeAndTipoAndAtivo(categoria.getNome(), categoria.getTipo(), true).isEmpty()) {
-			categoria.setEditavel(true);
-			categoria.setAtivo(true);
-			
-			return repository.save(categoria);
-		} else {
-			throw new OperacaoInvalidaException(String.format("Já existe uma categoria com o nome %s", categoria.getNome()));
-		}
+		categoria.setEditavel(true);
+		categoria.setAtivo(true);
+		
+		return repository.save(categoria);
 	}
 	
 	public void atualiza(Categoria categoria) {

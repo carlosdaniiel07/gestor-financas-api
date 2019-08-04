@@ -36,13 +36,10 @@ public class ContaService {
 	}
 	
 	public Conta insere(Conta conta) {
-		if(repository.findByNomeAndAtivo(conta.getNome(), true).isEmpty()) {
-			conta.setAtivo(true);
-			conta.setSaldo(conta.getSaldoInicial());
-			return repository.save(conta);
-		} else {
-			throw new OperacaoInvalidaException(String.format("Já existe uma conta com o nome %s", conta.getNome()));
-		}
+		conta.setAtivo(true);
+		conta.setSaldo(conta.getSaldoInicial());
+		
+		return repository.save(conta);
 	}
 	
 	public void atualiza(Conta conta) {

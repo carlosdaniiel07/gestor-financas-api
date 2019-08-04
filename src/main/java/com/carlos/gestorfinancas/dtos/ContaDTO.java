@@ -7,11 +7,13 @@ import javax.validation.constraints.NotNull;
 
 import com.carlos.gestorfinancas.entities.Conta;
 import com.carlos.gestorfinancas.entities.TipoConta;
+import com.carlos.gestorfinancas.services.validations.NovaConta;
 
 /**
  * @author Carlos Daniel Martins de Almeida
  * @date 21/07/2019
  */
+@NovaConta
 public class ContaDTO implements Serializable {
 
 	/**

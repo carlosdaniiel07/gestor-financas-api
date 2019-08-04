@@ -6,11 +6,13 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.PositiveOrZero;
 
 import com.carlos.gestorfinancas.entities.Beneficiario;
+import com.carlos.gestorfinancas.services.validations.NovoBeneficiario;
 
 /**
  * @author Carlos Daniel Martins de Almeida
  * @date 21/07/2019
  */
+@NovoBeneficiario
 public class BeneficiarioDTO implements Serializable {
 
 	/**
