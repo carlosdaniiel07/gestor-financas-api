@@ -5,6 +5,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.carlos.gestorfinancas.entities.Categoria;
 import com.carlos.gestorfinancas.entities.Subcategoria;
@@ -78,6 +80,7 @@ public class CategoriaService {
 		}
 	}
 	
+	@Transactional(propagation = Propagation.REQUIRED)
 	public void remove(Long id) {
 		Categoria obj = getById(id);
 		List<Subcategoria> subcategorias = obj.getSubcategorias();
@@ -93,7 +96,8 @@ public class CategoriaService {
 			}
 		}
 	}
-	
+
+	@Transactional(propagation = Propagation.REQUIRED)
 	public void remove(Categoria categoria) {
 		if(categoria.isAtivo()) {
 			if(categoria.isEditavel()) {

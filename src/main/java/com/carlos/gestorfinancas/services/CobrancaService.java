@@ -5,6 +5,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.carlos.gestorfinancas.dtos.CobrancaPagamentoDTO;
 import com.carlos.gestorfinancas.dtos.CobrancaRemocaoDTO;
@@ -75,6 +77,7 @@ public class CobrancaService {
 	 * Efetua o pagamento de uma cobrança
 	 * @param pagamentoDTO
 	 */
+	@Transactional(propagation = Propagation.REQUIRED)
 	public void efetuaPagamento(CobrancaPagamentoDTO pagamentoDTO) {
 		Cobranca cobranca = pagamentoDTO.getCobranca();
 		
@@ -107,6 +110,7 @@ public class CobrancaService {
 		}
 	}
 	
+	@Transactional(propagation = Propagation.REQUIRED)
 	public void remove(CobrancaRemocaoDTO remocaoDTO) {
 		Cobranca cobranca = remocaoDTO.getCobranca();
 

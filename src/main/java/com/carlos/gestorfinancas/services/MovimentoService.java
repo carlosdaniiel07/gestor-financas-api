@@ -5,6 +5,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.carlos.gestorfinancas.entities.CartaoCredito;
 import com.carlos.gestorfinancas.entities.Fatura;
@@ -52,6 +54,7 @@ public class MovimentoService {
 	 * @param movimento => O movimento a ser gerado
 	 * @return
 	 */
+	@Transactional(propagation = Propagation.REQUIRED)
 	public Movimento insere(Movimento movimento) {
 		Movimento movimentoGerado = null;
 		
@@ -83,7 +86,7 @@ public class MovimentoService {
 				throw new OperacaoInvalidaException("Cartões de crédito só podem ser utilizados em despesas.");
 			}
 		} else {
-			if(movimento.isEfetivado() && movimento.isFuturo(movimento.getDataContabilizacao())) {
+			if(movimento.isEfetivado() && movimento.isFuturo(DateUtils.getDataAtual())) {
 				movimento.setStatus(StatusMovimento.AGENDADO);
 			}
 			
@@ -99,6 +102,7 @@ public class MovimentoService {
 		return movimentoGerado;
 	}
 	
+	@Transactional(propagation = Propagation.REQUIRED)
 	public void efetiva(Long id) {
 		Movimento obj = getById(id);
 		
@@ -112,6 +116,7 @@ public class MovimentoService {
 		}
 	}
 	
+	@Transactional(propagation = Propagation.REQUIRED)
 	public void remove(Long id) {
 		Movimento obj = getById(id);
 		

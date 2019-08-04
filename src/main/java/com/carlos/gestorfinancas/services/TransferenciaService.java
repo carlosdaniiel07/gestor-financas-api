@@ -6,6 +6,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.carlos.gestorfinancas.entities.Movimento;
 import com.carlos.gestorfinancas.entities.Transferencia;
@@ -43,6 +45,7 @@ public class TransferenciaService {
 		return repository.findById(id).orElseThrow(() -> new ObjetoNaoEncontradoException("Essa transferência não foi encontrada."));
 	}
 	
+	@Transactional(propagation = Propagation.REQUIRED)
 	public Transferencia insere(Transferencia transferencia) {
 		Transferencia transferenciaGerada = null;
 		Date dataAtual = DateUtils.getDataAtual();
@@ -80,6 +83,7 @@ public class TransferenciaService {
 		}
 	}
 	
+	@Transactional(propagation = Propagation.REQUIRED)
 	public void efetiva(Long id) {
 		Transferencia obj = getById(id);
 		
@@ -100,6 +104,7 @@ public class TransferenciaService {
 		}
 	}
 	
+	@Transactional(propagation = Propagation.REQUIRED)
 	public void estorna(Long id) {
 		Transferencia transferencia = getById(id);
 		
