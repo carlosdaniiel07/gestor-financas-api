@@ -7,7 +7,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import com.carlos.gestorfinancas.entities.Conta;
-import com.carlos.gestorfinancas.entities.Movimento;
 import com.carlos.gestorfinancas.repositories.ContaRepository;
 import com.carlos.gestorfinancas.services.exceptions.ObjetoNaoEncontradoException;
 import com.carlos.gestorfinancas.services.exceptions.OperacaoInvalidaException;
@@ -20,6 +19,9 @@ import com.carlos.gestorfinancas.services.exceptions.OperacaoInvalidaException;
 public class ContaService {
 	@Autowired
 	private ContaRepository repository;
+	
+	@Autowired
+	private MovimentoService movimentoService;
 
 	private final int dadosPorPagina = 30;
 	
@@ -64,23 +66,25 @@ public class ContaService {
 	}
 	
 	/**
+	 * Ajusta o saldo da conta
+	 * @param contaId
+	 */
+	public void ajustaSaldo(Conta conta) {
+		Double totalCredito = movimentoService.getTotalCreditoByConta(conta);
+		Double totalDebito = movimentoService.getTotalDebitoByConta(conta);
+		
+		conta.setSaldo(conta.getSaldoInicial() + totalCredito - totalDebito);
+		repository.save(conta);
+	}
+	
+	/**
 	 * Ajusta o saldo de uma determinada conta
 	 * @param contaId
 	 */
 	public void ajustaSaldo(Long contaId) {
 		Conta conta = getById(contaId);
-		List<Movimento> movimentos = conta.getMovimentos();
-
-		double totalCredito = 0;
-		double totalDebito = 0;
-		
-		for (Movimento movimento : movimentos) {
-			if(movimento.getTipo() == 'C') {
-				totalCredito += movimento.getValorTotal();
-			} else {
-				totalDebito += movimento.getValorTotal();
-			}
-		}
+		double totalCredito = movimentoService.getTotalCreditoByConta(conta);
+		double totalDebito = movimentoService.getTotalDebitoByConta(conta);
 		
 		conta.setSaldo(conta.getSaldoInicial() + totalCredito - totalDebito);
 		repository.save(conta);

@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.carlos.gestorfinancas.entities.CartaoCredito;
+import com.carlos.gestorfinancas.entities.Conta;
 import com.carlos.gestorfinancas.entities.Fatura;
 import com.carlos.gestorfinancas.entities.Movimento;
 import com.carlos.gestorfinancas.entities.enums.StatusFatura;
@@ -95,7 +96,7 @@ public class MovimentoService {
 			
 			// Ajusta o saldo da conta, se necessário..
 			if(movimento.isEfetivado()) {
-				contaService.ajustaSaldo(movimento.getConta().getId());
+				contaService.ajustaSaldo(movimento.getConta());
 			}
 		}
 		
@@ -112,7 +113,7 @@ public class MovimentoService {
 			repository.save(obj);
 			
 			// Ajusta saldo da conta
-			contaService.ajustaSaldo(obj.getConta().getId());
+			contaService.ajustaSaldo(obj.getConta());
 		}
 	}
 	
@@ -125,10 +126,24 @@ public class MovimentoService {
 			
 			// Ajusta saldo da conta, se necessário..
 			if(obj.isEfetivado()) {
-				contaService.ajustaSaldo(obj.getConta().getId());
+				contaService.ajustaSaldo(obj.getConta());
 			}
 		} else {
 			throw new OperacaoInvalidaException("Este movimento foi gerado por outra rotina, portanto não pode ser alterado.");
 		}
+	}
+	
+	/*
+	 * Retorna a soma de todos os movimentos de crédito de uma conta específica
+	 */
+	public double getTotalCreditoByConta(Conta conta) {
+		return repository.getTotalCreditoByConta(conta.getId()).orElse(0D);
+	}
+
+	/*
+	 * Retorna a soma de todos os movimentos de débito de uma conta específica (não considera movimentos vinculados a cartão de crédito)
+	 */
+	public double getTotalDebitoByConta(Conta conta) {
+		return repository.getTotalDebitoByConta(conta.getId()).orElse(0D);
 	}
 }
