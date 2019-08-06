@@ -22,6 +22,9 @@ public class ContaService {
 	
 	@Autowired
 	private MovimentoService movimentoService;
+	
+	@Autowired
+	private EmailService emailService;
 
 	private final int dadosPorPagina = 30;
 	
@@ -70,23 +73,19 @@ public class ContaService {
 	 * @param contaId
 	 */
 	public void ajustaSaldo(Conta conta) {
-		Double totalCredito = movimentoService.getTotalCreditoByConta(conta);
-		Double totalDebito = movimentoService.getTotalDebitoByConta(conta);
-		
-		conta.setSaldo(conta.getSaldoInicial() + totalCredito - totalDebito);
-		repository.save(conta);
-	}
-	
-	/**
-	 * Ajusta o saldo de uma determinada conta
-	 * @param contaId
-	 */
-	public void ajustaSaldo(Long contaId) {
-		Conta conta = getById(contaId);
 		double totalCredito = movimentoService.getTotalCreditoByConta(conta);
 		double totalDebito = movimentoService.getTotalDebitoByConta(conta);
+		double novoSaldo = conta.getSaldoInicial() + totalCredito - totalDebito; 
 		
-		conta.setSaldo(conta.getSaldoInicial() + totalCredito - totalDebito);
+		conta.setSaldo(novoSaldo);
 		repository.save(conta);
+		
+		// Envia um e-mail de alerta caso o saldo da conta esteja negativo
+		if(novoSaldo < 0) {
+			String assunto = String.format("O saldo da conta %s requer a sua atenção!", conta.getNome());
+			String conteudo = String.format("Prezado,<br/><br/>O saldo atual da conta <b>%s</b> está atualmente negativo: R$ <b>%.2f</b>.", conta.getNome(), novoSaldo);
+			
+			emailService.enviaEmail(assunto, "carlosdaniiel0711@gmail.com", conteudo);
+		}
 	}
 }
