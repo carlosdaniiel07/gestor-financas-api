@@ -4,11 +4,18 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
+import com.carlos.gestorfinancas.dtos.FaturaPagamentoDTO;
 import com.carlos.gestorfinancas.entities.Fatura;
+import com.carlos.gestorfinancas.entities.Movimento;
 import com.carlos.gestorfinancas.entities.enums.StatusFatura;
+import com.carlos.gestorfinancas.entities.enums.StatusMovimento;
 import com.carlos.gestorfinancas.repositories.FaturaRepository;
 import com.carlos.gestorfinancas.services.exceptions.ObjetoNaoEncontradoException;
+import com.carlos.gestorfinancas.services.exceptions.OperacaoInvalidaException;
+import com.carlos.gestorfinancas.utils.DateUtils;
 
 /**
  * @author Carlos Daniel Martins de Almeida
@@ -19,7 +26,12 @@ public class FaturaService {
 	@Autowired
 	private FaturaRepository repository;
 
-	List<Fatura> getAll() {
+	@Autowired
+	private MovimentoService movimentoService;
+	
+	private final String modulo = "CRCRE";
+	
+	public List<Fatura> getAll() {
 		return repository.findAll();
 	}
 	
@@ -37,5 +49,83 @@ public class FaturaService {
 		fatura.setStatus(StatusFatura.NAO_FECHADA);
 		
 		return repository.save(fatura);
+	}
+	
+	/*
+	 * Efetua o pagamento de uma fatura de cartão de crédito
+	 */
+	@Transactional(propagation = Propagation.REQUIRED)
+	public void efetuaPagamento(FaturaPagamentoDTO faturaDTO) {
+		Fatura fatura = faturaDTO.getFatura();
+		
+		if(fatura.getStatus() == StatusFatura.PENDENTE || fatura.getStatus() == StatusFatura.PAGO_PARCIAL) {
+			if(faturaDTO.getValorPago() <= fatura.getSaldoRestante()) {
+				StatusFatura novoStatus = (fatura.getSaldoRestante() - faturaDTO.getValorPago() > 0) ? StatusFatura.PAGO_PARCIAL : StatusFatura.PAGO;
+				double novoValorPago = fatura.getValorPago() + faturaDTO.getValorPago();
+				
+				fatura.setStatus(novoStatus);
+				fatura.setValorPago(novoValorPago);
+				fatura.setDataPagamento(DateUtils.getDataAtual());
+				
+				// Altera dados da fatura no banco de dados
+				repository.save(fatura);
+				
+				// Gera movimento bancário
+				movimentoService.insere(this.geraMovimentoDebito(faturaDTO));
+			} else {
+				throw new OperacaoInvalidaException(String.format("O saldo a pagar desta fatura é %.2f", fatura.getSaldoRestante()));
+			}
+		} else {
+			throw new OperacaoInvalidaException("Não é possível pagar uma fatura que já foi paga ou que ainda não foi fechada.");
+		}
+	}
+	
+	/**
+	 * Abre uma fatura do cartão de crédito (status da fatura -> Não fechada)
+	 */
+	public void abre(Long faturaId) {
+		Fatura fatura = getById(faturaId);
+		
+		if(fatura.getStatus() == StatusFatura.PENDENTE) {
+			fatura.setStatus(StatusFatura.NAO_FECHADA);
+			repository.save(fatura);
+		} else {
+			throw new OperacaoInvalidaException("Não é possível abrir uma fatura que já foi paga ou que ainda esteja em aberto.");
+		}
+	}
+
+	/*
+	 * Fecha uma fatura do cartão de crédito (status da fatura -> Pendente)
+	 */
+	public void fecha(Long faturaId) {
+		Fatura fatura = getById(faturaId);
+		
+		if(fatura.getStatus() == StatusFatura.NAO_FECHADA) {
+			fatura.setStatus(StatusFatura.PENDENTE);
+			repository.save(fatura);
+		} else {
+			throw new OperacaoInvalidaException("Está fatura já está fechada.");
+		}
+	}
+	
+	private Movimento geraMovimentoDebito(FaturaPagamentoDTO faturaDTO) {
+		return new Movimento(
+				null, 
+				String.format("Pagamento fatura cartão de crédito %s. Referência: %s", faturaDTO.getFatura().getCartao().getNome(), faturaDTO.getFatura().getReferencia()),
+				'D', 
+				DateUtils.getDataAtual(),
+				faturaDTO.getDataPagamento(),
+				faturaDTO.getValorPago(),
+				0, 
+				0, 
+				StatusMovimento.EFETIVADO,
+				modulo, 
+				"", 
+				faturaDTO.getConta(), 
+				null, 
+				null, 
+				null, 
+				null
+		); 
 	}
 }

@@ -17,7 +17,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
 import com.carlos.gestorfinancas.entities.enums.StatusFatura;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonFormat.Shape;
 
 /**
  * @author Carlos Daniel Martins de Almeida
@@ -36,8 +38,13 @@ public class Fatura implements Serializable {
 	private Long id;
 	
 	private String referencia;
+
+	@JsonFormat(shape = Shape.STRING, pattern = "dd/MM/yyyy")
 	private Date vencimento;
+	
+	@JsonFormat(shape = Shape.STRING, pattern = "dd/MM/yyyy")
 	private Date dataPagamento;
+	
 	private double valor;
 	private double valorPago;
 	
@@ -69,6 +76,9 @@ public class Fatura implements Serializable {
 		this.cartao = cartao;
 	}
 
+	/*
+	 * Retorna o saldo restante a pagar da fatura
+	 */
 	public double getSaldoRestante() {
 		return getValor() - getValorPago();
 	}
