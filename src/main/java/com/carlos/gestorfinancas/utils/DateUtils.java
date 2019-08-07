@@ -1,5 +1,6 @@
 package com.carlos.gestorfinancas.utils;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -13,5 +14,14 @@ public class DateUtils {
 	 */
 	public static Date getDataAtual() {
 		return new Date(System.currentTimeMillis());
+	}
+	
+	/**
+	 * Retorna a data e hora atual no formato de nome de arquivo (ddMMyyyyhhmmss)
+	 * @return
+	 */
+	public static String getDataAtualAsFileName() {
+		SimpleDateFormat dateFormat = new SimpleDateFormat("ddMMyyyyhhmmss");
+		return dateFormat.format(getDataAtual());
 	}
 }
