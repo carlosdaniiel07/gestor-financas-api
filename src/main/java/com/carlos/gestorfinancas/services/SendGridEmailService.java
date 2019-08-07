@@ -13,7 +13,7 @@ import com.sendgrid.helpers.mail.objects.Email;
  * @author Carlos Daniel Martins de Almeida
  * @date 07/08/2019
  */
-public class SendGridEmailService implements EmailService {
+public class SendGridEmailService extends AbstractEmailService {
 	
 	private final String sendGridApiKey = System.getenv("SENDGRID_API_KEY");
 	private final String emailRemetente = System.getenv("SENDGRID_EMAIL");
@@ -40,6 +40,7 @@ public class SendGridEmailService implements EmailService {
 			
 			// Envia requisição p/ API
 			sendGridApi.api(httpRequest);
+			salvaCorpoEmail(conteudo);
 		} catch (IOException ex) {
 			ex.printStackTrace();
 		}
