@@ -6,5 +6,7 @@ package com.carlos.gestorfinancas.services;
  */
 public interface EmailService {
 	
-	public void enviaEmail(String assunto, String destinatario, String conteudo);
+	public void enviaEmail(String assunto, String destinatario, String templateName, String templateVar, Object data);
+
+	
 }

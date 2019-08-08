@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		
+		<!-- Roboto (font by Google Fonts) -->
+		<link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
+		
+		<style type="text/css">
+			body {
+				font-family: 'Roboto', sans-serif;
+			}
+			
+			.text-red {
+				color: red;
+			}
+		</style>
+	</head>
+	<body>
+		<div>
+			Prezado, <br>
+		
+			<p>
+				O saldo da conta <b><span th:text="${conta.nome}"></span></b> está negativo: R$ 
+				<b><span class="text-red" th:text="${#numbers.formatDecimal(conta.saldo, 0, 'POINT', 2,'COMMA')}"></span></b>.
+				Dados da conta:
+			</p>
+			
+			<ul>
+				<li>Banco: <span th:text="${conta.banco}"></span></li>
+				<li>Agência: <span th:text="${conta.agencia}"></span></li>
+				<li>Nº conta: <span th:text="${conta.conta}"></span></li>
+			</ul>
+		</div>
+	</body>
+</html> 

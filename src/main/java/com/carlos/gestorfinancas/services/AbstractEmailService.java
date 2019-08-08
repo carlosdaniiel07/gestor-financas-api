@@ -4,7 +4,10 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.Context;
 
 import com.carlos.gestorfinancas.utils.DateUtils;
 
@@ -16,6 +19,9 @@ public abstract class AbstractEmailService implements EmailService {
 	
 	@Value("${param.gera-log-email}")
 	private boolean paramGeraLogEmail;
+	
+	@Autowired
+	private TemplateEngine templateEngine;
 	
 	/*
 	 * Salva o corpo do e-mail enviado em um arquivo HTML 
@@ -39,5 +45,16 @@ public abstract class AbstractEmailService implements EmailService {
 				}
 			}
 		}
+	}
+	
+	/*
+	 * Retorna o código HTML de um e-mail com base em seu template
+	 */
+	protected String getHtmlFromTemplate(String templateName, String varName, Object data) {
+		Context template = new Context();
+		
+		template.setVariable(varName, data);
+		
+		return templateEngine.process("email/" + templateName, template);
 	}
 }

@@ -15,18 +15,19 @@ public class MockEmailService extends AbstractEmailService {
 	 * Envia um mock e-mail (apenas loga dados do e-mail no console)
 	 */
 	@Override
-	public void enviaEmail(String assunto, String destinatario, String conteudo) {
+	public void enviaEmail(String assunto, String destinatario, String templateName, String templateVar, Object data) {
 		StringBuilder stringBuilder = new StringBuilder();
-
+		String emailContent = this.getHtmlFromTemplate(templateName, templateVar, data);
+		
 		stringBuilder.append("\n");
 		stringBuilder.append("----------------------------------\n");
 		stringBuilder.append("Remetente: " + emailRemetente + "\n");
 		stringBuilder.append("Destinatário: " + destinatario + "\n");
 		stringBuilder.append("Assunto: " + assunto + "\n");
-		stringBuilder.append("Conteúdo: " + conteudo + "\n");
+		stringBuilder.append("Conteúdo: " + emailContent + "\n");
 		stringBuilder.append("----------------------------------\n");
 
 		log.info(stringBuilder.toString());
-		salvaCorpoEmail(conteudo);
+		salvaCorpoEmail(emailContent);
 	}
 }

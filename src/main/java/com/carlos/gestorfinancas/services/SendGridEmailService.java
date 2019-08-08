@@ -22,11 +22,11 @@ public class SendGridEmailService extends AbstractEmailService {
 	 * Envia um e-mail no formato HTML (text/html) usando a API do SendGrid
 	 */
 	@Override
-	public void enviaEmail(String assunto, String destinatario, String conteudo) {
+	public void enviaEmail(String assunto, String destinatario, String templateName, String templateVar, Object data) {
 		// Dados do e-mail a ser enviado..
 		Email emailRemetente = new Email(this.emailRemetente);
 		Email emailDestinatario = new Email(destinatario);
-		Content emailContent = new Content("text/html", conteudo);
+		Content emailContent = new Content("text/html", this.getHtmlFromTemplate(templateName, templateVar, data));
 		
 		Mail mail = new Mail(emailRemetente, "[Gestor de finanças] - " + assunto, emailDestinatario, emailContent);	
 		SendGrid sendGridApi = new SendGrid(this.sendGridApiKey);
@@ -40,7 +40,7 @@ public class SendGridEmailService extends AbstractEmailService {
 			
 			// Envia requisição p/ API
 			sendGridApi.api(httpRequest);
-			salvaCorpoEmail(conteudo);
+			salvaCorpoEmail(emailContent.getValue());
 		} catch (IOException ex) {
 			ex.printStackTrace();
 		}
