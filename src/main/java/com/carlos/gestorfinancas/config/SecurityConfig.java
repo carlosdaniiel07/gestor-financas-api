@@ -7,6 +7,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -24,6 +25,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			"/subcategorias/**"
 	};
 	
+	private final String[] endpointAcessiveisEscrita = {
+			"/usuarios/**"
+	};
+	
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		// CORS
@@ -33,7 +38,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		http.csrf().disable();
 		
 		// Permite acesso a todos os endpoints armazenados no vetor 'endpointAcessiveis' e requisita autorização aos demais endpoints
-		http.authorizeRequests().antMatchers(HttpMethod.GET, endpointAcessiveisSomenteLeitura).permitAll().anyRequest().authenticated();
+		http.authorizeRequests().antMatchers(HttpMethod.GET, endpointAcessiveisSomenteLeitura).permitAll();
+		http.authorizeRequests().antMatchers(HttpMethod.POST, endpointAcessiveisEscrita).permitAll().anyRequest().authenticated();
 		
 		// Back-end não irá salvar sessões
 		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
@@ -45,5 +51,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
 		source.registerCorsConfiguration("/**", new CorsConfiguration().applyPermitDefaultValues());
 		return source;
+	}
+	
+	// BCrypt (algorítimo para hash de senhas)
+	@Bean
+	public BCryptPasswordEncoder bCryptPasswordEncoder() {
+		return new BCryptPasswordEncoder();
 	}
 }
