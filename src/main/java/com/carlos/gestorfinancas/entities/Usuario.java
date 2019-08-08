@@ -5,12 +5,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
+import com.carlos.gestorfinancas.entities.enums.TipoUsuario;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
@@ -40,6 +43,9 @@ public class Usuario implements Serializable {
 	@JsonIgnore
 	private String token;
 	
+	@Enumerated(EnumType.STRING)
+	private TipoUsuario tipo;
+	
 	private boolean ativo;
 	
 	@JsonIgnore
@@ -50,7 +56,7 @@ public class Usuario implements Serializable {
 		super();
 	}
 
-	public Usuario(Long id, String nome, String login, String senha, String email, String token, boolean ativo) {
+	public Usuario(Long id, String nome, String login, String senha, String email, String token, boolean ativo, TipoUsuario tipo) {
 		super();
 		this.id = id;
 		this.nome = nome;
@@ -59,6 +65,7 @@ public class Usuario implements Serializable {
 		this.email = email;
 		this.token = token;
 		this.ativo = ativo;
+		this.tipo = tipo;
 	}
 	
 	public Long getId() {
@@ -107,6 +114,20 @@ public class Usuario implements Serializable {
 
 	public void setToken(String token) {
 		this.token = token;
+	}
+	
+	/**
+	 * @return the tipo
+	 */
+	public TipoUsuario getTipo() {
+		return tipo;
+	}
+
+	/**
+	 * @param tipo the tipo to set
+	 */
+	public void setTipo(TipoUsuario tipo) {
+		this.tipo = tipo;
 	}
 
 	public boolean isAtivo() {
