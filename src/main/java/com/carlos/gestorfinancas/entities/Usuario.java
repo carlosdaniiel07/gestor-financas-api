@@ -2,6 +2,8 @@ package com.carlos.gestorfinancas.entities;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 import javax.persistence.Entity;
@@ -13,6 +15,10 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
 import com.carlos.gestorfinancas.entities.enums.TipoUsuario;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -21,7 +27,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  * @date 06/07/2019
  */
 @Entity
-public class Usuario implements Serializable {
+public class Usuario implements Serializable, UserDetails{
 
 	/**
 	 * 
@@ -39,10 +45,7 @@ public class Usuario implements Serializable {
 	private String senha;
 	
 	private String email;
-	
-	@JsonIgnore
-	private String token;
-	
+		
 	@Enumerated(EnumType.STRING)
 	private TipoUsuario tipo;
 	
@@ -56,14 +59,13 @@ public class Usuario implements Serializable {
 		super();
 	}
 
-	public Usuario(Long id, String nome, String login, String senha, String email, String token, boolean ativo, TipoUsuario tipo) {
+	public Usuario(Long id, String nome, String login, String senha, String email, boolean ativo, TipoUsuario tipo) {
 		super();
 		this.id = id;
 		this.nome = nome;
 		this.login = login;
 		this.senha = senha;
 		this.email = email;
-		this.token = token;
 		this.ativo = ativo;
 		this.tipo = tipo;
 	}
@@ -106,14 +108,6 @@ public class Usuario implements Serializable {
 
 	public void setEmail(String email) {
 		this.email = email;
-	}
-
-	public String getToken() {
-		return token;
-	}
-
-	public void setToken(String token) {
-		this.token = token;
 	}
 	
 	/**
@@ -169,5 +163,55 @@ public class Usuario implements Serializable {
 		} else if (!id.equals(other.id))
 			return false;
 		return true;
+	}
+
+	// Obtém o perfíl/role do usuário
+	@JsonIgnore
+	@Override
+	public Collection<GrantedAuthority> getAuthorities() {
+		// TODO Auto-generated method stub
+		return Arrays.asList(new SimpleGrantedAuthority(getTipo().getDescricao()));
+	}
+
+	@JsonIgnore
+	@Override
+	public String getPassword() {
+		// TODO Auto-generated method stub
+		return getSenha();
+	}
+
+	@JsonIgnore
+	@Override
+	public String getUsername() {
+		// TODO Auto-generated method stub
+		return getLogin();
+	}
+
+	@JsonIgnore
+	@Override
+	public boolean isAccountNonExpired() {
+		// TODO Auto-generated method stub
+		return true;
+	}
+
+	@JsonIgnore
+	@Override
+	public boolean isAccountNonLocked() {
+		// TODO Auto-generated method stub
+		return true;
+	}
+
+	@JsonIgnore
+	@Override
+	public boolean isCredentialsNonExpired() {
+		// TODO Auto-generated method stub
+		return true;
+	}
+
+	@JsonIgnore
+	@Override
+	public boolean isEnabled() {
+		// TODO Auto-generated method stub
+		return isAtivo();
 	}
 }

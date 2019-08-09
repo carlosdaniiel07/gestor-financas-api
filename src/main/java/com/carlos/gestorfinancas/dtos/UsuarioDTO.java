@@ -58,7 +58,7 @@ public class UsuarioDTO implements Serializable {
 	}
 
 	public Usuario toUsuario() {
-		return new Usuario(null, getNome(), getLogin(), getSenha(), getEmail(), null, true, getTipo());
+		return new Usuario(null, getNome(), getLogin(), getSenha(), getEmail(), true, getTipo());
 	}
 	
 	/**

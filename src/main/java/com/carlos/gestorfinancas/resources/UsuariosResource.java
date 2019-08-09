@@ -2,6 +2,8 @@ package com.carlos.gestorfinancas.resources;
 
 import java.net.URI;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,7 +27,7 @@ public class UsuariosResource {
 	private UsuarioService service;
 
 	@PostMapping
-	public ResponseEntity<Usuario> insere(@RequestBody UsuarioDTO objDTO) {
+	public ResponseEntity<Usuario> insere(@Valid @RequestBody UsuarioDTO objDTO) {
 		Usuario obj = service.insere(objDTO.toUsuario());
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(obj.getId()).toUri();
 		
