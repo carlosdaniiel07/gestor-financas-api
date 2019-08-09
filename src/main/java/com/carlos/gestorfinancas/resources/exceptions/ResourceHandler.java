@@ -1,5 +1,7 @@
 package com.carlos.gestorfinancas.resources.exceptions;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -39,5 +41,11 @@ public class ResourceHandler {
 		}
 		
 		return ResponseEntity.status(validationError.getHttpStatus()).body(validationError);
+	}
+	
+	@ExceptionHandler(org.springframework.security.access.AccessDeniedException.class)
+	public ResponseEntity<RequestError> acessoNegadoHandler(org.springframework.security.access.AccessDeniedException ex, HttpServletRequest request) {
+		RequestError requestError = new RequestError(System.currentTimeMillis(), HttpStatus.FORBIDDEN.value(), "O seu perfil não tem acesso a este recurso");		
+		return ResponseEntity.status(requestError.getHttpStatus()).body(requestError);
 	}
 }

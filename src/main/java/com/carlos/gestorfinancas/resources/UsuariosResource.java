@@ -6,6 +6,7 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,6 +27,7 @@ public class UsuariosResource {
 	@Autowired
 	private UsuarioService service;
 
+	@PreAuthorize("hasAnyRole('ADM')")
 	@PostMapping
 	public ResponseEntity<Usuario> insere(@Valid @RequestBody UsuarioDTO objDTO) {
 		Usuario obj = service.insere(objDTO.toUsuario());
