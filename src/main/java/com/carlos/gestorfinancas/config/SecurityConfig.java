@@ -34,15 +34,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	@Autowired
 	private JWTUtils jwtUtils;
 	
-	private final String[] endpointAcessiveisSomenteLeitura = {
-			"/categorias/**",
-			"/subcategorias/**"
-	};
-	
-	private final String[] endpointAcessiveisEscrita = {
-			
-	};
-	
 	// Configuração HTTP
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
@@ -53,8 +44,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		http.csrf().disable();
 		
 		// Permite acesso a todos os endpoints armazenados no vetor 'endpointAcessiveis' e requisita autorização aos demais endpoints
-		http.authorizeRequests().antMatchers(HttpMethod.GET, endpointAcessiveisSomenteLeitura).permitAll();
-		http.authorizeRequests().antMatchers(HttpMethod.POST, endpointAcessiveisEscrita).permitAll().anyRequest().authenticated();
+		//http.authorizeRequests().antMatchers(HttpMethod.GET, endpointAcessiveisSomenteLeitura).permitAll();
+		http.authorizeRequests().anyRequest().authenticated();
 		
 		// Back-end não irá salvar sessões
 		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
