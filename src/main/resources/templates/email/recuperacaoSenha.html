@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		
+		<!-- Roboto (font by Google Fonts) -->
+		<link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
+		
+		<style type="text/css">
+			body {
+				font-family: 'Roboto', sans-serif;
+			}
+		</style>
+	</head>
+	<body>
+		<div>
+			Prezado, <br>
+			
+			<p>Sua senha foi redefinida a partir do processo de recuperação de senha. A sua nova senha é <b><span th:text="${usuario.senha}"></span></b>. 
+			É altamente recomendado altera-lá no primeiro login.</p>
+		</div>
+	</body>
+</html> 

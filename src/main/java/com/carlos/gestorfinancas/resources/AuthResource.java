@@ -5,10 +5,13 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.carlos.gestorfinancas.dtos.AutenticacaoDTO;
 import com.carlos.gestorfinancas.entities.Usuario;
+import com.carlos.gestorfinancas.services.AuthService;
 import com.carlos.gestorfinancas.services.UsuarioService;
 import com.carlos.gestorfinancas.utils.JWTUtils;
 
@@ -23,6 +26,9 @@ public class AuthResource {
 	@Autowired
 	private JWTUtils jwtUtils;
 	
+	@Autowired
+	private AuthService authService;
+	
 	@PostMapping(value = "/refresh-token")
 	public ResponseEntity<Void> refreshToken(HttpServletResponse response) {
 		Usuario usuarioLogado = UsuarioService.getUsuarioLogado();
@@ -31,5 +37,12 @@ public class AuthResource {
 		response.addHeader("Authorization", "Bearer " + novoToken);
 		
 		return ResponseEntity.noContent().build();
+	}
+	
+	@PostMapping(value = "/esqueci-minha-senha")
+	public ResponseEntity<Void> esqueciMinhaSenha(@RequestBody AutenticacaoDTO objDto) {
+		authService.recuperaSenha(objDto.getLoginOuEmail());
+		
+		return ResponseEntity.ok().body(null);
 	}
 }

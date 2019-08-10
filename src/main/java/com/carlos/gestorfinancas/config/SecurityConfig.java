@@ -3,6 +3,7 @@ package com.carlos.gestorfinancas.config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -33,6 +34,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	@Autowired
 	private JWTUtils jwtUtils;
 	
+	private final String[] urlsAcessiveisViaPost = {
+		"/auth/esqueci-minha-senha"	
+	};
+	
 	// Configuração HTTP
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
@@ -42,9 +47,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		// CSRF
 		http.csrf().disable();
 		
-		// Permite acesso a todos os endpoints armazenados no vetor 'endpointAcessiveis' e requisita autorização aos demais endpoints
-		//http.authorizeRequests().antMatchers(HttpMethod.GET, endpointAcessiveisSomenteLeitura).permitAll();
-		http.authorizeRequests().anyRequest().authenticated();
+		// Permite acesso a todos os endpoints armazenados no vetor 'urlsAcessiveisViaPost' e requisita autorização aos demais endpoints
+		http.authorizeRequests().antMatchers(HttpMethod.POST, urlsAcessiveisViaPost).permitAll().anyRequest().authenticated();
 		
 		// Back-end não irá salvar sessões
 		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
