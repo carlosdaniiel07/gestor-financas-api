@@ -35,7 +35,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	private JWTUtils jwtUtils;
 	
 	private final String[] urlsAcessiveisViaPost = {
-		"/auth/esqueci-minha-senha"	
+		"/auth/esqueci-minha-senha/**"	
 	};
 	
 	// Configuração HTTP
