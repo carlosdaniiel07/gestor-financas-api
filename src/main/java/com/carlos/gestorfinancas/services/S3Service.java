@@ -1,15 +1,14 @@
 package com.carlos.gestorfinancas.services;
 
-import java.io.File;
+import java.io.IOException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
-import com.amazonaws.AmazonClientException;
 import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.model.PutObjectRequest;
-import com.carlos.gestorfinancas.services.exceptions.OperacaoInvalidaException;
+import com.amazonaws.services.s3.model.ObjectMetadata;
 
 /**
  * @author Carlos Daniel Martins de Almeida
@@ -26,19 +25,17 @@ public class S3Service {
 
 	/**
 	 * Realiza o upload de um arquivo no S3
+	 * @throws IOException 
 	 */
-	public void uploadFile(String filePath) {
+	public void uploadFile(MultipartFile file) {
 		try {
-			File file = new File(filePath);
-
-			if(file.exists()) {
-				amazonS3.putObject(new PutObjectRequest(s3BucketName, "upload-" + filePath, file));
-
-			} else {
-				throw new OperacaoInvalidaException(String.format("O arquivo informado (%s) não existe", filePath));
-			}
-		} catch(AmazonClientException e) {
-			e.printStackTrace();
+			ObjectMetadata metaData = new ObjectMetadata();
+			
+			metaData.setContentType(file.getContentType());
+			
+			amazonS3.putObject(s3BucketName, file.getOriginalFilename(), file.getInputStream(), metaData);
+		} catch (IOException ex) {
+			ex.printStackTrace();
 		}
 	}
 }
