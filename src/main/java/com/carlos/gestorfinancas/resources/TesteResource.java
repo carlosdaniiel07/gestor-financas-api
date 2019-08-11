@@ -8,7 +8,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.carlos.gestorfinancas.services.S3Service;
+import com.carlos.gestorfinancas.entities.Anexo;
+import com.carlos.gestorfinancas.services.AnexoService;
 
 /**
  * @author Carlos Daniel Martins de Almeida
@@ -19,12 +20,12 @@ import com.carlos.gestorfinancas.services.S3Service;
 public class TesteResource {
 	
 	@Autowired
-	private S3Service s3Service;
+	private AnexoService anexoService;
 	
 	@PostMapping
-	public ResponseEntity<Void> uploadFile(@RequestParam MultipartFile file) {
-		s3Service.uploadFile(file);
+	public ResponseEntity<Anexo> uploadFile(@RequestParam MultipartFile file) {
+		Anexo obj = anexoService.insere(file);
 		
-		return ResponseEntity.ok().body(null);
+		return ResponseEntity.created(null).body(obj);
 	}
 }
