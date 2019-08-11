@@ -20,20 +20,20 @@ public class S3Service {
 
 	@Autowired
 	private AmazonS3 amazonS3;
-	
+
 	@Value("${s3.bucket}")
 	private String s3BucketName;
-	
+
 	/**
 	 * Realiza o upload de um arquivo no S3
 	 */
 	public void uploadFile(String filePath) {
 		try {
 			File file = new File(filePath);
-			
+
 			if(file.exists()) {
 				amazonS3.putObject(new PutObjectRequest(s3BucketName, "upload-" + filePath, file));
-				
+
 			} else {
 				throw new OperacaoInvalidaException(String.format("O arquivo informado (%s) não existe", filePath));
 			}
