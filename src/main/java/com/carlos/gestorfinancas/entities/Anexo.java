@@ -6,6 +6,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 /**
  * @author Carlos Daniel Martins de Almeida
@@ -28,6 +30,10 @@ public class Anexo implements Serializable {
 	private Long tamanho;
 	private String urlS3;
 	
+	@ManyToOne
+	@JoinColumn(name = "movimento_id")
+	private Movimento movimento;
+	
 	public Anexo() {
 		
 	}
@@ -39,13 +45,14 @@ public class Anexo implements Serializable {
 	 * @param tamanho
 	 * @param urlS3
 	 */
-	public Anexo(Long id, String nome, String extensao, Long tamanho, String urlS3) {
+	public Anexo(Long id, String nome, String extensao, Long tamanho, String urlS3, Movimento movimento) {
 		super();
 		this.id = id;
 		this.nome = nome;
 		this.extensao = extensao;
 		this.tamanho = tamanho;
 		this.urlS3 = urlS3;
+		this.movimento = movimento;
 	}
 
 	/**
@@ -116,5 +123,19 @@ public class Anexo implements Serializable {
 	 */
 	public void setUrlS3(String urlS3) {
 		this.urlS3 = urlS3;
+	}
+
+	/**
+	 * @return the movimento
+	 */
+	public Movimento getMovimento() {
+		return movimento;
+	}
+
+	/**
+	 * @param movimento the movimento to set
+	 */
+	public void setMovimento(Movimento movimento) {
+		this.movimento = movimento;
 	}
 }

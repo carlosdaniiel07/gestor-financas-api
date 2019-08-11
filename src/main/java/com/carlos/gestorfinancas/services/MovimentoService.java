@@ -46,6 +46,10 @@ public class MovimentoService {
 		return repository.findByContaId(contaId);
 	}
 	
+	public List<Movimento> getByConta(Long contaId, int pagina){
+		return repository.findByContaId(contaId, PageRequest.of(pagina, dadosPorPagina));
+	}
+	
 	public Movimento getById(Long id) {
 		return repository.findById(id).orElseThrow(() -> new ObjetoNaoEncontradoException("Esse movimento não foi encontrado."));
 	}
@@ -60,7 +64,7 @@ public class MovimentoService {
 		Movimento movimentoGerado = null;
 		
 		movimento.setDataInclusao(DateUtils.getDataAtual());
-		movimento.setOrigem(movimento.getOrigem().isEmpty() ? modulo : movimento.getOrigem());
+		movimento.setOrigem(movimento.getOrigem() == null ? modulo : movimento.getOrigem());
 		
 		if(movimento.hasCartaoCredito()) {
 			movimento.setStatus(StatusMovimento.EFETIVADO);

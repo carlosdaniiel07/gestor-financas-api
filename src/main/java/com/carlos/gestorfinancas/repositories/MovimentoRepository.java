@@ -3,6 +3,7 @@ package com.carlos.gestorfinancas.repositories;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -16,6 +17,7 @@ import com.carlos.gestorfinancas.entities.Movimento;
 @Repository
 public interface MovimentoRepository extends JpaRepository<Movimento, Long> {
 	List<Movimento> findByContaId(Long contaId);
+	List<Movimento> findByContaId(Long contaId, Pageable page);
 
 	@Query(value = "SELECT "
 			+ "			SUM((valor + acrescimo - decrescimo)) "

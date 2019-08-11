@@ -1,7 +1,9 @@
 package com.carlos.gestorfinancas.entities;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -12,6 +14,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 
 import com.carlos.gestorfinancas.entities.enums.StatusMovimento;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -67,6 +70,9 @@ public class Movimento implements Serializable {
 	@JoinColumn(name = "fatura_id")
 	private Fatura fatura;
 
+	@OneToMany(mappedBy = "movimento", fetch = FetchType.EAGER)
+	private List<Anexo> anexos = new ArrayList<Anexo>();
+	
 	public Movimento() {
 		super();
 	}
@@ -255,6 +261,20 @@ public class Movimento implements Serializable {
 
 	public void setFatura(Fatura fatura) {
 		this.fatura = fatura;
+	}
+	
+	/**
+	 * @return the anexos
+	 */
+	public List<Anexo> getAnexos() {
+		return anexos;
+	}
+
+	/**
+	 * @param anexos the anexos to set
+	 */
+	public void setAnexos(List<Anexo> anexos) {
+		this.anexos = anexos;
 	}
 
 	@Override

@@ -3,7 +3,6 @@ package com.carlos.gestorfinancas.config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -35,8 +34,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	private JWTUtils jwtUtils;
 	
 	private final String[] urlsAcessiveisViaPost = {
-		"/auth/esqueci-minha-senha/**",
-		"/teste/**"
+		"/auth/esqueci-minha-senha/**"
 	};
 	
 	// Configuração HTTP
@@ -49,7 +47,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		http.csrf().disable();
 		
 		// Permite acesso a todos os endpoints armazenados no vetor 'urlsAcessiveisViaPost' e requisita autorização aos demais endpoints
-		http.authorizeRequests().antMatchers(HttpMethod.POST, urlsAcessiveisViaPost).permitAll().anyRequest().authenticated();
+		//http.authorizeRequests().antMatchers(HttpMethod.POST, urlsAcessiveisViaPost).permitAll().anyRequest().authenticated();
+		http.authorizeRequests().anyRequest().permitAll();
 		
 		// Back-end não irá salvar sessões
 		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
