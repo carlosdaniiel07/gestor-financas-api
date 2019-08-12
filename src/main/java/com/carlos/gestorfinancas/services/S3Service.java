@@ -30,12 +30,12 @@ public class S3Service implements StorageService {
 	 * @throws IOException 
 	 */
 	@Override
-	public void uploadFile(MultipartFile file) {
+	public void uploadFile(MultipartFile file, String keyName) {
 		try {
 			ObjectMetadata metaData = new ObjectMetadata();
 			
 			metaData.setContentType(file.getContentType());
-			amazonS3.putObject(s3BucketName, file.getOriginalFilename(), file.getInputStream(), metaData);
+			amazonS3.putObject(s3BucketName, keyName, file.getInputStream(), metaData);
 		} catch (IOException | AmazonServiceException ex) {
 			throw new StorageException(ex.getMessage());
 		}
@@ -49,5 +49,17 @@ public class S3Service implements StorageService {
 	@Override
 	public String getUrlByFile(String fileName) {
 		return amazonS3.getUrl(s3BucketName, fileName).toString();
+	}
+	
+	/**
+	 * Remove um arquivo do S3 por meio de seu nome
+	 */
+	@Override
+	public void deleteByFileName(String fileName) {
+		try {
+			amazonS3.deleteObject(s3BucketName, fileName);
+		} catch (AmazonServiceException e) {
+			throw new StorageException(e.getErrorMessage());
+		}
 	}
 }

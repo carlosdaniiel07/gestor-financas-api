@@ -10,7 +10,22 @@ import com.carlos.gestorfinancas.services.exceptions.StorageException;
  */
 public interface StorageService {
 	
-	public void uploadFile(MultipartFile file) throws StorageException;
+	/**
+	 * Faz o upload de um arquivo no storage
+	 * @param file
+	 * @throws StorageException
+	 */
+	public void uploadFile(MultipartFile file, String keyName) throws StorageException;
 	
+	/**
+	 * Retorna a URL do arquivo a por meio de seu nome
+	 * @param fileName
+	 * @return
+	 */
 	public String getUrlByFile(String fileName);
+	
+	/**
+	 * Remove um arquivo do storage a partir doseu nome
+	 */
+	public void deleteByFileName(String fileName) throws StorageException;
 }

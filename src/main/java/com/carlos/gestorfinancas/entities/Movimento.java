@@ -17,7 +17,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
 import com.carlos.gestorfinancas.entities.enums.StatusMovimento;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonFormat.Shape;
 
 /**
  * @author Carlos Daniel Martins de Almeida
@@ -37,8 +39,13 @@ public class Movimento implements Serializable {
 	
 	private String descricao;
 	private char tipo;
+	
+	@JsonFormat(shape = Shape.STRING, pattern = "dd/MM/yyyy")
 	private Date dataInclusao;
+	
+	@JsonFormat(shape = Shape.STRING, pattern = "dd/MM/yyyy")
 	private Date dataContabilizacao;
+	
 	private double valor;
 	private double acrescimo;
 	private double decrescimo;

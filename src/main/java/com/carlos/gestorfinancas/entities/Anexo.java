@@ -9,6 +9,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 /**
  * @author Carlos Daniel Martins de Almeida
  * @date 11/08/2019
@@ -30,6 +32,7 @@ public class Anexo implements Serializable {
 	private Long tamanho;
 	private String urlS3;
 	
+	@JsonIgnore
 	@ManyToOne
 	@JoinColumn(name = "movimento_id")
 	private Movimento movimento;
