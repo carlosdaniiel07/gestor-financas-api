@@ -6,6 +6,8 @@ import org.springframework.context.annotation.Profile;
 
 import com.carlos.gestorfinancas.services.EmailService;
 import com.carlos.gestorfinancas.services.MockEmailService;
+import com.carlos.gestorfinancas.services.S3Service;
+import com.carlos.gestorfinancas.services.StorageService;
 
 /**
  * @author Carlos Daniel Martins de Almeida
@@ -18,5 +20,10 @@ public class DevConfig {
 	@Bean
 	public EmailService emailService() {
 		return new MockEmailService();
+	}
+	
+	@Bean
+	public StorageService storageService() {
+		return new S3Service();
 	}
 }

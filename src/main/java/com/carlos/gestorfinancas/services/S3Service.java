@@ -1,22 +1,23 @@
 package com.carlos.gestorfinancas.services;
 
-import java.io.File;
+import java.io.IOException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
-import com.amazonaws.AmazonClientException;
+import com.amazonaws.AmazonServiceException;
 import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.model.PutObjectRequest;
-import com.carlos.gestorfinancas.services.exceptions.OperacaoInvalidaException;
+import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.carlos.gestorfinancas.services.exceptions.StorageException;
 
 /**
  * @author Carlos Daniel Martins de Almeida
  * @date 10/08/2019
  */
 @Service
-public class S3Service {
+public class S3Service implements StorageService {
 
 	@Autowired
 	private AmazonS3 amazonS3;
@@ -26,19 +27,39 @@ public class S3Service {
 
 	/**
 	 * Realiza o upload de um arquivo no S3
+	 * @throws IOException 
 	 */
-	public void uploadFile(String filePath) {
+	@Override
+	public void uploadFile(MultipartFile file, String keyName) {
 		try {
-			File file = new File(filePath);
-
-			if(file.exists()) {
-				amazonS3.putObject(new PutObjectRequest(s3BucketName, "upload-" + filePath, file));
-
-			} else {
-				throw new OperacaoInvalidaException(String.format("O arquivo informado (%s) não existe", filePath));
-			}
-		} catch(AmazonClientException e) {
-			e.printStackTrace();
+			ObjectMetadata metaData = new ObjectMetadata();
+			
+			metaData.setContentType(file.getContentType());
+			amazonS3.putObject(s3BucketName, keyName, file.getInputStream(), metaData);
+		} catch (IOException | AmazonServiceException ex) {
+			throw new StorageException(ex.getMessage());
+		}
+	}
+	
+	/**
+	 * Retorna a URL de um arquivo que está armazenado no S3
+	 * @param fileName
+	 * @return
+	 */
+	@Override
+	public String getUrlByFile(String fileName) {
+		return amazonS3.getUrl(s3BucketName, fileName).toString();
+	}
+	
+	/**
+	 * Remove um arquivo do S3 por meio de seu nome
+	 */
+	@Override
+	public void deleteByFileName(String fileName) {
+		try {
+			amazonS3.deleteObject(s3BucketName, fileName);
+		} catch (AmazonServiceException e) {
+			throw new StorageException(e.getErrorMessage());
 		}
 	}
 }

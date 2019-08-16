@@ -36,6 +36,8 @@ public class Projeto implements Serializable {
 	private Long id;
 	
 	private String nome;
+	
+	@JsonFormat(shape = Shape.STRING, pattern = "dd/MM/yyyy")
 	private Date dataInicial;
 	
 	@JsonFormat(shape = Shape.STRING, pattern = "dd/MM/yyyy")
