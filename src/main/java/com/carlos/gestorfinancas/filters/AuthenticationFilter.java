@@ -1,6 +1,7 @@
 package com.carlos.gestorfinancas.filters;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 
 import javax.servlet.FilterChain;
@@ -58,11 +59,19 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 	// Ocorre quando a autenticação for realizada com sucesso
 	@Override
 	protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
-		String usuario = ((Usuario) authResult.getPrincipal()).getLogin();
-		String jwtToken = jwtUtils.generateJwtToken(usuario);
+		Usuario usuario = ((Usuario) authResult.getPrincipal());
+		String jwtToken = jwtUtils.generateJwtToken(usuario.getLogin());
+		PrintWriter writer = response.getWriter();
+		String json = new ObjectMapper().writeValueAsString(usuario);
 		
+		writer.print(json);
+		
+		response.setContentType("application/json");
 		response.addHeader("Authorization", "Bearer " + jwtToken);
 		response.addHeader("Access-Control-Expose-Headers", "Authorization");
 		response.addHeader("Access-Control-Allow-Origin", "*");	
+	
+		writer.close();
+		writer.flush();
 	}
 }
