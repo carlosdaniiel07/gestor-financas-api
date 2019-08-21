@@ -62,6 +62,7 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 		String jwtToken = jwtUtils.generateJwtToken(usuario);
 		
 		response.addHeader("Authorization", "Bearer " + jwtToken);
+		response.addHeader("Access-Control-Expose-Headers", "Authorization");
 		response.addHeader("Access-Control-Allow-Origin", "*");	
 	}
 }
