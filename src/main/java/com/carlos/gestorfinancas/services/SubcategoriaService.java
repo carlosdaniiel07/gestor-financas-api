@@ -43,6 +43,10 @@ public class SubcategoriaService {
 		return repository.findByIdAndAtivo(id, true).orElseThrow(() -> new ObjetoNaoEncontradoException("Essa subcategoria não foi encontrada."));
 	}
 	
+	public List<Subcategoria> getByCategoria(Long categoriaId) {
+		return repository.findByCategoriaIdAndAtivo(categoriaId, true);
+	}
+	
 	public Subcategoria insere(Subcategoria subcategoria) {
 		subcategoria.setEditavel(true);
 		subcategoria.setAtivo(true);

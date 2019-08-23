@@ -47,6 +47,10 @@ public class CategoriaService {
 	public List<Categoria> getAllByTipo(char tipo) {
 		return repository.findByTipoAndAtivo(tipo, true);
 	}
+	
+	public List<Subcategoria> getSubcategorias(Long categoriaId) {
+		return subcategoriaService.getByCategoria(categoriaId);
+	}
 
 	public Categoria getById(Long id) {
 		return repository.findByIdAndAtivo(id, true).orElseThrow(() -> new ObjetoNaoEncontradoException("Essa categoria não foi encontrada."));

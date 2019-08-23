@@ -23,4 +23,6 @@ public interface SubcategoriaRepository extends JpaRepository<Subcategoria, Long
 	List<Subcategoria> findByNomeAndCategoriaIdAndAtivo(String nome, Long categoriaId, boolean ativo);
 	List<Subcategoria> findByNomeAndAtivo(String nome, boolean ativo);
 	List<Subcategoria> findByNomeAndAtivo(String nome, boolean ativo, Pageable paginacao);
+	
+	List<Subcategoria> findByCategoriaIdAndAtivo(Long categoriaId, boolean ativo);
 }
