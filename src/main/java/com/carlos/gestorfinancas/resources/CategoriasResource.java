@@ -37,6 +37,11 @@ public class CategoriasResource {
 		return ResponseEntity.ok(service.getAll(page));
 	}
 	
+	@GetMapping(value = "/tipo")
+	public ResponseEntity<List<Categoria>> listarPorTipo(@RequestParam(required = false, defaultValue = "C") String tipo) {
+		return ResponseEntity.ok(service.getAllByTipo(tipo.toCharArray()[0]));
+	}
+	
 	@GetMapping(value = "/{id}/subcategorias")
 	public ResponseEntity<List<Subcategoria>> listarSubcategorias(@PathVariable Long id) {
 		return ResponseEntity.ok(service.getSubcategorias(id));
