@@ -23,8 +23,8 @@ public class ResponseInterceptorFilter implements Filter {
 		HttpServletResponse servletResponse = (HttpServletResponse)response;
 		
 		// CORS
-		servletResponse.addHeader("Access-Control-Allow-Origin", "*");
-		servletResponse.addHeader("Access-Control-Allow-Headers", "Content-Type, Authorization ");
+		//servletResponse.addHeader("Access-Control-Allow-Origin", "*");
+		//servletResponse.addHeader("Access-Control-Allow-Headers", "Content-Type, Authorization ");
 		
 		chain.doFilter(request, servletResponse);
 	}

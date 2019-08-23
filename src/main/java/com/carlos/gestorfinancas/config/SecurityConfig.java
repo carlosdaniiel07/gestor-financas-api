@@ -1,7 +1,5 @@
 package com.carlos.gestorfinancas.config;
 
-import java.util.Arrays;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,9 +12,8 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import com.carlos.gestorfinancas.filters.AuthenticationFilter;
 import com.carlos.gestorfinancas.filters.AuthorizationFilter;
@@ -69,15 +66,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	
 	// Configuração do CORS (Cross-Origin Resource Sharing) - permite acesso aos endpoints da aplicação através de qualquer origem
 	@Bean
-	public CorsConfigurationSource corsConfiguration() {
-		CorsConfiguration configuration = new CorsConfiguration().applyPermitDefaultValues();
-		final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-		
-		configuration.setAllowedMethods(Arrays.asList("POST", "GET", "PUT", "DELETE", "OPTIONS"));
-		source.registerCorsConfiguration("/**", configuration);
-		
-		return source;
-	}
+	public WebMvcConfigurer corsConfigurer() {
+        return new WebMvcConfigurer() {
+            @Override
+            public void addCorsMappings(CorsRegistry registry) {
+                registry.addMapping("/**").allowedOrigins("*").allowedMethods("*");
+            }
+        };
+    }
 	
 	// BCrypt (algorítimo para hash de senhas)
 	@Bean

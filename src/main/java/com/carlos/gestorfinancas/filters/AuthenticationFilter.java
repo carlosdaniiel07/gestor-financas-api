@@ -69,7 +69,7 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 		response.setContentType("application/json");
 		response.addHeader("Authorization", "Bearer " + jwtToken);
 		response.addHeader("Access-Control-Expose-Headers", "Authorization");
-		response.addHeader("Access-Control-Allow-Origin", "*");	
+		//response.addHeader("Access-Control-Allow-Origin", "*");	
 	
 		writer.close();
 		writer.flush();
