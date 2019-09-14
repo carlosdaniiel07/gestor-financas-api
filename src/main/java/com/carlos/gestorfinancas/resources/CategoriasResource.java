@@ -19,6 +19,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.carlos.gestorfinancas.dtos.CategoriaDTO;
 import com.carlos.gestorfinancas.entities.Categoria;
+import com.carlos.gestorfinancas.entities.Movimento;
 import com.carlos.gestorfinancas.entities.Subcategoria;
 import com.carlos.gestorfinancas.services.CategoriaService;
 
@@ -44,7 +45,12 @@ public class CategoriasResource {
 	
 	@GetMapping(value = "/{id}/subcategorias")
 	public ResponseEntity<List<Subcategoria>> listarSubcategorias(@PathVariable Long id) {
-		return ResponseEntity.ok(service.getSubcategorias(id));
+		return ResponseEntity.ok(service.getById(id).getSubcategorias());
+	}
+	
+	@GetMapping(value = "/{id}/movimentos")
+	public ResponseEntity<List<Movimento>> listarMovimentos(@PathVariable Long id) {
+		return ResponseEntity.ok(service.getById(id).getMovimentos());
 	}
 	
 	@GetMapping(value = "/{id}")

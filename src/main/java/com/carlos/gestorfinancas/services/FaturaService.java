@@ -1,5 +1,9 @@
 package com.carlos.gestorfinancas.services;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,11 +48,19 @@ public class FaturaService {
 	}
 	
 	public Fatura insere(Fatura fatura) {
-		fatura.setDataPagamento(null);
-		fatura.setValorPago(0);
-		fatura.setStatus(StatusFatura.NAO_FECHADA);
-		
-		return repository.save(fatura);
+		if(repository.findByCartaoIdAndReferencia(fatura.getCartao().getId(), fatura.getReferencia()).isEmpty()) {
+			
+			fatura.setReferencia(fatura.getReferencia().toLowerCase());
+			fatura.setDataPagamento(null);
+			fatura.setVencimento(getVencimentoFatura(fatura));
+			fatura.setValor(0);
+			fatura.setValorPago(0);
+			fatura.setStatus(StatusFatura.NAO_FECHADA);
+			
+			return repository.save(fatura);
+		} else {
+			throw new OperacaoInvalidaException(String.format("Já existe uma fatura do mês informado (%s)", fatura.getReferencia()));
+		}
 	}
 	
 	/*
@@ -65,7 +77,7 @@ public class FaturaService {
 				
 				fatura.setStatus(novoStatus);
 				fatura.setValorPago(novoValorPago);
-				fatura.setDataPagamento(DateUtils.getDataAtual());
+				fatura.setDataPagamento(faturaDTO.getDataPagamento());
 				
 				// Altera dados da fatura no banco de dados
 				repository.save(fatura);
@@ -106,6 +118,37 @@ public class FaturaService {
 		} else {
 			throw new OperacaoInvalidaException("Está fatura já está fechada.");
 		}
+	}
+	
+	/*
+	 * Calcula a data de vencimento de uma dada fatura
+	 */
+	private Date getVencimentoFatura(Fatura fatura) {
+		Date dataVencimento = null;
+		int diaPagamento = fatura.getCartao().getDiaPagamento();
+		int ultimoDiaDoMes;
+		
+		try {
+			Date dataReferencia = new SimpleDateFormat("dd/MMM/yyyy").parse(String.format("01/%s", fatura.getReferencia()));
+			Calendar calendar = Calendar.getInstance();
+			calendar.setTime(dataReferencia);
+			ultimoDiaDoMes = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
+			
+			// Monta a data de vencimento da fatura
+			calendar.add(Calendar.MONTH, 1);
+			
+			if(diaPagamento > ultimoDiaDoMes) {
+				calendar.set(Calendar.DAY_OF_MONTH, ultimoDiaDoMes);
+			} else {
+				calendar.set(Calendar.DAY_OF_MONTH, diaPagamento);
+			}
+			
+			dataVencimento = calendar.getTime();
+		} catch (ParseException ex) {
+			ex.printStackTrace();
+		}
+		
+		return dataVencimento;
 	}
 	
 	private Movimento geraMovimentoDebito(FaturaPagamentoDTO faturaDTO) {

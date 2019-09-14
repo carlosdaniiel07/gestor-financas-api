@@ -16,5 +16,7 @@ import com.carlos.gestorfinancas.entities.Fatura;
 public interface FaturaRepository extends JpaRepository<Fatura, Long> {	
 	List<Fatura> findByCartaoId(Long cartaoId);
 	
+	List<Fatura> findByCartaoIdAndReferencia(Long cartaoId, String referencia);
+	
 	Optional<Fatura> findById(Long id);
 }

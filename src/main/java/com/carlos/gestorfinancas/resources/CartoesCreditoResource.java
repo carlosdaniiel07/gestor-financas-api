@@ -19,6 +19,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.carlos.gestorfinancas.dtos.CartaoCreditoDTO;
 import com.carlos.gestorfinancas.entities.CartaoCredito;
+import com.carlos.gestorfinancas.entities.Fatura;
 import com.carlos.gestorfinancas.services.CartaoCreditoService;
 
 /**
@@ -39,6 +40,11 @@ public class CartoesCreditoResource {
 	@GetMapping(value = "/{id}")
 	public ResponseEntity<CartaoCredito> buscar(@PathVariable Long id) {
 		return ResponseEntity.ok(service.getById(id));
+	}
+	
+	@GetMapping(value = "/{id}/faturas")
+	public ResponseEntity<List<Fatura>> listarFaturas(@PathVariable Long id) {
+		return ResponseEntity.ok(service.getById(id).getFaturas());
 	}
 	
 	@PostMapping
