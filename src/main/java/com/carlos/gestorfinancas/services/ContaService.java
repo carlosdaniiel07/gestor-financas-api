@@ -73,17 +73,19 @@ public class ContaService {
 	 * @param contaId
 	 */
 	public void ajustaSaldo(Conta conta) {
-		double totalCredito = movimentoService.getTotalCreditoByConta(conta);
-		double totalDebito = movimentoService.getTotalDebitoByConta(conta);
-		double novoSaldo = conta.getSaldoInicial() + totalCredito - totalDebito; 
-		
-		conta.setSaldo(novoSaldo);
-		repository.save(conta);
-		
-		// Envia um e-mail de alerta caso o saldo da conta esteja negativo
-		if(novoSaldo < 0) {
-			String assunto = String.format("O saldo da conta %s requer sua atenção!", conta.getNome());
-			emailService.enviaEmail(assunto, "carlosdaniiel0711@gmail.com", "avisoContaNegativa", "conta", conta);
+		if(conta != null) {
+			double totalCredito = movimentoService.getTotalCreditoByConta(conta);
+			double totalDebito = movimentoService.getTotalDebitoByConta(conta);
+			double novoSaldo = conta.getSaldoInicial() + totalCredito - totalDebito; 
+			
+			conta.setSaldo(novoSaldo);
+			repository.save(conta);
+			
+			// Envia um e-mail de alerta caso o saldo da conta esteja negativo
+			if(novoSaldo < 0) {
+				String assunto = String.format("O saldo da conta %s requer sua atenção!", conta.getNome());
+				emailService.enviaEmail(assunto, "carlosdaniiel0711@gmail.com", "avisoContaNegativa", "conta", conta);
+			}
 		}
 	}
 }

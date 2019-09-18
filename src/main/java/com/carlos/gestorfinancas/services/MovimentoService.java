@@ -81,6 +81,8 @@ public class MovimentoService {
 				if(fatura.getStatus() == StatusFatura.NAO_FECHADA) {
 					if(movimento.getValorTotal() < cartao.getLimite()) {
 						if(cartao.getLimiteRestante() >= movimento.getValorTotal()) {
+							movimento.setConta(null);
+							
 							// Salva o movimento no banco de dados
 							movimentoGerado = repository.save(movimento);
 						} else {

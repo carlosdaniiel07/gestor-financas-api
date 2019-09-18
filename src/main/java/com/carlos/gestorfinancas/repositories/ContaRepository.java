@@ -18,7 +18,7 @@ import com.carlos.gestorfinancas.entities.Conta;
 public interface ContaRepository extends JpaRepository<Conta, Long> {
 	List<Conta> findByAtivo(boolean ativo);
 	
-	@Query("SELECT c FROM Conta c JOIN FETCH c.tipo")
+	@Query("SELECT c FROM Conta c JOIN FETCH c.tipo WHERE c.ativo = ?1")
 	List<Conta> findByAtivo(boolean ativo, Pageable pagina);
 	
 	Optional<Conta> findByIdAndAtivo(Long id, boolean ativo);

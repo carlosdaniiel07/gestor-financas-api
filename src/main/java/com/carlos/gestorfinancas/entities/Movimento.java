@@ -60,6 +60,7 @@ public class Movimento implements Serializable {
 	@JoinColumn(name = "conta_id")
 	private Conta conta;
 	
+	@JsonIgnore
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "categoria_id")
 	private Categoria categoria;

@@ -52,7 +52,7 @@ public class MovimentoDTO implements Serializable {
 	
 	private String observacao;
 	
-	@NotNull(message = "É obrigatório informar uma conta para contabilização")
+	//@NotNull(message = "É obrigatório informar uma conta para contabilização")
 	private Conta conta;
 	
 	private Categoria categoria;
