@@ -16,7 +16,43 @@ import com.carlos.gestorfinancas.entities.Movimento;
  */
 @Repository
 public interface MovimentoRepository extends JpaRepository<Movimento, Long> {
+	
+	@Query(value ="SELECT m FROM Movimento m 				"
+			+ "	   		LEFT JOIN FETCH m.conta	c			"
+			+ "	   		LEFT JOIN FETCH c.tipo				"
+			+ "			LEFT JOIN FETCH m.categoria			"
+			+ "			LEFT JOIN FETCH m.subcategoria s	"
+			+ "			LEFT JOIN FETCH s.categoria			"
+			+ "			LEFT JOIN FETCH m.projeto			"
+			+ "			LEFT JOIN FETCH m.fatura f			"
+			+ "			LEFT JOIN FETCH f.cartao			"
+	)
+	List<Movimento> getAll(Pageable page);
+	
+	@Query(value ="SELECT m FROM Movimento m 				"
+			+ "	   		LEFT JOIN FETCH m.conta	c			"
+			+ "	   		LEFT JOIN FETCH c.tipo				"
+			+ "			LEFT JOIN FETCH m.categoria			"
+			+ "			LEFT JOIN FETCH m.subcategoria s	"
+			+ "			LEFT JOIN FETCH s.categoria			"
+			+ "			LEFT JOIN FETCH m.projeto			"
+			+ "			LEFT JOIN FETCH m.fatura f			"
+			+ "			LEFT JOIN FETCH f.cartao			"
+			+ "	   WHERE m.conta.id = ?1"
+	)
 	List<Movimento> findByContaId(Long contaId);
+	
+	@Query(value ="SELECT m FROM Movimento m 				"
+			+ "	   		LEFT JOIN FETCH m.conta	c			"
+			+ "	   		LEFT JOIN FETCH c.tipo				"
+			+ "			LEFT JOIN FETCH m.categoria			"
+			+ "			LEFT JOIN FETCH m.subcategoria s	"
+			+ "			LEFT JOIN FETCH s.categoria			"
+			+ "			LEFT JOIN FETCH m.projeto			"
+			+ "			LEFT JOIN FETCH m.fatura f			"
+			+ "			LEFT JOIN FETCH f.cartao			"
+			+ "	   WHERE m.conta.id = ?1"
+	)
 	List<Movimento> findByContaId(Long contaId, Pageable page);
 
 	@Query(value = "SELECT "

@@ -39,12 +39,13 @@ public class MovimentoService {
 	private final int dadosPorPagina = 30;
 	private final String modulo = "MOVTO";
 	
+	@Deprecated
 	public List<Movimento> getAll() {
 		return repository.findAll();
 	}
 	
 	public List<Movimento> getAll(int pagina) {
-		return repository.findAll(PageRequest.of(pagina, dadosPorPagina)).getContent();
+		return repository.getAll(PageRequest.of(pagina, dadosPorPagina));
 	}
 	
 	public List<Movimento> getByConta(Long contaId){

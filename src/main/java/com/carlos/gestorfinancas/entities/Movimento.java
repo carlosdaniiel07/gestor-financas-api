@@ -61,7 +61,7 @@ public class Movimento implements Serializable {
 	private Conta conta;
 	
 	@JsonIgnore
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "categoria_id")
 	private Categoria categoria;
 	
@@ -77,7 +77,8 @@ public class Movimento implements Serializable {
 	@JoinColumn(name = "fatura_id")
 	private Fatura fatura;
 
-	@OneToMany(mappedBy = "movimento", fetch = FetchType.EAGER)
+	@JsonIgnore
+	@OneToMany(mappedBy = "movimento", fetch = FetchType.LAZY)
 	private List<Anexo> anexos = new ArrayList<Anexo>();
 	
 	public Movimento() {
