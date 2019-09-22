@@ -36,6 +36,9 @@ public class MovimentoService {
 	@Autowired
 	private AnexoService anexoService;
 	
+	@Autowired
+	private FaturaService faturaService;
+	
 	private final int dadosPorPagina = 30;
 	private final String modulo = "MOVTO";
 	
@@ -86,6 +89,9 @@ public class MovimentoService {
 							
 							// Salva o movimento no banco de dados
 							movimentoGerado = repository.save(movimento);
+							
+							// Ajusta o valor da fatura
+							faturaService.ajustaSaldo(fatura);
 						} else {
 							throw new OperacaoInvalidaException("O cartão de crédito não tem saldo disponível.");
 						}
@@ -133,6 +139,8 @@ public class MovimentoService {
 				if(fatura.getStatus() == StatusFatura.NAO_FECHADA) {
 					if(movimento.getValorTotal() < cartao.getLimite()) {
 						if(cartao.getLimiteRestante() >= movimento.getValorTotal()) {
+							movimento.setConta(null);
+							
 							// Salva o movimento no banco de dados
 							repository.save(movimento);
 						} else {
@@ -166,6 +174,12 @@ public class MovimentoService {
 		if(oldMovimento.isEfetivado() && (!oldMovimento.getConta().equals(movimento.getConta()) || movimento.hasCartaoCredito())) {
 			contaService.ajustaSaldo(oldMovimento.getConta());
 		}
+		
+		// Ajusta o saldo da fatura do cartão de crédito
+		if(oldMovimento.hasCartaoCredito() || movimento.hasCartaoCredito()) {
+			faturaService.ajustaSaldo(oldMovimento.getFatura());
+			faturaService.ajustaSaldo(movimento.getFatura());
+		}
 	}
 	
 	@Transactional(propagation = Propagation.REQUIRED)
@@ -196,6 +210,11 @@ public class MovimentoService {
 			if(obj.isEfetivado()) {
 				contaService.ajustaSaldo(obj.getConta());
 			}
+			
+			// Ajusta o saldo da fatura do cartão de crédito, se necessário..
+			if(obj.hasCartaoCredito()) {
+				faturaService.ajustaSaldo(obj.getFatura());
+			}
 		} else {
 			throw new OperacaoInvalidaException("Este movimento foi gerado por outra rotina, portanto não pode ser alterado.");
 		}
@@ -224,5 +243,14 @@ public class MovimentoService {
 	 */
 	public double getTotalDebitoByConta(Conta conta) {
 		return repository.getTotalDebitoByConta(conta.getId()).orElse(0D);
+	}
+	
+	/**
+	 * Retorna a soma de todos os movimentos de débito de uma fatura específica
+	 * @param fatura
+	 * @return
+	 */
+	public double getTotalDebitoByFatura(Fatura fatura) {
+		return repository.getTotalDebitoByFatura(fatura.getId()).orElse(0D);
 	}
 }

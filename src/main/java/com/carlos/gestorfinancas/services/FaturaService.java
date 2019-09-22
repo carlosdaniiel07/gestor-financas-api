@@ -63,6 +63,16 @@ public class FaturaService {
 		}
 	}
 	
+	/**
+	 * Ajusta o valor de uma fatura
+	 * @param fatura
+	 */
+	public void ajustaSaldo(Fatura fatura) {
+		double totalDebito = movimentoService.getTotalDebitoByFatura(fatura);
+		fatura.setValor(totalDebito);
+		repository.save(fatura);
+	}
+	
 	/*
 	 * Efetua o pagamento de uma fatura de cartão de crédito
 	 */
