@@ -26,6 +26,7 @@ public interface MovimentoRepository extends JpaRepository<Movimento, Long> {
 			+ "			LEFT JOIN FETCH m.projeto			"
 			+ "			LEFT JOIN FETCH m.fatura f			"
 			+ "			LEFT JOIN FETCH f.cartao			"
+			+ "ORDER BY m.dataContabilizacao DESC"
 	)
 	List<Movimento> getAll(Pageable page);
 	
