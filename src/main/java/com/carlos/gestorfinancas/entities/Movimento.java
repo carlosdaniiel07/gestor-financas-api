@@ -143,6 +143,15 @@ public class Movimento implements Serializable {
 		return this.getDataContabilizacao().after(data);
 	}
 	
+	/**
+	 * Verifica se o movimento está vinculado a uma conta bancária
+	 * @return
+	 */
+	@JsonIgnore
+	public boolean hasConta() {
+		return getConta() != null;
+	}
+	
 	public Long getId() {
 		return id;
 	}
