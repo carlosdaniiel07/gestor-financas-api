@@ -129,6 +129,10 @@ public class MovimentoService {
 	public void atualiza(Movimento movimento) {
 		Movimento oldMovimento = getById(movimento.getId());
 		
+		Fatura oldFatura = oldMovimento.getFatura();
+		Conta oldConta = oldMovimento.getConta();
+		StatusMovimento oldStatus = oldMovimento.getStatus();
+		
 		if(movimento.hasCartaoCredito()) {
 			movimento.setStatus(StatusMovimento.EFETIVADO);
 			
@@ -170,14 +174,17 @@ public class MovimentoService {
 			}
 		}
 		
-		// Ajusta o saldo da conta 'anterior', se necessário..
-		if(oldMovimento.isEfetivado() && (!oldMovimento.getConta().equals(movimento.getConta()) || movimento.hasCartaoCredito())) {
-			contaService.ajustaSaldo(oldMovimento.getConta());
+		// Ajusta saldo da conta bancária 'antiga'
+		if(oldStatus == StatusMovimento.EFETIVADO) {
+			if(oldConta != null && movimento.hasConta()) {
+				if(oldConta != movimento.getConta() || movimento.hasCartaoCredito() || movimento.getStatus() != oldStatus) {
+					contaService.ajustaSaldo(oldConta);
+				}
+			}
 		}
 		
-		// Ajusta o saldo da fatura do cartão de crédito
-		if(oldMovimento.hasCartaoCredito() || movimento.hasCartaoCredito()) {
-			faturaService.ajustaSaldo(oldMovimento.getFatura());
+		if(oldFatura != null || movimento.getFatura() != null) {
+			faturaService.ajustaSaldo(oldFatura);
 			faturaService.ajustaSaldo(movimento.getFatura());
 		}
 	}
