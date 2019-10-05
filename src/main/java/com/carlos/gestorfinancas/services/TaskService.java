@@ -7,7 +7,9 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.carlos.gestorfinancas.entities.Cobranca;
 import com.carlos.gestorfinancas.entities.Movimento;
+import com.carlos.gestorfinancas.entities.enums.StatusCobranca;
 import com.carlos.gestorfinancas.entities.enums.StatusMovimento;
 import com.carlos.gestorfinancas.utils.DateUtils;
 
@@ -20,6 +22,9 @@ public class TaskService {
 
 	@Autowired
 	private MovimentoService movimentoService;
+	
+	@Autowired
+	private CobrancaService cobrancaService;
 	
 	/**
 	 * Atualiza o status dos movimentos agendados. Todos os movimentos agendados (status = StatusMovimento.AGENDADO) 
@@ -41,5 +46,24 @@ public class TaskService {
 		});
 		
 		movimentoService.atualiza(movimentosParaAtualizar);
+	}
+	
+	/**
+	 * Atualiza o status das cobranças agendadas. Todas as cobranças agendadas (status = StatusCobranca.AGENDADO) com data de pagamento
+	 * inferior ou igual a data atual terão o seu status atualizado para PAGO ou PAGO_PARCIAL. Nota: a atualização do status de uma cobrança
+	 * não implica na geração/alteração de um movimento bancário
+	 */
+	public void atualizaStatusCobrancas() {
+		Date dataAtual = DateUtils.getDataAtual();
+		List<Cobranca> cobrancasAgendadas = cobrancaService.getAllByStatus(StatusCobranca.AGENDADO);
+
+		cobrancasAgendadas.forEach((Cobranca cobranca) -> {
+			Date dataPagamento = cobranca.getDataPagamento();
+			
+			// Caso a data de pagamento seja inferior ou igual a data atual
+			if(dataPagamento.compareTo(dataAtual) <= 0) {
+				cobrancaService.atualizaParaPago(cobranca);
+			}
+		});
 	}
 }

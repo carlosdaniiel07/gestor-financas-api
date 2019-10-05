@@ -24,4 +24,10 @@ public class TasksResource {
 		service.atualizaStatusMovimentos();
 		return ResponseEntity.ok(null);
 	}
+	
+	@PostMapping(value = "/atualiza-status-cobrancas")
+	public ResponseEntity<Void> atualizaStatusCobrancas() {
+		service.atualizaStatusCobrancas();
+		return ResponseEntity.ok(null);
+	}
 }
