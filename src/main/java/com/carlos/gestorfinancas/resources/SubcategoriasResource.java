@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -33,8 +32,8 @@ public class SubcategoriasResource {
 	private SubcategoriaService service;
 
 	@GetMapping
-	public ResponseEntity<List<Subcategoria>> listar(@RequestParam(required = false, defaultValue = "0") int page) {
-		return ResponseEntity.ok(service.getAll(page));
+	public ResponseEntity<List<Subcategoria>> listar() {
+		return ResponseEntity.ok(service.getAll());
 	}
 	
 	@GetMapping(value = "/{id}")
