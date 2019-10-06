@@ -26,11 +26,7 @@ public class SubcategoriaService {
 	public List<Subcategoria> getAll() {
 		return repository.findByAtivo(true);
 	}
-	
-	public List<Subcategoria> getAll(int pagina ) {
-		return repository.findByAtivo(true, PageRequest.of(pagina, dadosPorPagina));
-	}
-	
+
 	public List<Subcategoria> getAllByNome(String nome) {
 		return repository.findByNomeAndAtivo(nome, true);
 	}

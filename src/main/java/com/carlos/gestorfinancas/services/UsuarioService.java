@@ -1,5 +1,6 @@
 package com.carlos.gestorfinancas.services;
 
+import java.util.Arrays;
 import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -70,7 +71,7 @@ public class UsuarioService implements UserDetailsService {
 			repository.save(usuario);
 			
 			// Envia e-mail com a nova senha
-			emailService.enviaEmail("Processo de recuperação de senha", usuario.getEmail(), "recuperacaoSenha", "usuario", 
+			emailService.enviaEmail("Processo de recuperação de senha", Arrays.asList(usuario.getEmail()), "recuperacaoSenha", "usuario", 
 					new Usuario(usuario.getId(), usuario.getNome(), usuario.getLogin(), novaSenha, usuario.getEmail(), usuario.isAtivo(), usuario.getTipo()));
 		} else {
 			throw new OperacaoInvalidaException("O seu usuário foi removido ou está bloqueado.");

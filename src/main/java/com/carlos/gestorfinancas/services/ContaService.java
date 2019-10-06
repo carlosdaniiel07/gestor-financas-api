@@ -84,7 +84,7 @@ public class ContaService {
 			// Envia um e-mail de alerta caso o saldo da conta esteja negativo
 			if(novoSaldo < 0) {
 				String assunto = String.format("O saldo da conta %s requer sua atenção!", conta.getNome());
-				emailService.enviaEmail(assunto, "carlosdaniiel0711@gmail.com", "avisoContaNegativa", "conta", conta);
+				emailService.enviaEmail(assunto, emailService.getEmailsFromParam(), "avisoContaNegativa", "conta", conta);
 			}
 		}
 	}

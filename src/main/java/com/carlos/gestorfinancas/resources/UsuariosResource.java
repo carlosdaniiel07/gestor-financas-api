@@ -7,6 +7,7 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,6 +28,11 @@ public class UsuariosResource {
 	@Autowired
 	private UsuarioService service;
 
+	@GetMapping(value = "/usuario-logado")
+	public ResponseEntity<Usuario> buscarUsuarioLogado() {
+		return ResponseEntity.ok(UsuarioService.getUsuarioLogado());
+	}
+	
 	@PreAuthorize("hasAnyRole('ADM')")
 	@PostMapping
 	public ResponseEntity<Usuario> insere(@Valid @RequestBody UsuarioDTO objDTO) {

@@ -1,5 +1,6 @@
 package com.carlos.gestorfinancas.services;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,6 +50,10 @@ public class MovimentoService {
 	
 	public List<Movimento> getAll(int pagina) {
 		return repository.getAll(PageRequest.of(pagina, dadosPorPagina));
+	}
+	
+	public List<Movimento> getAllByStatus(StatusMovimento status) {
+		return repository.findByStatus(status);
 	}
 	
 	public List<Movimento> getByConta(Long contaId){
@@ -119,6 +124,14 @@ public class MovimentoService {
 		}
 		
 		return movimentoGerado;
+	}
+	
+	/**
+	 * Atualiza uma coleção de movimentos
+	 * @param movimentos
+	 */
+	public void atualiza(Collection<Movimento> movimentos) {
+		movimentos.forEach((Movimento m) -> atualiza(m));
 	}
 	
 	/**

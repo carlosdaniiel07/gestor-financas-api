@@ -47,6 +47,10 @@ public class CobrancaService {
 		return repository.findAll(PageRequest.of(pagina, dadosPorPagina)).getContent();
 	}
 	
+	public List<Cobranca> getAllByStatus(StatusCobranca status) {
+		return repository.findByStatus(status);
+	}
+	
 	public Cobranca getById(Long id) {
 		return repository.findById(id).orElseThrow(() -> new ObjetoNaoEncontradoException("Essa cobrança não foi encontrada."));
 	}
@@ -71,6 +75,17 @@ public class CobrancaService {
 		} else {
 			throw new OperacaoInvalidaException("Não é possível alterar uma cobrança já paga.");
 		}
+	}
+	
+	/**
+	 * Atualiza o status de uma cobrança para pago
+	 * @param cobranca
+	 */
+	public void atualizaParaPago(Cobranca cobranca) {
+		StatusCobranca novoStatus = (cobranca.getSaldo() == 0) ? StatusCobranca.PAGO : StatusCobranca.PAGO_PARCIAL;
+		cobranca.setStatus(novoStatus);
+		
+		repository.save(cobranca);
 	}
 	
 	/**

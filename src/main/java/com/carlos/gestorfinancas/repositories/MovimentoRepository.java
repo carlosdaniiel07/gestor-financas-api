@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import com.carlos.gestorfinancas.entities.Movimento;
+import com.carlos.gestorfinancas.entities.enums.StatusMovimento;
 
 /**
  * @author Carlos Daniel Martins de Almeida
@@ -55,6 +56,8 @@ public interface MovimentoRepository extends JpaRepository<Movimento, Long> {
 			+ "	   WHERE m.conta.id = ?1"
 	)
 	List<Movimento> findByContaId(Long contaId, Pageable page);
+	
+	List<Movimento> findByStatus(StatusMovimento status);
 
 	@Query(value = "SELECT "
 			+ "			SUM((valor + acrescimo - decrescimo)) "

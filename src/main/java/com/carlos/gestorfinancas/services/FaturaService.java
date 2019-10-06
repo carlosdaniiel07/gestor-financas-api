@@ -39,6 +39,10 @@ public class FaturaService {
 		return repository.findAll();
 	}
 	
+	public List<Fatura> getAllByStatus(StatusFatura status) {
+		return repository.findByStatus(status);
+	}
+	
 	public List<Fatura> getByCartaoCredito(Long cartaoCreditoId) {
 		return repository.findByCartaoId(cartaoCreditoId);
 	}
@@ -122,6 +126,18 @@ public class FaturaService {
 	public void fecha(Long faturaId) {
 		Fatura fatura = getById(faturaId);
 		
+		if(fatura.getStatus() == StatusFatura.NAO_FECHADA) {
+			fatura.setStatus(StatusFatura.PENDENTE);
+			repository.save(fatura);
+		} else {
+			throw new OperacaoInvalidaException("Está fatura já está fechada.");
+		}
+	}
+	
+	/*
+	 * Fecha uma fatura do cartão de crédito (status da fatura -> Pendente)
+	 */
+	public void fecha(Fatura fatura) {
 		if(fatura.getStatus() == StatusFatura.NAO_FECHADA) {
 			fatura.setStatus(StatusFatura.PENDENTE);
 			repository.save(fatura);
