@@ -10,6 +10,7 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.carlos.gestorfinancas.entities.Cobranca;
@@ -18,6 +19,7 @@ import com.carlos.gestorfinancas.entities.Movimento;
 import com.carlos.gestorfinancas.entities.enums.StatusCobranca;
 import com.carlos.gestorfinancas.entities.enums.StatusFatura;
 import com.carlos.gestorfinancas.entities.enums.StatusMovimento;
+import com.carlos.gestorfinancas.services.exceptions.OperacaoInvalidaException;
 import com.carlos.gestorfinancas.utils.DateUtils;
 
 /**
@@ -39,11 +41,16 @@ public class TaskService {
 	@Autowired
 	private EmailService emailService;
 	
+	@Value("${tasks.authorization-code}")
+	private String authorizationCode;
+	
 	/**
 	 * Atualiza o status dos movimentos agendados. Todos os movimentos agendados (status = StatusMovimento.AGENDADO) 
 	 * com data de contabilização inferior ou igual a data atual terão o seu status atualizado para EFETIVADO (status = StatusMovimento.EFETIVADO)
 	 */
-	public void atualizaStatusMovimentos() {
+	public void atualizaStatusMovimentos(String authorizationCode) {
+		checkAuthorizationCode(authorizationCode);
+		
 		Date dataAtual = DateUtils.getDataAtual();
 		List<Movimento> movimentosAgendados = movimentoService.getAllByStatus(StatusMovimento.AGENDADO);
 		List<Movimento> movimentosParaAtualizar = new ArrayList<Movimento>();
@@ -66,7 +73,9 @@ public class TaskService {
 	 * inferior ou igual a data atual terão o seu status atualizado para PAGO ou PAGO_PARCIAL. Nota: a atualização do status de uma cobrança
 	 * não implica na geração/alteração de um movimento bancário
 	 */
-	public void atualizaStatusCobrancas() {
+	public void atualizaStatusCobrancas(String authorizationCode) {
+		checkAuthorizationCode(authorizationCode);
+		
 		Date dataAtual = DateUtils.getDataAtual();
 		List<Cobranca> cobrancasAgendadas = cobrancaService.getAllByStatus(StatusCobranca.AGENDADO);
 
@@ -83,7 +92,9 @@ public class TaskService {
 	/**
 	 * Envia um alerta por e-mail com todas as cobranças a vencer (status = StatusCobranca.PENDENTE)
 	 */
-	public void alertaCobrancasVencer() {
+	public void alertaCobrancasVencer(String authorizationCode) {
+		checkAuthorizationCode(authorizationCode);
+	
 		List<Cobranca> cobrancasVencer = cobrancaService.getAllByStatus(StatusCobranca.PENDENTE);
 		List<Cobranca> cobrancasAlerta = new ArrayList<Cobranca>();
 		Set<Integer> dias = new HashSet<Integer>();
@@ -110,7 +121,9 @@ public class TaskService {
 	/**
 	 * Fecha as faturas dos cartões de crédito
 	 */
-	public void fechaFaturaCartao() {
+	public void fechaFaturaCartao(String authorizationCode) {
+		checkAuthorizationCode(authorizationCode);
+	
 		List<Fatura> faturasEmAberto = faturaService.getAllByStatus(StatusFatura.NAO_FECHADA);
 		List<Fatura> faturasAlerta = new ArrayList<Fatura>();
 		int diaDoMes = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
@@ -127,6 +140,17 @@ public class TaskService {
 		if(!faturasAlerta.isEmpty()) {
 			emailService.enviaEmail("Fechamento fatura cartão de crédito", emailService.getEmailsFromParam(), "alertaFechamentoFatura", 
 					  "faturas", faturasAlerta);
+		}
+	}
+	
+	/**
+	 * Verifica se o código de autorização recebido é válido (compara com a variável de ambiente TASKS_AUTHORIZATION_CODE)
+	 * @param value
+	 * @return
+	 */
+	private void checkAuthorizationCode(String value) {
+		if(value == null || !value.equals(authorizationCode)) {
+			throw new OperacaoInvalidaException("O código de autorização fornecido é inválido.");
 		}
 	}
 }

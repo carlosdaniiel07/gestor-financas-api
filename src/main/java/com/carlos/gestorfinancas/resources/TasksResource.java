@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.carlos.gestorfinancas.services.TaskService;
@@ -20,26 +21,26 @@ public class TasksResource {
 	private TaskService service;
 	
 	@PostMapping(value = "/atualiza-status-movimentos")
-	public ResponseEntity<Void> atualizaStatusMovimentos() {
-		service.atualizaStatusMovimentos();
+	public ResponseEntity<Void> atualizaStatusMovimentos(@RequestParam(required = false) String authorizationCode) {
+		service.atualizaStatusMovimentos(authorizationCode);
 		return ResponseEntity.ok(null);
 	}
 	
 	@PostMapping(value = "/atualiza-status-cobrancas")
-	public ResponseEntity<Void> atualizaStatusCobrancas() {
-		service.atualizaStatusCobrancas();
+	public ResponseEntity<Void> atualizaStatusCobrancas(@RequestParam(required = false) String authorizationCode) {
+		service.atualizaStatusCobrancas(authorizationCode);
 		return ResponseEntity.ok(null);
 	}
 	
 	@PostMapping(value = "/alerta-cobrancas-vencer")
-	public ResponseEntity<Void> alertaCobrancasVencer() {
-		service.alertaCobrancasVencer();
+	public ResponseEntity<Void> alertaCobrancasVencer(@RequestParam(required = false) String authorizationCode) {
+		service.alertaCobrancasVencer(authorizationCode);
 		return ResponseEntity.ok(null);
 	}
 	
 	@PostMapping(value = "/fecha-fatura-cartao")
-	public ResponseEntity<Void> fechaFaturaCartao() {
-		service.fechaFaturaCartao();
+	public ResponseEntity<Void> fechaFaturaCartao(@RequestParam(required = false) String authorizationCode) {
+		service.fechaFaturaCartao(authorizationCode);
 		return ResponseEntity.ok(null);
 	}
 }
