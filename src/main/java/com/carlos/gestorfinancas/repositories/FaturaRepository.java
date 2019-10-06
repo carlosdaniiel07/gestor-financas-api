@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import com.carlos.gestorfinancas.entities.Fatura;
+import com.carlos.gestorfinancas.entities.enums.StatusFatura;
 
 /**
  * @author Carlos Daniel Martins de Almeida
@@ -17,6 +18,8 @@ public interface FaturaRepository extends JpaRepository<Fatura, Long> {
 	List<Fatura> findByCartaoId(Long cartaoId);
 	
 	List<Fatura> findByCartaoIdAndReferencia(Long cartaoId, String referencia);
+
+	List<Fatura> findByStatus(StatusFatura status);
 	
 	Optional<Fatura> findById(Long id);
 }

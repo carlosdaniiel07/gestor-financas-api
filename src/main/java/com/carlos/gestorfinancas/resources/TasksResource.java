@@ -36,4 +36,10 @@ public class TasksResource {
 		service.alertaCobrancasVencer();
 		return ResponseEntity.ok(null);
 	}
+	
+	@PostMapping(value = "/fecha-fatura-cartao")
+	public ResponseEntity<Void> fechaFaturaCartao() {
+		service.fechaFaturaCartao();
+		return ResponseEntity.ok(null);
+	}
 }

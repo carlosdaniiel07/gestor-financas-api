@@ -2,6 +2,7 @@ package com.carlos.gestorfinancas.services;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -12,8 +13,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.carlos.gestorfinancas.entities.Cobranca;
+import com.carlos.gestorfinancas.entities.Fatura;
 import com.carlos.gestorfinancas.entities.Movimento;
 import com.carlos.gestorfinancas.entities.enums.StatusCobranca;
+import com.carlos.gestorfinancas.entities.enums.StatusFatura;
 import com.carlos.gestorfinancas.entities.enums.StatusMovimento;
 import com.carlos.gestorfinancas.utils.DateUtils;
 
@@ -29,6 +32,9 @@ public class TaskService {
 	
 	@Autowired
 	private CobrancaService cobrancaService;
+	
+	@Autowired
+	private FaturaService faturaService;
 	
 	@Autowired
 	private EmailService emailService;
@@ -98,6 +104,29 @@ public class TaskService {
 		if(!cobrancasAlerta.isEmpty()) {
 			emailService.enviaEmail("Cobranças próximas ao vencimento", UsuarioService.getUsuarioLogado().getEmail(), "alertaCobrancaVencer", 
 					  "cobrancas", cobrancasAlerta);
+		}
+	}
+	
+	/**
+	 * Fecha as faturas dos cartões de crédito
+	 */
+	public void fechaFaturaCartao() {
+		List<Fatura> faturasEmAberto = faturaService.getAllByStatus(StatusFatura.NAO_FECHADA);
+		List<Fatura> faturasAlerta = new ArrayList<Fatura>();
+		int diaDoMes = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
+		
+		faturasEmAberto.forEach((Fatura fatura) -> {
+			// Caso a data de fechamento da fatura seja hoje..
+			if(fatura.getCartao().getDiaFechamento() == diaDoMes) {
+				faturaService.fecha(fatura);
+				faturasAlerta.add(fatura);
+			}
+		});
+		
+		// Envia uma notificação por e-mail
+		if(!faturasAlerta.isEmpty()) {
+			emailService.enviaEmail("Fechamento fatura cartão de crédito", UsuarioService.getUsuarioLogado().getEmail(), "alertaFechamentoFatura", 
+					  "faturas", faturasAlerta);
 		}
 	}
 }
