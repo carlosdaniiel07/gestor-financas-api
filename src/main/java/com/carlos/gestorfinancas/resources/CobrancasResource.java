@@ -22,6 +22,7 @@ import com.carlos.gestorfinancas.dtos.CobrancaDTO;
 import com.carlos.gestorfinancas.dtos.CobrancaPagamentoDTO;
 import com.carlos.gestorfinancas.dtos.CobrancaRemocaoDTO;
 import com.carlos.gestorfinancas.entities.Cobranca;
+import com.carlos.gestorfinancas.entities.OperacaoCobranca;
 import com.carlos.gestorfinancas.services.CobrancaService;
 
 /**
@@ -42,6 +43,11 @@ public class CobrancasResource {
 	@GetMapping(value = "/{id}")
 	public ResponseEntity<Cobranca> buscar(@PathVariable Long id) {
 		return ResponseEntity.ok(service.getById(id));
+	}
+	
+	@GetMapping(value = "/{id}/operacoes")
+	public ResponseEntity<List<OperacaoCobranca>> listarOperacoes(@PathVariable Long id) {
+		return ResponseEntity.ok(service.getById(id).getOperacoes());
 	}
 	
 	@PostMapping
