@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+		<!-- Roboto (font by Google Fonts) -->
+		<link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
+
+		<!-- Bootstrap 4 -->
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+			integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+
+		<style type="text/css">
+			body {
+				font-family: 'Roboto', sans-serif;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div>
+			Prezado, <br>
+
+			<p>A relação de cobranças abaixo estão prestes a vencer:</p>
+
+			<table class="table table-striped table-responsive">
+				<thead class="thead-dark">
+					<tr>
+						<th scope="col">#</th>
+						<th scope="col">Descrição</th>
+						<th scope="col">Parcela</th>
+						<th scope="col">Data de vencimento</th>
+						<th scope="col">Saldo</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr th:each="cobranca: ${cobrancas}">
+						<th scope="row" th:text="${cobranca.id}"></th>
+						<td th:text="${cobranca.descricao}"></td>
+						<td th:text="${cobranca.parcela}"></td>
+						<td th:text="${#dates.format(cobranca.dataVencimento, 'dd/MM/yyyy')}"></td>
+						<td th:text="${#numbers.formatDecimal(cobranca.saldo, 0, 'POINT', 2,'COMMA')}"></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</body>
+</html>

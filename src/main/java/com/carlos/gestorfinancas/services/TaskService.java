@@ -1,8 +1,12 @@
 package com.carlos.gestorfinancas.services;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,6 +29,9 @@ public class TaskService {
 	
 	@Autowired
 	private CobrancaService cobrancaService;
+	
+	@Autowired
+	private EmailService emailService;
 	
 	/**
 	 * Atualiza o status dos movimentos agendados. Todos os movimentos agendados (status = StatusMovimento.AGENDADO) 
@@ -65,5 +72,32 @@ public class TaskService {
 				cobrancaService.atualizaParaPago(cobranca);
 			}
 		});
+	}
+	
+	/**
+	 * Envia um alerta por e-mail com todas as cobranças a vencer (status = StatusCobranca.PENDENTE)
+	 */
+	public void alertaCobrancasVencer() {
+		List<Cobranca> cobrancasVencer = cobrancaService.getAllByStatus(StatusCobranca.PENDENTE);
+		List<Cobranca> cobrancasAlerta = new ArrayList<Cobranca>();
+		Set<Integer> dias = new HashSet<Integer>();
+		
+		dias.addAll(Arrays.asList(0, 1, 5, 10, 15));
+		
+		cobrancasVencer.forEach((Cobranca cobranca) -> {
+			long diff = Math.abs(cobranca.getDataVencimento().getTime() - DateUtils.getDataAtual().getTime());
+			int diferencaDias = (int)TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
+		
+			// A cobrança será enviada por e-mail somente se a diferença de dias entre vencimento e data atual estiver dentro dos parâmetros
+			if(dias.contains(diferencaDias)) {
+				cobrancasAlerta.add(cobranca);
+			}
+		});
+		
+		// Envia o e-mail de alerta
+		if(!cobrancasAlerta.isEmpty()) {
+			emailService.enviaEmail("Cobranças próximas ao vencimento", UsuarioService.getUsuarioLogado().getEmail(), "alertaCobrancaVencer", 
+					  "cobrancas", cobrancasAlerta);
+		}
 	}
 }

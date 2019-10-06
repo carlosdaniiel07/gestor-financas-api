@@ -30,4 +30,10 @@ public class TasksResource {
 		service.atualizaStatusCobrancas();
 		return ResponseEntity.ok(null);
 	}
+	
+	@PostMapping(value = "/alerta-cobrancas-vencer")
+	public ResponseEntity<Void> alertaCobrancasVencer() {
+		service.alertaCobrancasVencer();
+		return ResponseEntity.ok(null);
+	}
 }
