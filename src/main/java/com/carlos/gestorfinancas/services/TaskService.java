@@ -102,7 +102,7 @@ public class TaskService {
 		
 		// Envia o e-mail de alerta
 		if(!cobrancasAlerta.isEmpty()) {
-			emailService.enviaEmail("Cobranças próximas ao vencimento", UsuarioService.getUsuarioLogado().getEmail(), "alertaCobrancaVencer", 
+			emailService.enviaEmail("Cobranças próximas ao vencimento", emailService.getEmailsFromParam(), "alertaCobrancaVencer", 
 					  "cobrancas", cobrancasAlerta);
 		}
 	}
@@ -125,7 +125,7 @@ public class TaskService {
 		
 		// Envia uma notificação por e-mail
 		if(!faturasAlerta.isEmpty()) {
-			emailService.enviaEmail("Fechamento fatura cartão de crédito", UsuarioService.getUsuarioLogado().getEmail(), "alertaFechamentoFatura", 
+			emailService.enviaEmail("Fechamento fatura cartão de crédito", emailService.getEmailsFromParam(), "alertaFechamentoFatura", 
 					  "faturas", faturasAlerta);
 		}
 	}

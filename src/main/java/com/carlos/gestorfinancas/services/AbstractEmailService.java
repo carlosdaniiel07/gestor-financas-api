@@ -3,6 +3,9 @@ package com.carlos.gestorfinancas.services;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,6 +22,9 @@ public abstract class AbstractEmailService implements EmailService {
 	
 	@Value("${param.gera-log-email}")
 	private boolean paramGeraLogEmail;
+	
+	@Value("${param.emails-para-notificacoes}")
+	private String paramEmailsParaNotificacoes;
 	
 	@Autowired
 	private TemplateEngine templateEngine;
@@ -56,5 +62,25 @@ public abstract class AbstractEmailService implements EmailService {
 		template.setVariable(varName, data);
 		
 		return templateEngine.process("email/" + templateName, template);
+	}
+	
+	/**
+	 * Obtém em formato de array, os endereços de e-mail armazenados no parâmetro param.emails-para-notificacoes
+	 * @return Uma coleção de e-mails
+	 */
+	@Override
+	public Collection<String> getEmailsFromParam() {
+		Set<String> emails = new HashSet<String>();
+		char separator = ',';
+		String[] values = paramEmailsParaNotificacoes
+								.replace(';', separator)
+								.replace('|', separator)
+								.replace('/', separator).split(String.valueOf(separator));
+		
+		for(String email : values) {
+			emails.add(email);
+		}
+		
+		return emails;
 	}
 }
