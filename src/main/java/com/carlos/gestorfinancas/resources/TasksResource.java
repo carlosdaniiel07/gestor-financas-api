@@ -43,4 +43,10 @@ public class TasksResource {
 		service.fechaFaturaCartao(authorizationCode);
 		return ResponseEntity.ok(null);
 	}
+	
+	@PostMapping(value = "/grava-saldo-diario")
+	public ResponseEntity<Void> gravaSaldoDiario(@RequestParam(required = false) String authorizationCode) {
+		service.gravaSaldoDiario(authorizationCode);
+		return ResponseEntity.ok(null);
+	}
 }

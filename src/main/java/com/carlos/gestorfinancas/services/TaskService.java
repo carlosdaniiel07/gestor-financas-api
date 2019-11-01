@@ -14,8 +14,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.carlos.gestorfinancas.entities.Cobranca;
+import com.carlos.gestorfinancas.entities.Conta;
 import com.carlos.gestorfinancas.entities.Fatura;
 import com.carlos.gestorfinancas.entities.Movimento;
+import com.carlos.gestorfinancas.entities.SaldoDiario;
 import com.carlos.gestorfinancas.entities.enums.StatusCobranca;
 import com.carlos.gestorfinancas.entities.enums.StatusFatura;
 import com.carlos.gestorfinancas.entities.enums.StatusMovimento;
@@ -40,6 +42,12 @@ public class TaskService {
 	
 	@Autowired
 	private EmailService emailService;
+	
+	@Autowired
+	private ContaService contaService;
+	
+	@Autowired
+	private SaldoDiarioService saldoDiarioService;
 	
 	@Value("${tasks.authorization-code}")
 	private String authorizationCode;
@@ -141,6 +149,23 @@ public class TaskService {
 			emailService.enviaEmail("Fechamento fatura cartão de crédito", emailService.getEmailsFromParam(), "alertaFechamentoFatura", 
 					  "faturas", faturasAlerta);
 		}
+	}
+	
+	/**
+	 * Grava o saldo diário de cada conta cadastrada na tabela 'saldo_diario'
+	 * @param authorizationCode
+	 */
+	public void gravaSaldoDiario(String authorizationCode) {
+		checkAuthorizationCode(authorizationCode);
+		
+		List<Conta> contas = contaService.getAll();
+		List<SaldoDiario> colecaoSaldoDiario = new ArrayList<SaldoDiario>();
+		
+		for(Conta conta : contas) {
+			colecaoSaldoDiario.add(new SaldoDiario(null, conta.getBanco(), conta.getNome(), conta.getSaldo(), new Date()));
+		}
+		
+		saldoDiarioService.insere(colecaoSaldoDiario);
 	}
 	
 	/**
