@@ -132,7 +132,7 @@ public class CobrancaService {
 		// Insere os movimentos bancários e remove as operações de baixa, se necessário..
 		if(cobranca.getStatus() == StatusCobranca.PAGO || cobranca.getStatus() == StatusCobranca.PAGO_PARCIAL) {
 			Movimento movimentoCredito = this.geraMovimentoCredito(cobranca, remocaoDTO);
-			List<OperacaoCobranca> operacoesCobranca = cobranca.getOperacoes();
+			List<OperacaoCobranca> operacoesCobranca = operacaoCobrancaService.getByCobranca(cobranca.getId());
 			
 			movimentoService.insere(movimentoCredito);
 			operacaoCobrancaService.remove(operacoesCobranca);
