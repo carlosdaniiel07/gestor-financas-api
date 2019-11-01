@@ -129,9 +129,6 @@ public class CobrancaService {
 	public void remove(CobrancaRemocaoDTO remocaoDTO) {
 		Cobranca cobranca = remocaoDTO.getCobranca();
 
-		// Remove a cobrança do banco de dados
-		repository.delete(cobranca);
-		
 		// Insere os movimentos bancários e remove as operações de baixa, se necessário..
 		if(cobranca.getStatus() == StatusCobranca.PAGO || cobranca.getStatus() == StatusCobranca.PAGO_PARCIAL) {
 			Movimento movimentoCredito = this.geraMovimentoCredito(cobranca, remocaoDTO);
@@ -139,7 +136,10 @@ public class CobrancaService {
 			
 			movimentoService.insere(movimentoCredito);
 			operacaoCobrancaService.remove(operacoesCobranca);
-		} 
+		}
+		
+		// Remove a cobrança do banco de dados
+		repository.delete(cobranca);
 	}
 	
 	private Movimento geraMovimentoDebito(CobrancaPagamentoDTO pagamentoDTO, Cobranca cobranca) {
