@@ -146,10 +146,10 @@ public class MovimentoService {
 		Conta oldConta = oldMovimento.getConta();
 		StatusMovimento oldStatus = oldMovimento.getStatus();
 		
-		if(movimento.hasCartaoCredito()) {
-			movimento.setStatus(StatusMovimento.EFETIVADO);
-			
-			if(movimento.getTipo() == 'D') {
+		if(movimento.getOrigem().equalsIgnoreCase(modulo)) {
+			if(movimento.hasCartaoCredito()) {
+				movimento.setStatus(StatusMovimento.EFETIVADO);
+				
 				Fatura fatura = movimento.getFatura();
 				CartaoCredito cartao = fatura.getCartao();
 				
@@ -169,36 +169,36 @@ public class MovimentoService {
 				} else {
 					throw new OperacaoInvalidaException("A fatura já está fechada. É necessário abrir-lá novamente.");
 				}
+				
 			} else {
-				throw new OperacaoInvalidaException("Cartões de crédito só podem ser utilizados em despesas.");
-			}
-			
-		} else {
-			if(movimento.isEfetivado() && movimento.isFuturo(DateUtils.getDataAtual())) {
-				movimento.setStatus(StatusMovimento.AGENDADO);
-			}
-			
-			// Salva o movimento no banco de dados
-			repository.save(movimento);
-			
-			// Ajusta saldo da conta, se necessário..
-			if(movimento.isEfetivado()) {
-				contaService.ajustaSaldo(movimento.getConta());
-			}
-		}
-		
-		// Ajusta saldo da conta bancária 'antiga'
-		if(oldStatus == StatusMovimento.EFETIVADO) {
-			if(oldConta != null && movimento.hasConta()) {
-				if(oldConta != movimento.getConta() || movimento.hasCartaoCredito() || movimento.getStatus() != oldStatus) {
-					contaService.ajustaSaldo(oldConta);
+				if(movimento.isEfetivado() && movimento.isFuturo(DateUtils.getDataAtual())) {
+					movimento.setStatus(StatusMovimento.AGENDADO);
+				}
+				
+				// Salva o movimento no banco de dados
+				repository.save(movimento);
+				
+				// Ajusta saldo da conta, se necessário..
+				if(movimento.isEfetivado()) {
+					contaService.ajustaSaldo(movimento.getConta());
 				}
 			}
-		}
-		
-		if(oldFatura != null || movimento.getFatura() != null) {
-			faturaService.ajustaSaldo(oldFatura);
-			faturaService.ajustaSaldo(movimento.getFatura());
+			
+			// Ajusta saldo da conta bancária 'antiga'
+			if(oldStatus == StatusMovimento.EFETIVADO) {
+				if(oldConta != null && movimento.hasConta()) {
+					if(oldConta != movimento.getConta() || movimento.hasCartaoCredito() || movimento.getStatus() != oldStatus) {
+						contaService.ajustaSaldo(oldConta);
+					}
+				}
+			}
+			
+			if(oldFatura != null || movimento.getFatura() != null) {
+				faturaService.ajustaSaldo(oldFatura);
+				faturaService.ajustaSaldo(movimento.getFatura());
+			}
+		} else {
+			throw new OperacaoInvalidaException("Este movimento foi gerado por outro módulo, portanto, não pode ser alterado");
 		}
 	}
 	
@@ -220,7 +220,7 @@ public class MovimentoService {
 	public void remove(Long id) {
 		Movimento obj = getById(id);
 		
-		if(obj.getOrigem().equals(modulo)) {
+		if(obj.getOrigem().equalsIgnoreCase(modulo)) {
 			// Remove os anexos (arquivos) do movimento
 			anexoService.remove(obj.getAnexos());
 			

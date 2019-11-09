@@ -71,9 +71,11 @@ public interface MovimentoRepository extends JpaRepository<Movimento, Long> {
 			+ "		WHERE (conta_id = ?1) AND (tipo = 'D') AND (status = 'EFETIVADO') AND (fatura_id IS NULL)", nativeQuery = true)
 	Optional<Double> getTotalDebitoByConta(Long contaId);
 	
-	@Query(value = "SELECT "
-			+ "			SUM((valor + acrescimo - decrescimo)) "
-			+ "		FROM movimento "
-			+ "		WHERE (fatura_id = ?1) AND (tipo = 'D')", nativeQuery = true)
+	@Query(value = "SELECT																															"
+					+ "	(																															"
+					+ "		ISNULL((SELECT SUM((valor + acrescimo - decrescimo)) FROM movimento WHERE (fatura_id = ?1) AND (tipo = 'D')), 0) -		"
+					+ "		ISNULL((SELECT SUM((valor + acrescimo - decrescimo)) FROM movimento WHERE (fatura_id = ?1) AND (tipo = 'C')), 0)		"
+					+ "	)																															" 
+					, nativeQuery = true)
 	Optional<Double> getTotalDebitoByFatura(Long faturaId);
 }
