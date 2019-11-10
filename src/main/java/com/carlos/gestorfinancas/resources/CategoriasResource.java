@@ -2,6 +2,7 @@ package com.carlos.gestorfinancas.resources;
 
 import java.net.URI;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
@@ -45,7 +46,7 @@ public class CategoriasResource {
 	
 	@GetMapping(value = "/{id}/subcategorias")
 	public ResponseEntity<List<Subcategoria>> listarSubcategorias(@PathVariable Long id) {
-		return ResponseEntity.ok(service.getById(id).getSubcategorias());
+		return ResponseEntity.ok(service.getById(id).getSubcategorias().stream().filter((item) -> item.isAtivo()).collect(Collectors.toList()));
 	}
 	
 	@GetMapping(value = "/{id}/movimentos")
