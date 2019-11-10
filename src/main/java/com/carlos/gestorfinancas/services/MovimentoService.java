@@ -83,31 +83,27 @@ public class MovimentoService {
 		if(movimento.hasCartaoCredito()) {
 			movimento.setStatus(StatusMovimento.EFETIVADO);
 			
-			if(movimento.getTipo() == 'D') {
-				Fatura fatura = movimento.getFatura();
-				CartaoCredito cartao = fatura.getCartao();
-				
-				if(fatura.getStatus() == StatusFatura.NAO_FECHADA) {
-					if(movimento.getValorTotal() < cartao.getLimite()) {
-						if(cartao.getLimiteRestante() >= movimento.getValorTotal()) {
-							movimento.setConta(null);
-							
-							// Salva o movimento no banco de dados
-							movimentoGerado = repository.save(movimento);
-							
-							// Ajusta o valor da fatura
-							faturaService.ajustaSaldo(fatura);
-						} else {
-							throw new OperacaoInvalidaException("O cartão de crédito não tem saldo disponível.");
-						}
+			Fatura fatura = movimento.getFatura();
+			CartaoCredito cartao = fatura.getCartao();
+			
+			if(fatura.getStatus() == StatusFatura.NAO_FECHADA) {
+				if(movimento.getValorTotal() < cartao.getLimite()) {
+					if(cartao.getLimiteRestante() >= movimento.getValorTotal()) {
+						movimento.setConta(null);
+						
+						// Salva o movimento no banco de dados
+						movimentoGerado = repository.save(movimento);
+						
+						// Ajusta o valor da fatura
+						faturaService.ajustaSaldo(fatura);
 					} else {
-						throw new OperacaoInvalidaException(String.format("O valor do movimento está acima do limite do cartão de crédito (%f)", cartao.getLimite()));
+						throw new OperacaoInvalidaException("O cartão de crédito não tem saldo disponível.");
 					}
 				} else {
-					throw new OperacaoInvalidaException("A fatura já está fechada. É necessário abrir-lá novamente.");
+					throw new OperacaoInvalidaException(String.format("O valor do movimento está acima do limite do cartão de crédito (%f)", cartao.getLimite()));
 				}
 			} else {
-				throw new OperacaoInvalidaException("Cartões de crédito só podem ser utilizados em despesas.");
+				throw new OperacaoInvalidaException("A fatura já está fechada. É necessário abrir-lá novamente.");
 			}
 		} else {
 			if(movimento.isEfetivado() && movimento.isFuturo(DateUtils.getDataAtual())) {
