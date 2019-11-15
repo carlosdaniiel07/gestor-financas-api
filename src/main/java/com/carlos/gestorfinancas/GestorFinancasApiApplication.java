@@ -3,9 +3,10 @@ package com.carlos.gestorfinancas;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 
 @SpringBootApplication
-public class GestorFinancasApiApplication implements CommandLineRunner {
+public class GestorFinancasApiApplication extends SpringBootServletInitializer implements CommandLineRunner {
 	
 	public static void main(String[] args) {
 		SpringApplication.run(GestorFinancasApiApplication.class, args);
