@@ -3,5 +3,5 @@ jdk:
   - oraclejdk11
 install:
   - mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
- before_install:
+before_install:
   - chmod +x mvnw
