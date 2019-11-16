@@ -5,5 +5,5 @@ install:
   - mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
 before_install:
   - chmod +x mvnw
-script:
+after_success:
   - bash ./deploy.sh
