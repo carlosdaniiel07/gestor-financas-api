@@ -1,16 +1,14 @@
 #!/bin/sh
-touch teste.txt
-
 HOST=${FTP_HOST}
 USER=${FTP_USER}
 PASSWD=${FTP_PASSWORD}
-FILE='teste.txt'
+PORT=${FTP_PORT}
+OLD_FILE="gestor-financas-api-1.0.0.war"
+NEW_FILE="api-gestor-financas.war"
 
-ftp -n $HOST <<END_SCRIPT
-quote USER $USER
-quote PASS $PASSWD
-binary
-put $FILE
-quit
-END_SCRIPT
+cd target
+mv $OLD_FILE $NEW_FILE
+
+curl -T $NEW_FILE -u $USER:$PASSWD ftp://$HOST:$PORT
+
 exit 0
