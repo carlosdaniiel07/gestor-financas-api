@@ -86,7 +86,7 @@ public class MovimentoService {
 			Fatura fatura = movimento.getFatura();
 			CartaoCredito cartao = fatura.getCartao();
 			
-			if(fatura.getStatus() == StatusFatura.NAO_FECHADA) {
+			if(fatura.getStatus() == StatusFatura.NAO_FECHADA || fatura.getStatus() == StatusFatura.PAGO_PARCIAL) {
 				if(movimento.getValorTotal() < cartao.getLimite()) {
 					if(cartao.getLimiteRestante() >= movimento.getValorTotal()) {
 						movimento.setConta(null);
@@ -149,7 +149,7 @@ public class MovimentoService {
 				Fatura fatura = movimento.getFatura();
 				CartaoCredito cartao = fatura.getCartao();
 				
-				if(fatura.getStatus() == StatusFatura.NAO_FECHADA) {
+				if(fatura.getStatus() == StatusFatura.NAO_FECHADA || fatura.getStatus() == StatusFatura.PAGO_PARCIAL) {
 					if(movimento.getValorTotal() < cartao.getLimite()) {
 						if(cartao.getLimiteRestante() >= movimento.getValorTotal()) {
 							movimento.setConta(null);
