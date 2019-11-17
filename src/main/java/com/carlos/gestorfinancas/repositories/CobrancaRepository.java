@@ -3,7 +3,9 @@ package com.carlos.gestorfinancas.repositories;
 import java.util.Date;
 import java.util.List;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import com.carlos.gestorfinancas.entities.Cobranca;
@@ -17,4 +19,7 @@ import com.carlos.gestorfinancas.entities.enums.StatusCobranca;
 public interface CobrancaRepository extends JpaRepository<Cobranca, Long> {
 	List<Cobranca> findByDataVencimento(Date dataVencimento);
 	List<Cobranca> findByStatus(StatusCobranca status);
+	
+	@Query(value = "SELECT c FROM Cobranca c JOIN FETCH c.beneficiario")
+	List<Cobranca> getAll(Pageable page);
 }

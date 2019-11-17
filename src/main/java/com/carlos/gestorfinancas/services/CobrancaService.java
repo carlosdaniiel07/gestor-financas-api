@@ -44,7 +44,7 @@ public class CobrancaService {
 	}
 	
 	public List<Cobranca> getAll(int pagina) {
-		return repository.findAll(PageRequest.of(pagina, dadosPorPagina)).getContent();
+		return repository.getAll(PageRequest.of(pagina, dadosPorPagina));
 	}
 	
 	public List<Cobranca> getAllByStatus(StatusCobranca status) {
