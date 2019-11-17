@@ -56,7 +56,7 @@ public class CobrancaService {
 	}
 	
 	public Cobranca insere(Cobranca cobranca) {
-		if(cobranca.getValorTotal() <= cobranca.getBeneficiario().getLimite()) {
+		if(cobranca.getBeneficiario().getLimite() == 0 || cobranca.getValorTotal() <= cobranca.getBeneficiario().getLimite()) {
 			cobranca.setParcela(cobranca.getParcela() == 0 ? 1 : cobranca.getParcela());
 			cobranca.setDataPagamento(null);
 			cobranca.setStatus(StatusCobranca.PENDENTE);
@@ -66,7 +66,7 @@ public class CobrancaService {
 			return repository.save(cobranca);
 		} else {
 			throw new OperacaoInvalidaException(String.format("O valor da cobrança é superior ao limite deste beneficiário (%f)", cobranca.getValorTotal()));
-		}		
+		}
 	}
 	
 	public void atualiza(Cobranca cobranca) {
@@ -98,7 +98,7 @@ public class CobrancaService {
 		
 		if(cobranca.getStatus() != StatusCobranca.PAGO) {
 			if(pagamentoDTO.getValorPago() <= cobranca.getSaldo()) {
-				if(pagamentoDTO.getValorPago() <= cobranca.getBeneficiario().getLimite()) {
+				if(cobranca.getBeneficiario().getLimite() == 0 || pagamentoDTO.getValorPago() <= cobranca.getBeneficiario().getLimite()) {
 					StatusCobranca novoStatus = (pagamentoDTO.getValorPago() < cobranca.getSaldo()) ? StatusCobranca.PAGO_PARCIAL : StatusCobranca.PAGO;
 					
 					cobranca.setSaldo(cobranca.getSaldo() - pagamentoDTO.getValorPago());
