@@ -38,7 +38,7 @@ public class TransferenciaService {
 	}
 	
 	public List<Transferencia> getAll(int pagina) {
-		return repository.findAll(PageRequest.of(pagina, dadosPorPagina)).getContent();
+		return repository.getAll();
 	}
 	
 	public Transferencia getById(Long id) {
