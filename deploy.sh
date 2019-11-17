@@ -9,6 +9,6 @@ NEW_FILE="api-gestor-financas.war"
 cd target
 mv $OLD_FILE $NEW_FILE
 
-curl --verbose -T $NEW_FILE -u $USER:$PASSWD ftp://$HOST:$PORT
+curl --verbose --ftp-pasv -T $NEW_FILE -u $USER:$PASSWD ftp://$HOST:$PORT
 
 exit 0
