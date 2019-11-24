@@ -1,6 +1,8 @@
 package com.carlos.gestorfinancas.services;
 
+import java.time.LocalDate;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,6 +56,13 @@ public class MovimentoService {
 	
 	public List<Movimento> getAllByStatus(StatusMovimento status) {
 		return repository.findByStatus(status);
+	}
+	
+	public List<Movimento> getAllByPeriodo(String minDate, String maxDate){
+		Date min = DateUtils.buildCalendarWithLocalDate(LocalDate.parse(minDate)).getTime();
+		Date max = DateUtils.buildCalendarWithLocalDate(LocalDate.parse(maxDate)).getTime();
+		
+		return repository.findByDataContabilizacaoBetween(min, max);
 	}
 	
 	public List<Movimento> getByConta(Long contaId){

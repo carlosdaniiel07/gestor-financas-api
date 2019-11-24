@@ -1,5 +1,6 @@
 package com.carlos.gestorfinancas.repositories;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -78,4 +79,18 @@ public interface MovimentoRepository extends JpaRepository<Movimento, Long> {
 					+ "	)																															" 
 					, nativeQuery = true)
 	Optional<Double> getTotalDebitoByFatura(Long faturaId);
+	
+	@Query(value ="SELECT m FROM Movimento m 					"
+			+ "	   		LEFT JOIN FETCH m.conta	c				"
+			+ "	   		LEFT JOIN FETCH c.tipo					"
+			+ "			LEFT JOIN FETCH m.categoria				"
+			+ "			LEFT JOIN FETCH m.subcategoria s		"
+			+ "			LEFT JOIN FETCH s.categoria				"
+			+ "			LEFT JOIN FETCH m.projeto				"
+			+ "			LEFT JOIN FETCH m.fatura f				"
+			+ "			LEFT JOIN FETCH f.cartao				"
+			+ "	   WHERE m.dataContabilizacao BETWEEN ?1 AND ?2	"
+			+ "	   ORDER BY m.dataContabilizacao				"
+	)
+	List<Movimento> findByDataContabilizacaoBetween(Date minDate, Date maxDate);
 }

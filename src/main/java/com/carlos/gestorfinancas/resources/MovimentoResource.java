@@ -40,6 +40,13 @@ public class MovimentoResource {
 		return ResponseEntity.ok(service.getAll(page));
 	}
 	
+	@GetMapping(value = "/periodo")
+	public ResponseEntity<List<Movimento>> listarPorPeriodo(
+			@RequestParam(name = "minDate", required = true) String minDate, 
+			@RequestParam(name = "maxDate", required = true) String maxDate) {
+		return ResponseEntity.ok(service.getAllByPeriodo(minDate, maxDate));
+	}
+	
 	@GetMapping(value = "/{id}")
 	public ResponseEntity<Movimento> buscar(@PathVariable Long id) {
 		return ResponseEntity.ok(service.getById(id));
