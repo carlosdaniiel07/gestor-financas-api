@@ -38,6 +38,12 @@ public class TasksResource {
 		return ResponseEntity.ok(null);
 	}
 	
+	@PostMapping(value = "/alerta-faturas-vencer")
+	public ResponseEntity<Void> alertaFaturasVencer(@RequestParam(required = false) String authorizationCode) {
+		service.alertaFaturasVencer(authorizationCode);
+		return ResponseEntity.ok(null);
+	}
+	
 	@PostMapping(value = "/fecha-fatura-cartao")
 	public ResponseEntity<Void> fechaFaturaCartao(@RequestParam(required = false) String authorizationCode) {
 		service.fechaFaturaCartao(authorizationCode);

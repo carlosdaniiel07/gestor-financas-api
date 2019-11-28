@@ -127,6 +127,31 @@ public class TaskService {
 	}
 	
 	/**
+	 * Envia um alerta por e-mail com todas as faturas de cartão de crédito a vencer
+	 */
+	public void alertaFaturasVencer(String authorizationCode) {
+		checkAuthorizationCode(authorizationCode);
+	
+		List<Fatura> faturasAlerta = new ArrayList<Fatura>();
+		Set<Integer> dias = new HashSet<Integer>();
+		
+		dias.addAll(Arrays.asList(0, 1, 5, 10, 15));
+		
+		faturaService.getAllByStatus(StatusFatura.PENDENTE).forEach((Fatura fatura) -> {
+			long diff = Math.abs(fatura.getVencimento().getTime() - DateUtils.getDataAtual().getTime());
+			int diferencaDias = (int)TimeUnit.DAYS.toDays(diff);
+			
+			if (dias.contains(diferencaDias)) {
+				faturasAlerta.add(fatura);
+			}
+		});
+		
+		if (!faturasAlerta.isEmpty()) {
+			emailService.enviaEmail("Faturas próximas do vencimento", emailService.getEmailsFromParam(), "", "faturas", faturasAlerta);
+		}
+	}
+	
+	/**
 	 * Fecha as faturas dos cartões de crédito
 	 */
 	public void fechaFaturaCartao(String authorizationCode) {
