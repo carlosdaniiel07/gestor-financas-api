@@ -15,6 +15,10 @@ public class SaldoDiarioService {
 	private SaldoDiarioRepository repository;
 	
 	public void insere(Collection<SaldoDiario> colecaoSaldoDiario) {
-		repository.saveAll(colecaoSaldoDiario);
+		colecaoSaldoDiario.forEach((SaldoDiario saldoDiario) -> {
+			if (repository.findByNomeContaAndData(saldoDiario.getConta(), saldoDiario.getData()).isEmpty()) {
+				repository.save(saldoDiario);
+			}
+		});
 	}
 }
