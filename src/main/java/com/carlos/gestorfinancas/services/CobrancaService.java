@@ -71,6 +71,9 @@ public class CobrancaService {
 	
 	public void atualiza(Cobranca cobranca) {
 		if(cobranca.getStatus() == StatusCobranca.AGENDADO || cobranca.getStatus() == StatusCobranca.PENDENTE) {
+			// Recalcula saldo da cobrança
+			cobranca.setSaldo(getSaldoAtual(cobranca));
+			
 			repository.save(cobranca);
 		} else {
 			throw new OperacaoInvalidaException("Não é possível alterar uma cobrança já paga.");
@@ -198,5 +201,21 @@ public class CobrancaService {
 				pagamentoDTO.getValorPago(), 
 				cobranca
 		);
+	}
+	
+	/**
+	 * Retorna o saldo atual de uma cobrança (considera operações de baixa)
+	 * @param cobranca
+	 * @return
+	 */
+	private double getSaldoAtual(Cobranca cobranca) {
+		double valorTotal = cobranca.getValorTotal();
+		double novoSaldo = valorTotal;
+		
+		for (OperacaoCobranca operacao : operacaoCobrancaService.getByCobranca(cobranca.getId())) {
+			novoSaldo -= operacao.getValor();
+		}
+		
+		return novoSaldo;
 	}
 }
