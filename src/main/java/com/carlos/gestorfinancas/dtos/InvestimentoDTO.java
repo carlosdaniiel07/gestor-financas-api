@@ -6,8 +6,7 @@ import java.util.Date;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
-
-import com.carlos.gestorfinancas.entities.Conta;
+import com.carlos.gestorfinancas.entities.Corretora;
 import com.carlos.gestorfinancas.entities.Investimento;
 import com.carlos.gestorfinancas.entities.ModalidadeInvestimento;
 import com.carlos.gestorfinancas.entities.enums.TipoInvestimento;
@@ -36,7 +35,7 @@ public class InvestimentoDTO implements Serializable {
 	private ModalidadeInvestimento modalidade;
 	
 	@NotNull(message = "É obrigatório informar a corretora")
-	private Conta corretora;
+	private Corretora corretora;
 	
 	@Positive(message = "O valor da aplicação precisa ser positivo")
 	private double valorAplicado;
@@ -51,7 +50,7 @@ public class InvestimentoDTO implements Serializable {
 			@NotNull(message = "É obrigatório informar o tipo de investimento") TipoInvestimento tipo,
 			@NotNull(message = "É obrigatório informar uma data de aplicação") Date dataAplicacao, Date dataVencimento,
 			@NotNull(message = "É obrigatório informar a modalidade do investimento") ModalidadeInvestimento modalidade,
-			@NotNull(message = "É obrigatório informar a corretora") Conta corretora,
+			@NotNull(message = "É obrigatório informar a corretora") Corretora corretora,
 			@Positive(message = "O valor da aplicação precisa ser positivo") double valorAplicado, String obs) {
 		super();
 		this.descricao = descricao;
@@ -108,11 +107,11 @@ public class InvestimentoDTO implements Serializable {
 		this.modalidade = modalidade;
 	}
 
-	public Conta getCorretora() {
+	public Corretora getCorretora() {
 		return corretora;
 	}
 
-	public void setCorretora(Conta corretora) {
+	public void setCorretora(Corretora corretora) {
 		this.corretora = corretora;
 	}
 
