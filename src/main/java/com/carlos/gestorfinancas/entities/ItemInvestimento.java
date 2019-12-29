@@ -15,6 +15,7 @@ import javax.persistence.ManyToOne;
 
 import com.carlos.gestorfinancas.entities.enums.TipoItemInvestimento;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonFormat.Shape;
 
 @Entity
@@ -41,7 +42,9 @@ public class ItemInvestimento implements Serializable {
 	private double ir;
 	private double iof;
 	private double outrasTaxas;
+	private double rendimento;
 	
+	@JsonIgnore
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "investimento_id")
 	private Investimento investimento;
@@ -51,7 +54,7 @@ public class ItemInvestimento implements Serializable {
 	}
 	
 	public ItemInvestimento(Long id, TipoItemInvestimento tipo, String descricao, Date data, double valor, double ir,
-			double iof, double outrasTaxas, Investimento investimento) {
+			double iof, double outrasTaxas, double rendimento, Investimento investimento) {
 		super();
 		this.id = id;
 		this.tipo = tipo;
@@ -62,6 +65,7 @@ public class ItemInvestimento implements Serializable {
 		this.iof = iof;
 		this.outrasTaxas = outrasTaxas;
 		this.investimento = investimento;
+		this.rendimento = rendimento;
 	}
 
 	public Long getId() {
@@ -126,6 +130,14 @@ public class ItemInvestimento implements Serializable {
 
 	public void setOutrasTaxas(double outrasTaxas) {
 		this.outrasTaxas = outrasTaxas;
+	}
+
+	public double getRendimento() {
+		return rendimento;
+	}
+
+	public void setRendimento(double rendimento) {
+		this.rendimento = rendimento;
 	}
 
 	public Investimento getInvestimento() {
