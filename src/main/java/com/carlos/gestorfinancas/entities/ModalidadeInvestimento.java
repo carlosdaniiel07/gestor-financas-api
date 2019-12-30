@@ -13,6 +13,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
 import com.carlos.gestorfinancas.entities.enums.TipoInvestimento;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 public class ModalidadeInvestimento implements Serializable {
@@ -33,6 +34,7 @@ public class ModalidadeInvestimento implements Serializable {
 	
 	private boolean ativo;
 	
+	@JsonIgnore
 	@OneToMany(mappedBy = "modalidade")
 	private List<Investimento> investimentos = new ArrayList<Investimento>();
 	
