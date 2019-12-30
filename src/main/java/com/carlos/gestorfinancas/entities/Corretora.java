@@ -29,7 +29,7 @@ public class Corretora implements Serializable {
 	private String banco;
 	private String agencia;
 	private String conta;
-	private double saldo;
+	private double valorAplicado;
 	private double rendimentoTotal;
 	private boolean ativo;
 	
@@ -41,7 +41,7 @@ public class Corretora implements Serializable {
 		// TODO Auto-generated constructor stub
 	}
 
-	public Corretora(Long id, String nome, String banco, String agencia, String conta, double saldo,
+	public Corretora(Long id, String nome, String banco, String agencia, String conta, double valorAplicado,
 			double rendimentoTotal, boolean ativo, List<Investimento> investimentos) {
 		super();
 		this.id = id;
@@ -49,7 +49,7 @@ public class Corretora implements Serializable {
 		this.banco = banco;
 		this.agencia = agencia;
 		this.conta = conta;
-		this.saldo = saldo;
+		this.valorAplicado = valorAplicado;
 		this.rendimentoTotal = rendimentoTotal;
 		this.ativo = ativo;
 		this.investimentos = investimentos;
@@ -95,12 +95,12 @@ public class Corretora implements Serializable {
 		this.conta = conta;
 	}
 
-	public double getSaldo() {
-		return saldo;
+	public double getValorAplicado() {
+		return valorAplicado;
 	}
 
-	public void setSaldo(double saldo) {
-		this.saldo = saldo;
+	public void setValorAplicado(double valorAplicado) {
+		this.valorAplicado = valorAplicado;
 	}
 
 	public double getRendimentoTotal() {
@@ -133,7 +133,7 @@ public class Corretora implements Serializable {
 		int result = 1;
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		long temp;
-		temp = Double.doubleToLongBits(saldo);
+		temp = Double.doubleToLongBits(valorAplicado);
 		result = prime * result + (int) (temp ^ (temp >>> 32));
 		return result;
 	}
@@ -152,7 +152,7 @@ public class Corretora implements Serializable {
 				return false;
 		} else if (!id.equals(other.id))
 			return false;
-		if (Double.doubleToLongBits(saldo) != Double.doubleToLongBits(other.saldo))
+		if (Double.doubleToLongBits(valorAplicado) != Double.doubleToLongBits(other.valorAplicado))
 			return false;
 		return true;
 	}
