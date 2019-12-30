@@ -68,6 +68,10 @@ public class ItemInvestimento implements Serializable {
 		this.rendimento = rendimento;
 	}
 
+	public double getValorReal() {
+		return getValor() + getRendimento() - getIr() - getIof() - getOutrasTaxas();
+	}
+	
 	public Long getId() {
 		return id;
 	}
