@@ -57,7 +57,7 @@ public class Investimento implements Serializable {
 	@JoinColumn(name = "corretora_id")
 	private Corretora corretora;
 	
-	@OneToMany(mappedBy = "investimento", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "investimento", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	private List<ItemInvestimento> itens = new ArrayList<ItemInvestimento>();
 	
 	private double valorAplicado;
