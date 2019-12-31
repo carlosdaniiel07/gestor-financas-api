@@ -29,6 +29,7 @@ public class InvestimentoDTO implements Serializable {
 	@JsonFormat(shape = Shape.STRING, pattern = "dd/MM/yyyy")
 	private Date dataAplicacao;
 	
+	@JsonFormat(shape = Shape.STRING, pattern = "dd/MM/yyyy")
 	private Date dataVencimento;
 	
 	@NotNull(message = "É obrigatório informar a modalidade do investimento")
