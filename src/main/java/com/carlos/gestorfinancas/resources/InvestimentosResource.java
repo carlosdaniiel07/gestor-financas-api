@@ -1,11 +1,13 @@
 package com.carlos.gestorfinancas.resources;
 
 import java.net.URI;
+import java.util.Collection;
 
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,6 +25,11 @@ public class InvestimentosResource {
 
 	@Autowired
 	private InvestimentoService service;
+	
+	@GetMapping
+	public ResponseEntity<Collection<Investimento>> listar(){
+		return ResponseEntity.ok(service.getAll());
+	}
 	
 	@PostMapping
 	public ResponseEntity<Investimento> insere(@Valid @RequestBody InvestimentoDTO objDTO) {

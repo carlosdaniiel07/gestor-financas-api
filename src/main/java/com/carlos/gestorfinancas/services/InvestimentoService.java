@@ -22,6 +22,10 @@ public class InvestimentoService {
 	@Autowired
 	private CorretoraService corretoraService;
 	
+	public List<Investimento> getAll() {
+		return repository.findAll();
+	}
+	
 	/**
 	 * Grava um novo investimento junto com um item de aplicação inicial
 	 * @param investimento
