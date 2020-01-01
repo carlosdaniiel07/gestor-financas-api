@@ -57,6 +57,10 @@ public class InvestimentoService {
 		return investimento;
 	}
 	
+	public void atualiza(Investimento investimento) {
+		repository.save(investimento);
+	}
+	
 	/**
 	 * Registra um reinvestimento para um investimento já existente
 	 * @return
