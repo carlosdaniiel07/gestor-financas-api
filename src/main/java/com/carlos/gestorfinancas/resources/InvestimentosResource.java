@@ -17,6 +17,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import com.carlos.gestorfinancas.dtos.AplicacaoResgateDTO;
 import com.carlos.gestorfinancas.dtos.InvestimentoDTO;
 import com.carlos.gestorfinancas.entities.Investimento;
+import com.carlos.gestorfinancas.entities.enums.TipoItemInvestimento;
 import com.carlos.gestorfinancas.services.InvestimentoService;
 
 @RestController
@@ -39,15 +40,16 @@ public class InvestimentosResource {
 		return ResponseEntity.created(uri).body(obj);
 	}
 	
-	@PostMapping(value = "/aplicacao")
+	@PostMapping(value = "/add-item")
 	public ResponseEntity<Investimento> addAplicacao(@Valid @RequestBody AplicacaoResgateDTO objDTO) {
-		Investimento obj = service.addReinvestimento(objDTO.getInvestimento(), objDTO.getItem());
-		return ResponseEntity.created(null).body(obj);
-	}
-	
-	@PostMapping(value = "/resgate")
-	public ResponseEntity<Investimento> addResgate(@Valid @RequestBody AplicacaoResgateDTO objDTO) {
-		Investimento obj = service.addResgate(objDTO.getInvestimento(), objDTO.getItem());
+		Investimento obj = null;
+		
+		if (objDTO.getItem().getTipo() == TipoItemInvestimento.REINVESTIMENTO) {
+			obj = service.addReinvestimento(objDTO.getInvestimento(), objDTO.getItem());
+		} else {
+			obj = service.addResgate(objDTO.getInvestimento(), objDTO.getItem());
+		}
+		
 		return ResponseEntity.created(null).body(obj);
 	}
 }

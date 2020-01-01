@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -57,7 +56,7 @@ public class Investimento implements Serializable {
 	@JoinColumn(name = "corretora_id")
 	private Corretora corretora;
 	
-	@OneToMany(mappedBy = "investimento", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "investimento", fetch = FetchType.EAGER)
 	private List<ItemInvestimento> itens = new ArrayList<ItemInvestimento>();
 	
 	private double valorAplicado;

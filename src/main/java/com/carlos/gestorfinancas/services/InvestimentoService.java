@@ -22,6 +22,9 @@ public class InvestimentoService {
 	@Autowired
 	private CorretoraService corretoraService;
 	
+	@Autowired
+	private ItemInvestimentoService itemInvestimentoService;
+	
 	public List<Investimento> getAll() {
 		return repository.findAll();
 	}
@@ -40,26 +43,18 @@ public class InvestimentoService {
 		investimento.setValorAtual(investimento.getValorAplicado());
 		investimento.setValorResgatado(0);
 		
-		// Gera item de aplicação inicial
-		itemAplicacao = new ItemInvestimento(
-				null, 
-				TipoItemInvestimento.APLICACAO, 
-				"Aplicação - " + investimento.getDescricao(), 
-				investimento.getDataAplicacao(), 
-				investimento.getValorAplicado(), 
-				0, 
-				0, 
-				0, 
-				0, 
-				investimento
-		);
+		// Grava investimento
+		investimento = repository.save(investimento);
 		
-		investimento.setItens(Arrays.asList(itemAplicacao));
+		// Grava item de aplicação inicial
+		itemAplicacao = itemInvestimentoService.insere(this.generateItemAplicacaoInicial(investimento));
 		
 		// Adiciona valor aplicado no saldo da corretora
 		corretoraService.novaAplicacao(investimento.getCorretora(), investimento.getValorAplicado());
 		
-		return repository.save(investimento);
+		investimento.setItens(Arrays.asList(itemAplicacao));
+		
+		return investimento;
 	}
 	
 	/**
@@ -70,14 +65,11 @@ public class InvestimentoService {
 	public Investimento addReinvestimento(Investimento investimento, ItemInvestimento item) {
 		List<ItemInvestimento> itensInvestimento = investimento.getItens();
 		
-		item.setTipo(TipoItemInvestimento.REINVESTIMENTO);
-		item.setIof(0);
-		item.setIr(0);
-		item.setRendimento(0);
+		item.setInvestimento(investimento);
 		
-		itensInvestimento.add(item);
+		// Grava item do investimento
+		item = itemInvestimentoService.insere(item);
 		
-		investimento.setItens(itensInvestimento);
 		investimento.setValorAplicado(investimento.getValorAplicado() + item.getValorReal());
 		investimento.setValorAtual(investimento.getValorAtual() + item.getValorReal());
 		
@@ -85,10 +77,16 @@ public class InvestimentoService {
 			investimento.setDataReinvestimento(item.getData());
 		}
 		
+		// Atualiza dados do investimento
+		investimento = repository.save(investimento);
+		
 		// Adiciona valor aplicado no saldo da corretora
 		corretoraService.novaAplicacao(investimento.getCorretora(), item.getValorReal());
 		
-		return repository.save(investimento);
+		itensInvestimento.add(item);
+		investimento.setItens(itensInvestimento);
+		
+		return investimento;
 	}
 	
 	/**
@@ -102,11 +100,13 @@ public class InvestimentoService {
 		if (item.getValor() <= investimento.getValorAtual()) {
 			List<ItemInvestimento> itensInvestimento = investimento.getItens();
 			
-			item.setTipo(TipoItemInvestimento.RESGATE);
+			item.setInvestimento(investimento);
+			
+			// Grava item do investimento
+			item = itemInvestimentoService.insere(item);
 			
 			itensInvestimento.add(item);
 			
-			investimento.setItens(itensInvestimento);
 			investimento.setValorAtual(investimento.getValorAtual() - item.getValor());
 			investimento.setValorResgatado(item.getValor());
 			
@@ -117,9 +117,29 @@ public class InvestimentoService {
 			// Diminui o valor aplicado no saldo da corretora
 			corretoraService.novoResgate(investimento.getCorretora(), item.getValor(), item.getRendimento());
 			
-			return repository.save(investimento);
+			// Atualiza dados do investimento
+			investimento = repository.save(investimento);
+			
+			investimento.setItens(itensInvestimento);
+			
+			return investimento;
 		} else {
 			throw new OperacaoInvalidaException("O valor a resgatar deve ser igual ou inferior ao valor aplicado");
 		}
+	}
+	
+	private ItemInvestimento generateItemAplicacaoInicial(Investimento investimento) {
+		return new ItemInvestimento(
+				null, 
+				TipoItemInvestimento.APLICACAO, 
+				"Aplicação - " + investimento.getDescricao(), 
+				investimento.getDataAplicacao(), 
+				investimento.getValorAplicado(), 
+				0, 
+				0, 
+				0, 
+				0, 
+				investimento
+		);
 	}
 }
