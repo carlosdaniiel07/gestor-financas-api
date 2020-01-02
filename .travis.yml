@@ -6,7 +6,7 @@ install:
 before_install:
   - chmod +x mvnw
 deploy:
-  provider: script
-  script: bash ./deploy.sh
-  on:
-    branch: master
+provider: script
+script: bash ./deploy.sh
+on:
+  branch: master
