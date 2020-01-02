@@ -57,6 +57,10 @@ public class InvestimentoService {
 		return investimento;
 	}
 	
+	public void atualiza(Investimento investimento) {
+		repository.save(investimento);
+	}
+	
 	/**
 	 * Registra um reinvestimento para um investimento já existente
 	 * @return
@@ -97,7 +101,7 @@ public class InvestimentoService {
 	 */
 	@Transactional(propagation = Propagation.REQUIRED)
 	public Investimento addResgate(Investimento investimento, ItemInvestimento item) {
-		if (item.getValor() <= investimento.getValorAtual()) {
+		if (item.getValor() <= investimento.getValorAplicado()) {
 			List<ItemInvestimento> itensInvestimento = investimento.getItens();
 			
 			item.setInvestimento(investimento);
