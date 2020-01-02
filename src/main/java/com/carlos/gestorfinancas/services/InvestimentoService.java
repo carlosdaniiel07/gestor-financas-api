@@ -111,6 +111,7 @@ public class InvestimentoService {
 			
 			itensInvestimento.add(item);
 			
+			investimento.setValorAplicado(investimento.getValorAplicado() - item.getValor());
 			investimento.setValorAtual(investimento.getValorAtual() - item.getValor());
 			investimento.setValorResgatado(item.getValor());
 			
