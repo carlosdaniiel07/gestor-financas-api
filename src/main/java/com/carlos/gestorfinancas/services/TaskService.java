@@ -1,7 +1,6 @@
 package com.carlos.gestorfinancas.services;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
@@ -52,6 +51,9 @@ public class TaskService {
 	@Value("${tasks.authorization-code}")
 	private String authorizationCode;
 	
+	@Value("${param.intervalo-aviso-vencimento}")
+	private String intervaloAvisoVencimento;
+		
 	/**
 	 * Atualiza o status dos movimentos agendados. Todos os movimentos agendados (status = StatusMovimento.AGENDADO) 
 	 * com data de contabilização inferior ou igual a data atual terão o seu status atualizado para EFETIVADO (status = StatusMovimento.EFETIVADO)
@@ -107,7 +109,9 @@ public class TaskService {
 		List<Cobranca> cobrancasAlerta = new ArrayList<Cobranca>();
 		Set<Integer> dias = new HashSet<Integer>();
 		
-		dias.addAll(Arrays.asList(0, 1, 5, 10, 15));
+		for (String valor : intervaloAvisoVencimento.split("-")) {
+			dias.add(Integer.parseInt(valor));
+		}
 		
 		cobrancasVencer.forEach((Cobranca cobranca) -> {
 			long diff = Math.abs(cobranca.getDataVencimento().getTime() - DateUtils.getDataAtual().getTime());
@@ -135,7 +139,9 @@ public class TaskService {
 		List<Fatura> faturasAlerta = new ArrayList<Fatura>();
 		Set<Integer> dias = new HashSet<Integer>();
 		
-		dias.addAll(Arrays.asList(0, 1, 5, 10, 15));
+		for (String valor : intervaloAvisoVencimento.split("-")) {
+			dias.add(Integer.parseInt(valor));
+		}
 		
 		faturaService.getAllByStatus(StatusFatura.PENDENTE).forEach((Fatura fatura) -> {
 			long diff = Math.abs(fatura.getVencimento().getTime() - DateUtils.getDataAtual().getTime());
