@@ -35,6 +35,7 @@ public class AuthResource {
 		String novoToken = jwtUtils.generateJwtToken(usuarioLogado.getLogin());
 		
 		response.addHeader("Authorization", "Bearer " + novoToken);
+		response.addHeader("Access-Control-Expose-Headers", "Authorization");
 		
 		return ResponseEntity.noContent().build();
 	}
