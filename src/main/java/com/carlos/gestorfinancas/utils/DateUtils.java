@@ -19,6 +19,15 @@ public class DateUtils {
 	}
 	
 	/**
+	 * Retorna a data atual no formato de string 'dd/MM/yyyy HH:mm:ss'
+	 * @return
+	 */
+	public static String getDataAtualAsBrFormat() {
+		SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+		return dateFormat.format(getDataAtual()); 
+	}
+	
+	/**
 	 * Retorna a data e hora atual no formato de nome de arquivo (ddMMyyyyhhmmss)
 	 * @return
 	 */

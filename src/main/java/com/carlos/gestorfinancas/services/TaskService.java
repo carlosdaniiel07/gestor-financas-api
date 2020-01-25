@@ -15,11 +15,13 @@ import org.springframework.stereotype.Service;
 import com.carlos.gestorfinancas.entities.Cobranca;
 import com.carlos.gestorfinancas.entities.Conta;
 import com.carlos.gestorfinancas.entities.Fatura;
+import com.carlos.gestorfinancas.entities.LogTask;
 import com.carlos.gestorfinancas.entities.Movimento;
 import com.carlos.gestorfinancas.entities.SaldoDiario;
 import com.carlos.gestorfinancas.entities.enums.StatusCobranca;
 import com.carlos.gestorfinancas.entities.enums.StatusFatura;
 import com.carlos.gestorfinancas.entities.enums.StatusMovimento;
+import com.carlos.gestorfinancas.repositories.LogTaskRepository;
 import com.carlos.gestorfinancas.services.exceptions.OperacaoInvalidaException;
 import com.carlos.gestorfinancas.utils.DateUtils;
 
@@ -30,6 +32,9 @@ import com.carlos.gestorfinancas.utils.DateUtils;
 @Service
 public class TaskService {
 
+	@Autowired
+	private LogTaskRepository repository;
+	
 	@Autowired
 	private MovimentoService movimentoService;
 	
@@ -76,6 +81,8 @@ public class TaskService {
 		});
 		
 		movimentoService.atualiza(movimentosParaAtualizar);
+		
+		this.gravaLogExecucao("atualizaStatusMovimentos");
 	}
 	
 	/**
@@ -97,6 +104,8 @@ public class TaskService {
 				cobrancaService.atualizaParaPago(cobranca);
 			}
 		});
+		
+		this.gravaLogExecucao("atualizaStatusCobrancas");
 	}
 	
 	/**
@@ -128,6 +137,8 @@ public class TaskService {
 			emailService.enviaEmail("Cobranças próximas ao vencimento", emailService.getEmailsFromParam(), "alertaCobrancaVencer", 
 					  "cobrancas", cobrancasAlerta);
 		}
+		
+		this.gravaLogExecucao("alertaCobrancasVencer");
 	}
 	
 	/**
@@ -155,6 +166,8 @@ public class TaskService {
 		if (!faturasAlerta.isEmpty()) {
 			emailService.enviaEmail("Faturas próximas do vencimento", emailService.getEmailsFromParam(), "", "faturas", faturasAlerta);
 		}
+		
+		this.gravaLogExecucao("alertaFaturasVencer");
 	}
 	
 	/**
@@ -180,6 +193,8 @@ public class TaskService {
 			emailService.enviaEmail("Fechamento fatura cartão de crédito", emailService.getEmailsFromParam(), "alertaFechamentoFatura", 
 					  "faturas", faturasAlerta);
 		}
+		
+		this.gravaLogExecucao("fechaFaturaCartao");
 	}
 	
 	/**
@@ -197,6 +212,8 @@ public class TaskService {
 		}
 		
 		saldoDiarioService.insere(colecaoSaldoDiario);
+		
+		this.gravaLogExecucao("gravaSaldoDiario");
 	}
 	
 	/**
@@ -208,5 +225,18 @@ public class TaskService {
 		if(value == null || !value.equals(authorizationCode)) {
 			throw new OperacaoInvalidaException("O código de autorização fornecido é inválido.");
 		}
+	}
+	
+	/**
+	 * Grava a execução da tarefa automatizada no banco de dados
+	 */
+	private void gravaLogExecucao(String nome) {
+		Date dataAtual = DateUtils.getDataAtual();
+		String obs = "Tarefa executada com sucesso em " + DateUtils.getDataAtualAsBrFormat();
+		String origem = "Azure";
+		
+		LogTask obj = new LogTask(null, nome, origem, dataAtual, obs, true);
+		
+		repository.save(obj);
 	}
 }
