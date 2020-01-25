@@ -248,4 +248,35 @@ public class TaskService {
 		
 		repository.save(obj);
 	}
+	
+	/**
+	 * Executa uma tarefa a partir do seu nome (exige que o usuário já esteja autenticado)
+	 * @param taskName
+	 */
+	public void executa(String taskName) {
+		if (UsuarioService.getUsuarioLogado() != null) {
+			switch (taskName) {
+			case "alertaCobrancasVencer":
+				this.alertaCobrancasVencer(authorizationCode);
+				break;
+			case "alertaFaturasVencer":
+				this.alertaFaturasVencer(authorizationCode);
+				break;
+			case "atualizaStatusCobrancas":
+				this.atualizaStatusCobrancas(authorizationCode);
+				break;
+			case "atualizaStatusMovimentos":
+				this.atualizaStatusMovimentos(authorizationCode);
+				break;
+			case "fechaFaturaCartao":
+				this.fechaFaturaCartao(authorizationCode);
+				break;
+			case "gravaSaldoDiario":
+				this.gravaSaldoDiario(authorizationCode);
+				break;
+			default:
+				throw new OperacaoInvalidaException("Nenhuma task localizada a partir do nome " + taskName);
+			}
+		}
+	}
 }

@@ -64,4 +64,10 @@ public class TasksResource {
 	public ResponseEntity<Collection<LogTask>> listar() {
 		return ResponseEntity.ok(service.getAll());
 	}
+	
+	@PostMapping
+	public ResponseEntity<Void> executa(@RequestParam(required = true, defaultValue = "") String taskName) {
+		service.executa(taskName);
+		return ResponseEntity.ok(null);
+	}
 }
