@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 
 import com.carlos.gestorfinancas.entities.Usuario;
 import com.carlos.gestorfinancas.repositories.UsuarioRepository;
-import com.carlos.gestorfinancas.services.exceptions.AuthorizationException;
+import com.carlos.gestorfinancas.services.exceptions.AuthenticationException;
 import com.carlos.gestorfinancas.services.exceptions.OperacaoInvalidaException;
 
 /**
@@ -53,7 +53,7 @@ public class UsuarioService implements UserDetailsService {
 		try {
 			return (Usuario) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		} catch (ClassCastException ex) {
-			throw new AuthorizationException("Não há nenhum usuário logado.");
+			throw new AuthenticationException("Não há nenhum usuário logado.");
 		}
 	}
 	

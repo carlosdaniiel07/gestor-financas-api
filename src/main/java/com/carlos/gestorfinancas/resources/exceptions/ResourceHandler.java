@@ -9,6 +9,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import com.carlos.gestorfinancas.services.exceptions.AuthenticationException;
 import com.carlos.gestorfinancas.services.exceptions.ObjetoNaoEncontradoException;
 import com.carlos.gestorfinancas.services.exceptions.OperacaoInvalidaException;
 
@@ -47,5 +48,11 @@ public class ResourceHandler {
 	public ResponseEntity<RequestError> acessoNegadoHandler(org.springframework.security.access.AccessDeniedException ex, HttpServletRequest request) {
 		RequestError requestError = new RequestError(System.currentTimeMillis(), HttpStatus.FORBIDDEN.value(), "O seu perfil não tem acesso a este recurso");		
 		return ResponseEntity.status(requestError.getHttpStatus()).body(requestError);
+	}
+	
+	@ExceptionHandler(AuthenticationException.class)
+	public ResponseEntity<RequestError> usuarioNaoLogado(AuthenticationException ex) {
+		RequestError requestError = new RequestError(System.currentTimeMillis(), HttpStatus.FORBIDDEN.value(), ex.getMessage());
+		return ResponseEntity.status(HttpStatus.FORBIDDEN).body(requestError);
 	}
 }
