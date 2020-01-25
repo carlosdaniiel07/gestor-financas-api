@@ -2,6 +2,7 @@ package com.carlos.gestorfinancas.services;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -214,6 +215,14 @@ public class TaskService {
 		saldoDiarioService.insere(colecaoSaldoDiario);
 		
 		this.gravaLogExecucao("gravaSaldoDiario");
+	}
+	
+	/**
+	 * Retorna todo o histórico de tarefas automatizadas (jobs) executadas
+	 * @return
+	 */
+	public Collection<LogTask> getAll() {		
+		return repository.findAll();
 	}
 	
 	/**
