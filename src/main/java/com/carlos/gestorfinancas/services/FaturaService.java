@@ -178,6 +178,12 @@ public class FaturaService {
 	}
 	
 	private Movimento geraMovimentoDebito(FaturaPagamentoDTO faturaDTO) {
+		String obs = "";
+		
+		for(Movimento movimento : faturaDTO.getFatura().getMovimentos()) {
+			obs += "* " + movimento.getDescricao() + "\n"; 
+		}
+		
 		return new Movimento(
 				null, 
 				String.format("Pagamento fatura cartão de crédito %s. Referência: %s", faturaDTO.getFatura().getCartao().getNome(), faturaDTO.getFatura().getReferencia()),
@@ -189,7 +195,7 @@ public class FaturaService {
 				0, 
 				StatusMovimento.EFETIVADO,
 				modulo, 
-				"", 
+				obs, 
 				faturaDTO.getConta(), 
 				null, 
 				null, 
