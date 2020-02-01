@@ -135,8 +135,8 @@ public class MovimentoService {
 	 * Atualiza uma coleção de movimentos
 	 * @param movimentos
 	 */
-	public void atualiza(Collection<Movimento> movimentos) {
-		movimentos.forEach((Movimento m) -> atualiza(m));
+	public void atualiza(Collection<Movimento> movimentos, boolean isTask) {
+		movimentos.forEach((Movimento m) -> atualiza(m, isTask));
 	}
 	
 	/**
@@ -144,14 +144,14 @@ public class MovimentoService {
 	 * @param movimento
 	 */
 	@Transactional(propagation = Propagation.REQUIRED)
-	public void atualiza(Movimento movimento) {
+	public void atualiza(Movimento movimento, boolean isTask) {
 		Movimento oldMovimento = getById(movimento.getId());
 		
 		Fatura oldFatura = oldMovimento.getFatura();
 		Conta oldConta = oldMovimento.getConta();
 		StatusMovimento oldStatus = oldMovimento.getStatus();
 		
-		if(movimento.getOrigem().equalsIgnoreCase(modulo) || TaskService.isTask()) {
+		if(movimento.getOrigem().equalsIgnoreCase(modulo) || isTask) {
 			if(movimento.hasCartaoCredito()) {
 				movimento.setStatus(StatusMovimento.EFETIVADO);
 				

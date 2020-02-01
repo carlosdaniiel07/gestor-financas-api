@@ -60,9 +60,6 @@ public class TaskService {
 	@Value("${param.intervalo-aviso-vencimento}")
 	private String intervaloAvisoVencimento;
 	
-	// Seu valor sera true quando houver uma task/job na pilha de chamadas
-	private static boolean task = false; 
-	
 	/**
 	 * Atualiza o status dos movimentos agendados. Todos os movimentos agendados (status = StatusMovimento.AGENDADO) 
 	 * com data de contabilização inferior ou igual a data atual terão o seu status atualizado para EFETIVADO (status = StatusMovimento.EFETIVADO)
@@ -84,7 +81,7 @@ public class TaskService {
 			}
 		});
 		
-		movimentoService.atualiza(movimentosParaAtualizar);
+		movimentoService.atualiza(movimentosParaAtualizar, true);
 		
 		this.gravaLogExecucao("atualizaStatusMovimentos");
 	}
@@ -237,8 +234,6 @@ public class TaskService {
 		if(value == null || !value.equals(authorizationCode)) {
 			throw new OperacaoInvalidaException("O código de autorização fornecido é inválido.");
 		}
-		
-		task = true;
 	}
 	
 	/**
@@ -283,9 +278,5 @@ public class TaskService {
 				throw new OperacaoInvalidaException("Nenhuma task localizada a partir do nome " + taskName);
 			}
 		}
-	}
-	
-	public static boolean isTask() {
-		return task;
 	}
 }

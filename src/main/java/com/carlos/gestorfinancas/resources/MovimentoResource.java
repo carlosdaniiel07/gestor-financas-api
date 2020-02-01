@@ -67,7 +67,7 @@ public class MovimentoResource {
 	
 	@PutMapping
 	public ResponseEntity<Void> atualiza(@RequestBody Movimento obj) {
-		service.atualiza(obj);
+		service.atualiza(obj, false);
 		return ResponseEntity.ok().body(null);
 	}
 	
