@@ -151,7 +151,7 @@ public class MovimentoService {
 		Conta oldConta = oldMovimento.getConta();
 		StatusMovimento oldStatus = oldMovimento.getStatus();
 		
-		if(movimento.getOrigem().equalsIgnoreCase(modulo)) {
+		if(movimento.getOrigem().equalsIgnoreCase(modulo) || TaskService.isTask()) {
 			if(movimento.hasCartaoCredito()) {
 				movimento.setStatus(StatusMovimento.EFETIVADO);
 				
