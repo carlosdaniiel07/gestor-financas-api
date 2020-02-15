@@ -33,6 +33,10 @@ public class CartaoCreditoService {
 		return repository.findByIdAndAtivo(id, true).orElseThrow(() -> new ObjetoNaoEncontradoException("Este cartão de crédito não foi encontrado."));
 	}
 	
+	public CartaoCredito getByNome(String nome) {
+		return repository.findByNomeAndAtivo(nome, true).orElseThrow(() -> new ObjetoNaoEncontradoException("Este cartão de crédito não foi encontrado."));
+	}
+	
 	public CartaoCredito insere(CartaoCredito cartaoCredito) {
 		cartaoCredito.setAtivo(true);
 		return repository.save(cartaoCredito);

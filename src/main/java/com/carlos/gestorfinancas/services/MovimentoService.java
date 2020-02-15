@@ -151,7 +151,7 @@ public class MovimentoService {
 		Conta oldConta = oldMovimento.getConta();
 		StatusMovimento oldStatus = oldMovimento.getStatus();
 		
-		if(movimento.getOrigem().equalsIgnoreCase(modulo) || isTask) {
+		if(movimento.getOrigem().equalsIgnoreCase(modulo) || isTask || movimento.getOrigem().equalsIgnoreCase(NubankService.ORIGEM)) {
 			if(movimento.hasCartaoCredito()) {
 				movimento.setStatus(StatusMovimento.EFETIVADO);
 				

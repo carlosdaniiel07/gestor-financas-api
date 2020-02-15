@@ -47,6 +47,10 @@ public class FaturaService {
 		return repository.findByCartaoId(cartaoCreditoId);
 	}
 	
+	public Fatura getLastByCartaoCredito(Long cartaoCreditoId) {
+		return repository.findLastByCartaoId(cartaoCreditoId).orElseThrow(() -> new ObjetoNaoEncontradoException("Nenhum fatura encontrada para este cartão de crédito"));
+	}
+	
 	public Fatura getById(Long id) {
 		return repository.findById(id).orElseThrow(() -> new ObjetoNaoEncontradoException("Esta fatura não foi encontrada."));
 	}
