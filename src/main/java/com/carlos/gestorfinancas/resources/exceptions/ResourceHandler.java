@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.carlos.gestorfinancas.services.exceptions.AuthenticationException;
+import com.carlos.gestorfinancas.services.exceptions.NubankServiceException;
 import com.carlos.gestorfinancas.services.exceptions.ObjetoNaoEncontradoException;
 import com.carlos.gestorfinancas.services.exceptions.OperacaoInvalidaException;
 
@@ -54,5 +55,11 @@ public class ResourceHandler {
 	public ResponseEntity<RequestError> usuarioNaoLogado(AuthenticationException ex) {
 		RequestError requestError = new RequestError(System.currentTimeMillis(), HttpStatus.FORBIDDEN.value(), ex.getMessage());
 		return ResponseEntity.status(HttpStatus.FORBIDDEN).body(requestError);
+	}
+	
+	@ExceptionHandler(NubankServiceException.class)
+	public ResponseEntity<RequestError> nubankServiceExcetpion(NubankServiceException ex) {
+		RequestError requestError = new RequestError(System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR.value(), ex.getMessage());
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(requestError);
 	}
 }

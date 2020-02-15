@@ -17,6 +17,7 @@ import com.carlos.gestorfinancas.entities.CartaoCredito;
 public interface CartaoCreditoRepository extends JpaRepository<CartaoCredito, Long> {
 	List<CartaoCredito> findByAtivo(boolean ativo);
 	List<CartaoCredito> findByAtivo(boolean ativo, Pageable pagina);
-
+	
 	Optional<CartaoCredito> findByIdAndAtivo(Long id, boolean ativo);
+	Optional<CartaoCredito> findByNomeAndAtivo(String nome, boolean ativo);
 }
