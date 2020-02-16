@@ -40,6 +40,16 @@ public class ContaService {
 		return repository.findByIdAndAtivo(id, true).orElseThrow(() -> new ObjetoNaoEncontradoException("Esta conta não foi encontrada."));
 	}
 	
+	public Conta getByNome(String nome) {
+		List<Conta> contas = repository.findByNomeAndAtivo(nome, true);
+		
+		if (contas.isEmpty()) {
+			throw new ObjetoNaoEncontradoException("Esta conta não foi encontrada.");
+		}
+		
+		return contas.get(0);
+	}
+	
 	public Conta insere(Conta conta) {
 		conta.setAtivo(true);
 		conta.setSaldo(conta.getSaldoInicial());
