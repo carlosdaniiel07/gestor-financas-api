@@ -34,14 +34,10 @@ public class Transaction implements Serializable {
 		this.title = title;
 	}
 	
-	public boolean isCreditCardTransaction() {
-		return getCategory().equalsIgnoreCase("transaction");
-	}
-	
 	public static boolean isCreditCardTransaction(String category) {
 		return category.equalsIgnoreCase("transaction");
 	}
-
+	
 	public String getId() {
 		return id;
 	}

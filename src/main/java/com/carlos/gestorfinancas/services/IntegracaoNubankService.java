@@ -3,6 +3,7 @@ package com.carlos.gestorfinancas.services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.carlos.gestorfinancas.dtos.nubank.Transaction;
 import com.carlos.gestorfinancas.entities.IntegracaoNubank;
 import com.carlos.gestorfinancas.repositories.IntegracaoNubankRepository;
 import com.carlos.gestorfinancas.services.exceptions.ObjetoNaoEncontradoException;
@@ -28,7 +29,14 @@ public class IntegracaoNubankService {
 	 * @param transactionId
 	 * @return
 	 */
-	public IntegracaoNubank insert(String transactionId) {
-		return repository.save(new IntegracaoNubank(transactionId, DateUtils.getDataAtual()));
+	public IntegracaoNubank insert(Transaction transaction) {
+		return repository.save(new IntegracaoNubank(transaction.getId(), 
+													transaction.getDescription(), 
+													transaction.getCategory(), 
+													transaction.getAmount(), 
+													transaction.getAmount_without_iof(), 
+													transaction.getTime(), 
+													transaction.getTitle(), 
+													DateUtils.getDataAtual()));
 	}
 }

@@ -153,7 +153,7 @@ public class NubankService {
 				} catch (ObjetoNaoEncontradoException ex) {
 					// Caso a integração ainda não tenha sido realizada..
 					movimentoService.insere(this.convertTransactionToMovimento(transaction, ultimaFatura));
-					integracaoNu.insert(transaction.getId());
+					integracaoNu.insert(transaction);
 				}
 			}
 		} catch (IOException | ParseException | ObjetoNaoEncontradoException e) {
