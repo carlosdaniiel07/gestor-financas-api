@@ -103,8 +103,11 @@ public class MovimentoService {
 						// Salva o movimento no banco de dados
 						movimentoGerado = repository.save(movimento);
 						
-						// Ajusta o valor da fatura
-						faturaService.ajustaSaldo(fatura);
+						// Ajusta o valor da fatura. Obs: por questões de performance, o valor da fatura não é ajustado automaticamente quando o movimento estiver sendo
+						// incluído pela Integração Nubank. Uma chamada no fim da rotina de integração é feita p/ ajustar o saldo da fatura.
+						if (!movimento.getOrigem().equalsIgnoreCase(NubankService.ORIGEM)) {
+							faturaService.ajustaSaldo(fatura);
+						}
 					} else {
 						throw new OperacaoInvalidaException("O cartão de crédito não tem saldo disponível.");
 					}

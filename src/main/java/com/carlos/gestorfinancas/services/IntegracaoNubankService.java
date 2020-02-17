@@ -25,6 +25,15 @@ public class IntegracaoNubankService {
 	}
 	
 	/**
+	 * Verifica se uma dada transação existe (através do seu 'id')
+	 * @param transactionId
+	 * @return
+	 */
+	public boolean exists(String transactionId) {
+		return repository.existsById(transactionId);
+	}
+	
+	/**
 	 * Realiza a inserção de uma transação na tabela de controle de integração
 	 * @param transactionId
 	 * @return

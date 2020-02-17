@@ -137,7 +137,9 @@ public class NubankService {
 	 * @param qrCodeUUID
 	 */
 	@Transactional(propagation = Propagation.REQUIRED)
-	public void integrarCartaoCredito(String qrCodeUUID) {
+	public Collection<Transaction> integrarCartaoCredito(String qrCodeUUID) {
+		List<Transaction> transacoesInseridas = new ArrayList<Transaction>();
+		
 		try {
 			Collection<Transaction> transactions = this.getCreditCardTransactions(qrCodeUUID);
 			CartaoCredito cartaoCreditoNubank = cartaoCreditoService.getByNome("Nubank");
@@ -148,17 +150,26 @@ public class NubankService {
 			}
 			
 			for (Transaction transaction : transactions) {
-				try {
-					integracaoNu.findByTransactionId(transaction.getId());
-				} catch (ObjetoNaoEncontradoException ex) {
-					// Caso a integração ainda não tenha sido realizada..
+				if(!integracaoNu.exists(transaction.getId())) {
+					// Insere movimento bancário
 					movimentoService.insere(this.convertTransactionToMovimento(transaction, ultimaFatura));
+					
+					// Grava transação na tabela de integração
 					integracaoNu.insert(transaction);
+					
+					transacoesInseridas.add(transaction);
 				}
+			}
+			
+			// Ajusta saldo da fatura, se necessário..
+			if (!transacoesInseridas.isEmpty()) {
+				faturaService.ajustaSaldo(ultimaFatura);
 			}
 		} catch (IOException | ParseException | ObjetoNaoEncontradoException e) {
 			throw new NubankServiceException("Ocorreu um erro ao realizar a integração do cartão de crédito: " + e.getMessage());
 		}
+		
+		return transacoesInseridas;
 	}
 	
 	/**

@@ -1,5 +1,7 @@
 package com.carlos.gestorfinancas.resources;
 
+import java.util.Collection;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.carlos.gestorfinancas.dtos.nubank.NubankAutenticacaoQRCode;
 import com.carlos.gestorfinancas.dtos.nubank.NubankLoginResponseDTO;
 import com.carlos.gestorfinancas.dtos.nubank.NubankQRCodeDTO;
+import com.carlos.gestorfinancas.dtos.nubank.Transaction;
 import com.carlos.gestorfinancas.services.NubankService;
 
 @RestController
@@ -36,8 +39,7 @@ public class NubankResource {
 //	}
 	
 	@PostMapping(value = "/integrar-cartao-credito")
-	public ResponseEntity<Void> integrarCartaoCredito(@RequestBody NubankAutenticacaoQRCode obj) {
-		nu.integrarCartaoCredito(obj.getQr_code_id());
-		return ResponseEntity.ok(null);
+	public ResponseEntity<Collection<Transaction>> integrarCartaoCredito(@RequestBody NubankAutenticacaoQRCode obj) {
+		return ResponseEntity.ok(nu.integrarCartaoCredito(obj.getQr_code_id()));
 	}
 }
