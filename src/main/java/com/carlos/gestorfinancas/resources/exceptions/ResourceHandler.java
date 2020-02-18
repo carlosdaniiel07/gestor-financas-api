@@ -13,6 +13,7 @@ import com.carlos.gestorfinancas.services.exceptions.AuthenticationException;
 import com.carlos.gestorfinancas.services.exceptions.NubankServiceException;
 import com.carlos.gestorfinancas.services.exceptions.ObjetoNaoEncontradoException;
 import com.carlos.gestorfinancas.services.exceptions.OperacaoInvalidaException;
+import com.carlos.gestorfinancas.services.exceptions.TicketServiceException;
 
 /**
  * @author Carlos Daniel Martins de Almeida
@@ -59,6 +60,12 @@ public class ResourceHandler {
 	
 	@ExceptionHandler(NubankServiceException.class)
 	public ResponseEntity<RequestError> nubankServiceExcetpion(NubankServiceException ex) {
+		RequestError requestError = new RequestError(System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR.value(), ex.getMessage());
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(requestError);
+	}
+	
+	@ExceptionHandler(TicketServiceException.class)
+	public ResponseEntity<RequestError> ticketServiceExcetpion(TicketServiceException ex) {
 		RequestError requestError = new RequestError(System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR.value(), ex.getMessage());
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(requestError);
 	}
