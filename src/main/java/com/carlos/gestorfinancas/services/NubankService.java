@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -31,19 +32,23 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.carlos.gestorfinancas.dtos.nubank.Categorizador;
 import com.carlos.gestorfinancas.dtos.nubank.NubankAutenticacaoCPF;
 import com.carlos.gestorfinancas.dtos.nubank.NubankAutenticacaoQRCode;
 import com.carlos.gestorfinancas.dtos.nubank.NubankLoginResponseDTO;
 import com.carlos.gestorfinancas.dtos.nubank.NubankQRCodeDTO;
 import com.carlos.gestorfinancas.dtos.nubank.Transaction;
 import com.carlos.gestorfinancas.entities.CartaoCredito;
+import com.carlos.gestorfinancas.entities.Categoria;
 import com.carlos.gestorfinancas.entities.Fatura;
 import com.carlos.gestorfinancas.entities.Movimento;
+import com.carlos.gestorfinancas.entities.Subcategoria;
 import com.carlos.gestorfinancas.entities.enums.StatusFatura;
 import com.carlos.gestorfinancas.entities.enums.StatusMovimento;
 import com.carlos.gestorfinancas.services.exceptions.NubankServiceException;
 import com.carlos.gestorfinancas.services.exceptions.ObjetoNaoEncontradoException;
 import com.carlos.gestorfinancas.utils.DateUtils;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -62,6 +67,12 @@ public class NubankService {
 	
 	@Autowired
 	private FaturaService faturaService;
+	
+	@Autowired
+	private CategoriaService categoriaService;
+	
+	@Autowired
+	private SubcategoriaService subcategoriaService;
 	
 	public final static String ORIGEM = "NUBANK";
 	
@@ -142,6 +153,7 @@ public class NubankService {
 		
 		try {
 			Collection<Transaction> transactions = this.getCreditCardTransactions(qrCodeUUID);
+			Collection<Categorizador> categorizadores = this.readCategorizadorFile();
 			CartaoCredito cartaoCreditoNubank = cartaoCreditoService.getByNome("Nubank");
 			Fatura ultimaFatura = faturaService.getLastByCartaoCredito(cartaoCreditoNubank.getId());
 			
@@ -152,7 +164,7 @@ public class NubankService {
 			for (Transaction transaction : transactions) {
 				if(!integracaoNu.exists(transaction.getId())) {
 					// Insere movimento bancário
-					movimentoService.insere(this.convertTransactionToMovimento(transaction, ultimaFatura));
+					movimentoService.insere(this.convertTransactionToMovimento(transaction, ultimaFatura, categorizadores));
 					
 					// Grava transação na tabela de integração
 					integracaoNu.insert(transaction);
@@ -218,8 +230,11 @@ public class NubankService {
 	 * Converte uma transação do cartão de crédito para um movimento bancário
 	 * @return
 	 */
-	private Movimento convertTransactionToMovimento(Transaction transaction, Fatura fatura) {
-		return new Movimento(
+	private Movimento convertTransactionToMovimento(Transaction transaction, Fatura fatura, Collection<Categorizador> categorizadores) {
+		Categoria categoria = null;
+		Subcategoria subcategoria = null;
+		
+		Movimento movimento = new Movimento(
 				null, 
 				transaction.getDescription(), 
 				'D', 
@@ -232,10 +247,47 @@ public class NubankService {
 				NubankService.ORIGEM, 
 				"Movimento gerado via Integração Nubank", 
 				null, 
+				null,
+				null,
 				null, 
-				null, 
-				null, 
-				fatura);
+				fatura
+		);
+		
+		// Categorização inteligente do movimento bancário
+		for (Categorizador categorizador : categorizadores) {
+			// Verifica inicialmente a propriedade 'title' do categorizador
+			if (categorizador.getTitle() != null && categorizador.getTitle().equalsIgnoreCase(transaction.getTitle())) {
+				categoria = categoriaService.getByNome(categorizador.getCategory());
+				
+				if (categorizador.getSucategory() != null) {
+					subcategoria = subcategoriaService.getByNome(categorizador.getSucategory());
+				}
+				
+				break;
+			}
+			
+			// Verifica a coleção 'pattern' (padrões) do categorizador
+			for (String pattern : categorizador.getPattern()) {
+				if (transaction.getDescription().toLowerCase().contains(pattern.toLowerCase())) {
+					categoria = categoriaService.getByNome(categorizador.getCategory());
+					
+					if (categorizador.getSucategory() != null) {
+						subcategoria = subcategoriaService.getByNome(categorizador.getSucategory());
+					}
+					
+					break;
+				}
+			}
+			
+			if (categoria != null || subcategoria != null) {
+				break;
+			}
+		}
+		
+		movimento.setCategoria(categoria);
+		movimento.setSubcategoria(subcategoria);
+		
+		return movimento; 
 	}
 	
 	/**
@@ -443,5 +495,34 @@ public class NubankService {
 		}
 		
 		return stringBuilder.toString();
+	}
+	
+	/**
+	 * Lê o arquivo JSON que contém o mapeamento de categorias (utilizado p/ categorizar os movimentos/transações automaticamente)
+	 * @return
+	 */
+	private Collection<Categorizador> readCategorizadorFile() {
+		List<Categorizador> categorizadores = new ArrayList<Categorizador>();
+		StringBuilder jsonFile = new StringBuilder();
+		
+		String filePathName = "C:\\Nubank\\categorizador.json";
+		File file = new File(filePathName);
+		
+		if (file.exists()) {
+			try (BufferedReader reader = new BufferedReader(new FileReader(file, Charset.forName("UTF-8")))) {
+				String line = reader.readLine();
+				
+				while (line != null) {
+					jsonFile.append(line);
+					line = reader.readLine();
+				}
+				
+				categorizadores = this.objectMapper.readValue(jsonFile.toString(), new TypeReference<List<Categorizador>>(){});
+			} catch (IOException ex) {
+				ex.printStackTrace();
+			}
+		}
+		
+		return categorizadores;
 	}
 }

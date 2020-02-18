@@ -26,6 +26,16 @@ public class SubcategoriaService {
 	public List<Subcategoria> getAll() {
 		return repository.findByAtivo(true);
 	}
+	
+	public Subcategoria getByNome(String nome) {
+		List<Subcategoria> subcategorias = this.getAllByNome(nome);
+		
+		if (!subcategorias.isEmpty()) {
+			return subcategorias.get(0);
+		} else {
+			throw new ObjetoNaoEncontradoException(String.format("Subcategoria %s não encontrada", nome));
+		}
+	}
 
 	public List<Subcategoria> getAllByNome(String nome) {
 		return repository.findByNomeAndAtivo(nome, true);

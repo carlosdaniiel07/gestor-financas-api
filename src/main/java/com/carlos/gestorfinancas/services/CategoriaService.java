@@ -36,6 +36,16 @@ public class CategoriaService {
 		return repository.findByAtivo(true, PageRequest.of(pagina, dadosPorPagina));
 	}
 	
+	public Categoria getByNome(String nome) {
+		List<Categoria> categorias = this.getAllByNome(nome);
+		
+		if (!categorias.isEmpty()) {
+			return categorias.get(0);
+		} else {
+			throw new ObjetoNaoEncontradoException(String.format("Categoria %s não encontrada", nome));
+		}
+	}
+	
 	public List<Categoria> getAllByNome(String nome) {
 		return repository.findByNomeAndAtivo(nome, true);
 	}
