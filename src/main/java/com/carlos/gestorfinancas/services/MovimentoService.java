@@ -1,9 +1,13 @@
 package com.carlos.gestorfinancas.services;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -44,6 +48,9 @@ public class MovimentoService {
 	
 	private final int dadosPorPagina = 30;
 	private final String modulo = "MOVTO";
+	private final List<String> modulosPermitidos = new ArrayList<String>(
+		Arrays.asList(modulo, NubankService.ORIGEM, TicketService.ORIGEM)
+	);
 	
 	@Deprecated
 	public List<Movimento> getAll() {
@@ -154,7 +161,7 @@ public class MovimentoService {
 		Conta oldConta = oldMovimento.getConta();
 		StatusMovimento oldStatus = oldMovimento.getStatus();
 		
-		if(movimento.getOrigem().equalsIgnoreCase(modulo) || isTask || movimento.getOrigem().equalsIgnoreCase(NubankService.ORIGEM)) {
+		if(modulosPermitidos.contains(movimento.getOrigem()) || isTask) {
 			if(movimento.hasCartaoCredito()) {
 				movimento.setStatus(StatusMovimento.EFETIVADO);
 				
@@ -228,7 +235,7 @@ public class MovimentoService {
 	public void remove(Long id) {
 		Movimento obj = getById(id);
 		
-		if(obj.getOrigem().equalsIgnoreCase(modulo)) {
+		if(modulosPermitidos.contains(obj.getOrigem())) {
 			// Remove os anexos (arquivos) do movimento
 			anexoService.remove(obj.getAnexos());
 			
