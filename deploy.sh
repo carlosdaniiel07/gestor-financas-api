@@ -4,7 +4,7 @@ USER=${FTP_USER}
 PASSWD=${FTP_PASSWORD}
 PORT=${FTP_PORT}
 OLD_FILE="gestor-financas-api-1.0.0.war"
-NEW_FILE="api-gestor-financas.war"
+NEW_FILE="api.war"
 
 cd target
 mv $OLD_FILE $NEW_FILE
