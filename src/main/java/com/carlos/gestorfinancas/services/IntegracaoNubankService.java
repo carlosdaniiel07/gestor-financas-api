@@ -1,5 +1,7 @@
 package com.carlos.gestorfinancas.services;
 
+import java.util.Collection;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +16,14 @@ public class IntegracaoNubankService {
 	
 	@Autowired
 	private IntegracaoNubankRepository repository;
+	
+	/**
+	 * Retorna uma lista contendo o id (transactionId) de todas as transações já integradas
+	 * @return
+	 */
+	public Collection<String> getAllTransactionId() {
+		return repository.getAllTransactionId();
+	}
 	
 	/**
 	 * Realiza a busca de uma transação a partir do seu id ('transactionId')

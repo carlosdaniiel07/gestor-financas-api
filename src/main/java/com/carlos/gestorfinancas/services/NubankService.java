@@ -154,6 +154,7 @@ public class NubankService {
 		try {
 			Collection<Transaction> transactions = this.getCreditCardTransactions(qrCodeUUID);
 			Collection<Categorizador> categorizadores = this.readCategorizadorFile();
+			Collection<String> transacoesImportadas = integracaoNu.getAllTransactionId();
 			CartaoCredito cartaoCreditoNubank = cartaoCreditoService.getByNome("Nubank");
 			Fatura ultimaFatura = faturaService.getLastByCartaoCredito(cartaoCreditoNubank.getId());
 			
@@ -162,7 +163,7 @@ public class NubankService {
 			}
 			
 			for (Transaction transaction : transactions) {
-				if(!integracaoNu.exists(transaction.getId())) {
+				if(!transacoesImportadas.contains(transaction.getId())) {
 					// Insere movimento bancário
 					movimentoService.insere(this.convertTransactionToMovimento(transaction, ultimaFatura, categorizadores));
 					
