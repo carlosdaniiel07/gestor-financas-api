@@ -98,7 +98,7 @@ public class TicketService {
 				movimento = new Movimento(
 						null, 
 						transaction.getDescription().substring(10), // Ignora valor 'COMPRAS - ' que é colocado em todos os lançamentos do extrato
-						'D', 
+						transaction.getTipo(), 
 						DateUtils.getDataAtual(), 
 						transaction.getDateParsed(), 
 						transaction.getValueParsed(), 
@@ -114,7 +114,7 @@ public class TicketService {
 						null
 				);
 				
-				integracao = new IntegracaoTicket(transaction.getId(), transaction.getDateParsed(), transaction.getValueParsed(), transaction.getDescription(), DateUtils.getDataAtual());
+				integracao = new IntegracaoTicket(transaction.getId(), transaction.getDateParsed(), transaction.getValueParsed(), transaction.getDescription(), DateUtils.getDataAtual(), transaction.getTipo());
 				
 				// Insere movimento bancário
 				movimentoService.insere(movimento);
@@ -163,7 +163,8 @@ public class TicketService {
 							"", 
 							this.dateFormat.parse(currentNode.get("dateParsed").asText()), 
 							currentNode.get("valueParsed").asDouble(), 
-							currentNode.get("description").asText()
+							currentNode.get("description").asText(),
+							currentNode.get("description").asText().contains("DISPONIB. DE CREDITO") ? 'C' : 'D'
 					);
 					
 					transacoes.add(transaction);

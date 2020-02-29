@@ -14,17 +14,19 @@ public class Transaction implements Serializable {
 	private Date dateParsed;
 	private double valueParsed;
 	private String description;
+	private char tipo;
 	
 	public Transaction() {
 		
 	}
 
-	public Transaction(String id, Date dateParsed, double valueParsed, String description) {
+	public Transaction(String id, Date dateParsed, double valueParsed, String description, char tipo) {
 		super();
 
 		this.dateParsed = dateParsed;
 		this.valueParsed = valueParsed;
 		this.description = description;
+		this.tipo = tipo;
 		this.id = this.buildIdCode();
 	}
 	
@@ -64,5 +66,11 @@ public class Transaction implements Serializable {
 		this.description = description;
 	}
 
-	
+	public char getTipo() {
+		return tipo;
+	}
+
+	public void setTipo(char tipo) {
+		this.tipo = tipo;
+	}
 }

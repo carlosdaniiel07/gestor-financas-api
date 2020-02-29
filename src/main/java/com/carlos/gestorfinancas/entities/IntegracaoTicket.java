@@ -20,20 +20,21 @@ public class IntegracaoTicket implements Serializable {
 	private Date dateParsed;
 	private double valueParsed;
 	private String description;
-	
 	private Date date;
+	private char tipo;
 	
 	public IntegracaoTicket() {
 		
 	}
 
-	public IntegracaoTicket(String id, Date dateParsed, double valueParsed, String description, Date date) {
+	public IntegracaoTicket(String id, Date dateParsed, double valueParsed, String description, Date date, char tipo) {
 		super();
 		this.id = id;
 		this.dateParsed = dateParsed;
 		this.valueParsed = valueParsed;
 		this.description = description;
 		this.date = date;
+		this.tipo = tipo;
 	}
 
 	public String getId() {
@@ -74,6 +75,14 @@ public class IntegracaoTicket implements Serializable {
 
 	public void setDate(Date date) {
 		this.date = date;
+	}
+
+	public char getTipo() {
+		return tipo;
+	}
+
+	public void setTipo(char tipo) {
+		this.tipo = tipo;
 	}
 
 	@Override
