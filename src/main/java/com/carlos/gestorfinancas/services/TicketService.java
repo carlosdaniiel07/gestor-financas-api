@@ -97,7 +97,7 @@ public class TicketService {
 			if (!transactionsId.contains(transaction.getId())) {
 				movimento = new Movimento(
 						null, 
-						transaction.getDescription(), 
+						transaction.getDescription().substring(10), // Ignora valor 'COMPRAS - ' que é colocado em todos os lançamentos do extrato
 						'D', 
 						DateUtils.getDataAtual(), 
 						transaction.getDateParsed(), 
