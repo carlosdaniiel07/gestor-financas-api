@@ -21,10 +21,11 @@ public class Transaction implements Serializable {
 
 	public Transaction(String id, Date dateParsed, double valueParsed, String description) {
 		super();
-		this.id = id;
+
 		this.dateParsed = dateParsed;
 		this.valueParsed = valueParsed;
 		this.description = description;
+		this.id = this.buildIdCode();
 	}
 	
 	public String buildIdCode() {

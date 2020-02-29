@@ -29,7 +29,6 @@ import com.carlos.gestorfinancas.entities.Categoria;
 import com.carlos.gestorfinancas.entities.Conta;
 import com.carlos.gestorfinancas.entities.IntegracaoTicket;
 import com.carlos.gestorfinancas.entities.Movimento;
-import com.carlos.gestorfinancas.entities.Subcategoria;
 import com.carlos.gestorfinancas.entities.enums.StatusMovimento;
 import com.carlos.gestorfinancas.services.exceptions.TicketServiceException;
 import com.carlos.gestorfinancas.utils.DateUtils;
@@ -86,6 +85,7 @@ public class TicketService {
 	public Collection<Transaction> IntegrarCartaoRefeicao() {
 		List<Transaction> transacoesInseridas = new ArrayList<Transaction>();
 		List<Transaction> transactions = this.getTransacoes();
+		Collection<String> transactionsId = integracaoService.getAllTransactionId();
 		
 		Conta conta = contaService.getByNome("Ticket Restaurante");
 		Categoria categoria = categoriaService.getAllByNome("Alimentação").get(0);
@@ -94,7 +94,7 @@ public class TicketService {
 		IntegracaoTicket integracao;
 		
 		for (Transaction transaction : transactions) {
-			if (!integracaoService.exists(transaction.getId())) {
+			if (!transactionsId.contains(transaction.getId())) {
 				movimento = new Movimento(
 						null, 
 						transaction.getDescription(), 
@@ -165,8 +165,6 @@ public class TicketService {
 							currentNode.get("valueParsed").asDouble(), 
 							currentNode.get("description").asText()
 					);
-					
-					transaction.setId(transaction.buildIdCode());
 					
 					transacoes.add(transaction);
 				}
