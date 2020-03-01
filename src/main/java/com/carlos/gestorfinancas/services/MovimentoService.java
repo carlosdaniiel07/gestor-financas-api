@@ -78,6 +78,10 @@ public class MovimentoService {
 		return repository.findByContaId(contaId, PageRequest.of(pagina, dadosPorPagina));
 	}
 	
+	public List<String> getDescricaoByFaturaId(Long faturaId) {
+		return repository.getDescricaoByFaturaId(faturaId);
+	}
+	
 	public Movimento getById(Long id) {
 		return repository.findById(id).orElseThrow(() -> new ObjetoNaoEncontradoException("Esse movimento não foi encontrado."));
 	}

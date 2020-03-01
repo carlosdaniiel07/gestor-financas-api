@@ -184,8 +184,8 @@ public class FaturaService {
 	private Movimento geraMovimentoDebito(FaturaPagamentoDTO faturaDTO) {
 		String obs = "";
 		
-		for(Movimento movimento : faturaDTO.getFatura().getMovimentos()) {
-			obs += "* " + movimento.getDescricao() + "\n"; 
+		for(String descricaoMovimento : movimentoService.getDescricaoByFaturaId(faturaDTO.getFatura().getId())) {
+			obs += "* " + descricaoMovimento + "\n"; 
 		}
 		
 		return new Movimento(
