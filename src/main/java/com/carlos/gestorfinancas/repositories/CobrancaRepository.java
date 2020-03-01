@@ -1,5 +1,6 @@
 package com.carlos.gestorfinancas.repositories;
 
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -18,7 +19,9 @@ import com.carlos.gestorfinancas.entities.enums.StatusCobranca;
 @Repository
 public interface CobrancaRepository extends JpaRepository<Cobranca, Long> {
 	List<Cobranca> findByDataVencimento(Date dataVencimento);
+	
 	List<Cobranca> findByStatus(StatusCobranca status);
+	List<Cobranca> findByStatusIn(Collection<StatusCobranca> status);
 	
 	@Query(value = "SELECT c FROM Cobranca c JOIN FETCH c.beneficiario")
 	List<Cobranca> getAll(Pageable page);

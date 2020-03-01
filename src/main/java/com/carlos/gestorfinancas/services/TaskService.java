@@ -1,6 +1,7 @@
 package com.carlos.gestorfinancas.services;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
@@ -115,7 +116,7 @@ public class TaskService {
 	public void alertaCobrancasVencer(String authorizationCode) {
 		checkAuthorizationCode(authorizationCode);
 	
-		List<Cobranca> cobrancasVencer = cobrancaService.getAllByStatus(StatusCobranca.PENDENTE);
+		List<Cobranca> cobrancasVencer = cobrancaService.getAllByStatus(Arrays.asList(StatusCobranca.PENDENTE, StatusCobranca.PAGO_PARCIAL));		
 		List<Cobranca> cobrancasAlerta = new ArrayList<Cobranca>();
 		Set<Integer> dias = new HashSet<Integer>();
 		
@@ -124,11 +125,12 @@ public class TaskService {
 		}
 		
 		cobrancasVencer.forEach((Cobranca cobranca) -> {
-			long diff = Math.abs(cobranca.getDataVencimento().getTime() - DateUtils.getDataAtual().getTime());
-			int diferencaDias = (int)TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
+			long diff = cobranca.getDataVencimento().getTime() - DateUtils.getDataAtual().getTime();
+			int diferencaDias = (int)TimeUnit.DAYS.convert(Math.abs(diff), TimeUnit.MILLISECONDS);
 		
-			// A cobrança será enviada por e-mail somente se a diferença de dias entre vencimento e data atual estiver dentro dos parâmetros
-			if(dias.contains(diferencaDias)) {
+			// A cobrança será enviada por e-mail somente se a diferença de dias entre vencimento e data atual estiver dentro dos parâmetros 
+			// ou se a cobrança estiver vencida
+			if(diff < 0 || dias.contains(diferencaDias)) {
 				cobrancasAlerta.add(cobranca);
 			}
 		});

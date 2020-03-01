@@ -1,5 +1,6 @@
 package com.carlos.gestorfinancas.services;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,6 +50,10 @@ public class CobrancaService {
 	
 	public List<Cobranca> getAllByStatus(StatusCobranca status) {
 		return repository.findByStatus(status);
+	}
+
+	public List<Cobranca> getAllByStatus(Collection<StatusCobranca> status) {
+		return repository.findByStatusIn(status);
 	}
 	
 	public Cobranca getById(Long id) {
