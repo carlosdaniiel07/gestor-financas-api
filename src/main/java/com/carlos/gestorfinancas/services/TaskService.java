@@ -244,7 +244,7 @@ public class TaskService {
 	private void gravaLogExecucao(String nome) {
 		Date dataAtual = DateUtils.getDataAtual();
 		String obs = "Tarefa executada com sucesso em " + DateUtils.getDataAtualAsBrFormat();
-		String origem = "Azure";
+		String origem = "";
 		
 		LogTask obj = new LogTask(null, nome, origem, dataAtual, obs, true);
 		
