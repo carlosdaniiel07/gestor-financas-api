@@ -94,6 +94,6 @@ public interface MovimentoRepository extends JpaRepository<Movimento, Long> {
 	)
 	List<Movimento> findByDataContabilizacaoBetween(Date minDate, Date maxDate);
 	
-	@Query(value = "SELECT m.descricao FROM Movimento m WHERE m.fatura.id = ?1")
+	@Query(value = "SELECT m.descricao FROM Movimento m INNER JOIN FETCH m.fatura f WHERE m.fatura.id = ?1")
 	List<String> getDescricaoByFaturaId(Long faturaId);
 }
