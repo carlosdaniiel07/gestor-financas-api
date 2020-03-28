@@ -183,9 +183,11 @@ public class FaturaService {
 	
 	private Movimento geraMovimentoDebito(FaturaPagamentoDTO faturaDTO) {
 		String obs = "";
+		List<String> descricoes = movimentoService.getDescricaoByFaturaId(faturaDTO.getFatura().getId());
 		
-		for(String descricaoMovimento : movimentoService.getDescricaoByFaturaId(faturaDTO.getFatura().getId())) {
-			obs += "* " + descricaoMovimento + "\n"; 
+		for(int i = 0; i < descricoes.size(); i++) {
+			boolean isLastIteration = i + 1 == descricoes.size();
+			obs += descricoes.get(i) + (isLastIteration ? "" : ", ");
 		}
 		
 		return new Movimento(

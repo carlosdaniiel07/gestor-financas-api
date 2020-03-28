@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -54,6 +55,8 @@ public class Movimento implements Serializable {
 	private StatusMovimento status;
 	
 	private String origem;
+	
+	@Column(length = 1000)
 	private String observacao;
 	
 	@ManyToOne(fetch = FetchType.EAGER)
