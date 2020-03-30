@@ -30,6 +30,10 @@ public class Transaction implements Serializable {
 		this.id = this.buildIdCode();
 	}
 	
+	public boolean isDebito() {
+		return this.tipo == 'D';
+	}
+	
 	public String buildIdCode() {
 		return String.valueOf(this.getDateParsed().getTime()) + String.valueOf(this.getValueParsed()) + this.getDescription();
 	}
