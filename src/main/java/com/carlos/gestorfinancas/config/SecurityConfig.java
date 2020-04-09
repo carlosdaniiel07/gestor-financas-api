@@ -38,6 +38,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		"/tasks/**"
 	};
 	
+	private final String[] urlsAcessiveisViaGet = {
+		"/status/is-alive"
+	};
+	
 	// Configuração HTTP
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
@@ -48,7 +52,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		http.csrf().disable();
 		
 		// Permite acesso a todos os endpoints armazenados no vetor 'urlsAcessiveisViaPost' e requisita autorização aos demais endpoints
-		http.authorizeRequests().antMatchers(HttpMethod.POST, urlsAcessiveisViaPost).permitAll().anyRequest().authenticated();
+		http.authorizeRequests()
+			.antMatchers(HttpMethod.POST, urlsAcessiveisViaPost).permitAll()
+			.antMatchers(HttpMethod.GET, urlsAcessiveisViaGet).permitAll()
+		.anyRequest().authenticated();
 		
 		// Back-end não irá salvar sessões
 		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
