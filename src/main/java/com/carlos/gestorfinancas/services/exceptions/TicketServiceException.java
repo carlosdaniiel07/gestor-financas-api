@@ -1,6 +1,6 @@
 package com.carlos.gestorfinancas.services.exceptions;
 
-public class TicketServiceException extends RuntimeException {
+public class TicketServiceException extends ExternalServiceException {
 
 	/**
 	 * 

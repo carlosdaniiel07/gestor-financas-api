@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.carlos.gestorfinancas.services.exceptions.AuthenticationException;
+import com.carlos.gestorfinancas.services.exceptions.ExternalServiceException;
+import com.carlos.gestorfinancas.services.exceptions.NotificationException;
 import com.carlos.gestorfinancas.services.exceptions.NubankServiceException;
 import com.carlos.gestorfinancas.services.exceptions.ObjetoNaoEncontradoException;
 import com.carlos.gestorfinancas.services.exceptions.OperacaoInvalidaException;
@@ -58,14 +60,14 @@ public class ResourceHandler {
 		return ResponseEntity.status(HttpStatus.FORBIDDEN).body(requestError);
 	}
 	
-	@ExceptionHandler(NubankServiceException.class)
-	public ResponseEntity<RequestError> nubankServiceExcetpion(NubankServiceException ex) {
+	@ExceptionHandler(ExternalServiceException.class)
+	public ResponseEntity<RequestError> externalServiceExcetpion(ExternalServiceException ex) {
 		RequestError requestError = new RequestError(System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR.value(), ex.getMessage());
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(requestError);
 	}
 	
-	@ExceptionHandler(TicketServiceException.class)
-	public ResponseEntity<RequestError> ticketServiceExcetpion(TicketServiceException ex) {
+	@ExceptionHandler(NotificationException.class)
+	public ResponseEntity<RequestError> notificationExcetpion(NotificationException ex) {
 		RequestError requestError = new RequestError(System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR.value(), ex.getMessage());
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(requestError);
 	}

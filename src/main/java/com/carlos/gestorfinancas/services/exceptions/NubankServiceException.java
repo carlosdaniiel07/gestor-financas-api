@@ -1,6 +1,6 @@
 package com.carlos.gestorfinancas.services.exceptions;
 
-public class NubankServiceException extends RuntimeException {
+public class NubankServiceException extends ExternalServiceException {
 
 	/**
 	 * 
