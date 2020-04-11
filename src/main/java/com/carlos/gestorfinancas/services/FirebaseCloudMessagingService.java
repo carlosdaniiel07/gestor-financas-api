@@ -1,6 +1,7 @@
 package com.carlos.gestorfinancas.services;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.Collection;
 
 import org.apache.http.HttpResponse;
@@ -60,7 +61,7 @@ public class FirebaseCloudMessagingService implements NotificacaoService {
 		
 		try {
 			requestContent = jsonMapper.writeValueAsString(new SendNotificationDTO(titulo, conteudo, "default", notificacao.getId().toString(), "/topics/all"));
-			postRequest.setEntity(new StringEntity(requestContent));
+			postRequest.setEntity(new StringEntity(requestContent, Charset.forName("UTF-8")));
 			HttpResponse response = httpClient.execute(postRequest);
 			
 			if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
