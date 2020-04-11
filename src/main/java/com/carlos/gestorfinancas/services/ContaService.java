@@ -25,6 +25,9 @@ public class ContaService {
 	
 	@Autowired
 	private EmailService emailService;
+	
+	@Autowired
+	private NotificacaoService notificacaoService;
 
 	private final int dadosPorPagina = 30;
 	
@@ -94,7 +97,7 @@ public class ContaService {
 			// Envia um e-mail de alerta caso o saldo da conta esteja negativo
 			if(novoSaldo < 0) {
 				String assunto = String.format("O saldo da conta %s requer sua atenção!", conta.getNome());
-				emailService.enviaEmail(assunto, emailService.getEmailsFromParam(), "avisoContaNegativa", "conta", conta);
+				notificacaoService.send("Saldo negativo", String.format("A conta %s está com o saldo negativo!", conta.getNome()));
 			}
 		}
 	}

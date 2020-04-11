@@ -5,6 +5,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
 import com.carlos.gestorfinancas.services.EmailService;
+import com.carlos.gestorfinancas.services.FirebaseCloudMessagingService;
+import com.carlos.gestorfinancas.services.NotificacaoService;
 import com.carlos.gestorfinancas.services.S3Service;
 import com.carlos.gestorfinancas.services.SendGridEmailService;
 import com.carlos.gestorfinancas.services.StorageService;
@@ -25,5 +27,10 @@ public class ProdConfig {
 	@Bean
 	public StorageService storageService() {
 		return new S3Service();
+	}
+	
+	@Bean
+	public NotificacaoService notificacaoService() {
+		return new FirebaseCloudMessagingService();
 	}
 }

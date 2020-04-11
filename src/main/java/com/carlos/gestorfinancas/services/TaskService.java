@@ -55,6 +55,9 @@ public class TaskService {
 	@Autowired
 	private SaldoDiarioService saldoDiarioService;
 	
+	@Autowired
+	private NotificacaoService notificacaoService;
+	
 	@Value("${tasks.authorization-code}")
 	private String authorizationCode;
 	
@@ -137,8 +140,13 @@ public class TaskService {
 		
 		// Envia o e-mail de alerta
 		if(!cobrancasAlerta.isEmpty()) {
-			emailService.enviaEmail("Cobranças próximas ao vencimento", emailService.getEmailsFromParam(), "alertaCobrancaVencer", 
-					  "cobrancas", cobrancasAlerta);
+			String conteudoNotificacao = "";
+			
+			for(int i = 0; i < cobrancasAlerta.size(); i++) {
+				conteudoNotificacao += String.format("%s - R$ %.2f", cobrancasAlerta.get(i).getDescricao(), cobrancasAlerta.get(i).getSaldo());
+			}
+			
+			notificacaoService.send("Cobranças próximas do vencimento", conteudoNotificacao);
 		}
 		
 		this.gravaLogExecucao("alertaCobrancasVencer");
@@ -167,7 +175,14 @@ public class TaskService {
 		});
 		
 		if (!faturasAlerta.isEmpty()) {
-			emailService.enviaEmail("Faturas próximas do vencimento", emailService.getEmailsFromParam(), "", "faturas", faturasAlerta);
+			String conteudoNotificacao = "";
+			
+			for(int i = 0; i < faturasAlerta.size(); i++) {
+				conteudoNotificacao += String.format("%s - R$ %.2f", faturasAlerta.get(i).getCartao().getNome(),
+						faturasAlerta.get(i).getValor());
+			}
+			
+			notificacaoService.send("Faturas próximas do vencimento", conteudoNotificacao);
 		}
 		
 		this.gravaLogExecucao("alertaFaturasVencer");
@@ -193,8 +208,14 @@ public class TaskService {
 		
 		// Envia uma notificação por e-mail
 		if(!faturasAlerta.isEmpty()) {
-			emailService.enviaEmail("Fechamento fatura cartão de crédito", emailService.getEmailsFromParam(), "alertaFechamentoFatura", 
-					  "faturas", faturasAlerta);
+			String conteudoNotificacao = "";
+			
+			for(int i = 0; i < faturasAlerta.size(); i++) {
+				conteudoNotificacao += String.format("%s - R$ %.2f", faturasAlerta.get(i).getCartao().getNome(),
+						faturasAlerta.get(i).getValor());
+			}
+			
+			notificacaoService.send("Fechamento fatura cartão de crédito", conteudoNotificacao);
 		}
 		
 		this.gravaLogExecucao("fechaFaturaCartao");
