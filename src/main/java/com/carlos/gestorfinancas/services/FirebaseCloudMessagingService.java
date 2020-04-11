@@ -12,6 +12,8 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.carlos.gestorfinancas.dtos.fcm.SendNotificationDTO;
 import com.carlos.gestorfinancas.entities.Notificacao;
@@ -41,7 +43,11 @@ public class FirebaseCloudMessagingService implements NotificacaoService {
 	}
 
 	@Override
+	@Transactional(propagation = Propagation.REQUIRED)
 	public void send(String titulo, String conteudo) {
+		// Grava notificação no banco de dados
+		Notificacao notificacao = this.insere(titulo, conteudo);
+		
 		// Realiza requisição na API para envio da push notification
 		ObjectMapper jsonMapper = new ObjectMapper();
 		HttpClient httpClient = HttpClients.createDefault();
@@ -53,15 +59,12 @@ public class FirebaseCloudMessagingService implements NotificacaoService {
 		postRequest.addHeader("Authorization", String.format("key=%s", System.getenv("FCM_API_KEY")));
 		
 		try {
-			requestContent = jsonMapper.writeValueAsString(new SendNotificationDTO(titulo, conteudo, "default", "/topics/all"));
+			requestContent = jsonMapper.writeValueAsString(new SendNotificationDTO(titulo, conteudo, "default", notificacao.getId().toString(), "/topics/all"));
 			postRequest.setEntity(new StringEntity(requestContent));
 			HttpResponse response = httpClient.execute(postRequest);
 			
 			if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
 				responseContent = EntityUtils.toString(response.getEntity());
-				
-				// Grava notificação no banco de dados
-				this.insere(titulo, conteudo);
 			} else {
 				throw new NotificationException("Falha ao consumir API do Firebase FCM: " + EntityUtils.toString(response.getEntity()));
 			}
@@ -91,8 +94,8 @@ public class FirebaseCloudMessagingService implements NotificacaoService {
 	 * @param titulo
 	 * @param conteudo
 	 */
-	private void insere(String titulo, String conteudo) {
+	private Notificacao insere(String titulo, String conteudo) {
 		Notificacao notificacao = new Notificacao(null, TipoNotificacao.PUSH, titulo, conteudo, DateUtils.getDataAtual(), "Firebase Cloud Messaging", false, null);
-		repository.save(notificacao);
+		return repository.save(notificacao);
 	}
 }
