@@ -94,11 +94,14 @@ public class ContaService {
 			conta.setSaldo(novoSaldo);
 			repository.save(conta);
 			
-			// Envia um e-mail de alerta caso o saldo da conta esteja negativo
-			if(novoSaldo < 0) {
-				String assunto = String.format("O saldo da conta %s requer sua atenção!", conta.getNome());
-				notificacaoService.send("Saldo negativo", String.format("A conta %s está com o saldo negativo!", conta.getNome()));
-			}
+			// Envia notificação de saldo negativo de forma assincrona
+			Thread async = new Thread(() -> {
+				if (novoSaldo < 0) {
+					notificacaoService.send("Saldo negativo", String.format("O saldo da conta %s está negativo em R$ %.2f", conta.getNome(), novoSaldo));
+				}
+			});
+			
+			async.start();
 		}
 	}
 }
