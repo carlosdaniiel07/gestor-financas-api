@@ -60,6 +60,12 @@ public class TasksResource {
 		return ResponseEntity.ok(null);
 	}
 	
+	@PostMapping(value = "/alerta-saldo-negativo")
+	public ResponseEntity<Void> alertaSaldoNegativo(@RequestParam(required = false) String authorizationCode) {
+		service.alertaSaldoNegativo(authorizationCode);
+		return ResponseEntity.ok(null);
+	}
+	
 	@GetMapping
 	public ResponseEntity<Collection<LogTask>> listar() {
 		return ResponseEntity.ok(service.getAll());

@@ -241,6 +241,22 @@ public class TaskService {
 	}
 	
 	/**
+	 * Verifica se existe alguma conta com saldo negativo e envia uma notificação caso verdadeiro
+	 * @param authorizationCode
+	 */
+	public void alertaSaldoNegativo(String authorizationCode) {
+		checkAuthorizationCode(authorizationCode);
+		
+		List<Conta> contas = contaService.getAll();
+		
+		for (Conta conta : contas) {
+			if (conta.getSaldo() < 0) {
+				notificacaoService.send("Saldo negativo", String.format("O saldo da conta %s está negativo em R$ %.2f", conta.getNome(), conta.getSaldo()));
+			}
+		}
+	}
+	
+	/**
 	 * Retorna todo o histórico de tarefas automatizadas (jobs) executadas
 	 * @return
 	 */
