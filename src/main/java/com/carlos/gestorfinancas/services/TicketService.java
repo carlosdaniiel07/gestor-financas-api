@@ -50,6 +50,9 @@ public class TicketService {
 	@Autowired
 	private MovimentoService movimentoService;
 	
+	@Autowired
+	private NotificacaoService notificacaoService;
+	
 	public static String ORIGEM = "TICKE";
 	
 	// Dados para autenticação
@@ -125,6 +128,11 @@ public class TicketService {
 				transacoesInseridas.add(transaction);
 			}
 		}
+		
+		// Envia notificação referente a finalização da integração
+		new Thread(() -> {
+			notificacaoService.send("Integração Ticket", String.format("Integração finalizada com sucesso! %d movimento(s) importados!", transacoesInseridas.size()));
+		}).start();
 		
 		return transacoesInseridas;
 	}

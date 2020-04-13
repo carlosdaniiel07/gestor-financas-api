@@ -74,6 +74,9 @@ public class NubankService {
 	@Autowired
 	private SubcategoriaService subcategoriaService;
 	
+	@Autowired
+	private NotificacaoService notificacaoService;
+	
 	public final static String ORIGEM = "NUBANK";
 	
 	private final static String DISCOVER_LOGIN_URL = "https://prod-s0-webapp-proxy.nubank.com.br/api/discovery";
@@ -178,6 +181,11 @@ public class NubankService {
 			if (!transacoesInseridas.isEmpty()) {
 				faturaService.ajustaSaldo(ultimaFatura);
 			}
+			
+			// Envia notificação referente a finalização da integração
+			new Thread(() -> {
+				notificacaoService.send("Integração Nubank", String.format("Integração finalizada com sucesso! %d movimento(s) importados!", transacoesImportadas.size()));
+			}).start();
 		} catch (IOException | ParseException | ObjetoNaoEncontradoException e) {
 			throw new NubankServiceException("Ocorreu um erro ao realizar a integração do cartão de crédito: " + e.getMessage());
 		}
