@@ -184,7 +184,7 @@ public class NubankService {
 			
 			// Envia notificação referente a finalização da integração
 			new Thread(() -> {
-				notificacaoService.send("Integração Nubank", String.format("Integração finalizada com sucesso! %d movimento(s) importados!", transacoesImportadas.size()));
+				notificacaoService.send("Integração Nubank", String.format("Integração finalizada com sucesso! %d movimento(s) importados!", transacoesInseridas.size()));
 			}).start();
 		} catch (IOException | ParseException | ObjetoNaoEncontradoException e) {
 			throw new NubankServiceException("Ocorreu um erro ao realizar a integração do cartão de crédito: " + e.getMessage());
