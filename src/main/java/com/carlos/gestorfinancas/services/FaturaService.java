@@ -164,9 +164,6 @@ public class FaturaService {
 			calendar.setTime(dataReferencia);
 			ultimoDiaDoMes = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
 			
-			// Monta a data de vencimento da fatura
-			calendar.add(Calendar.MONTH, 1);
-			
 			if(diaPagamento > ultimoDiaDoMes) {
 				calendar.set(Calendar.DAY_OF_MONTH, ultimoDiaDoMes);
 			} else {
