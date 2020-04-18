@@ -75,28 +75,14 @@ public class FirebaseCloudMessagingService implements NotificacaoService {
 			postRequest.releaseConnection();
 		}
 	}
-	
-	@Override
-	public Notificacao markAsReceived(Long notificacaoId) {
-		Notificacao notificacao = getById(notificacaoId);
 		
-		if (!notificacao.isRecebido()) {
-			notificacao.setRecebido(true);
-			notificacao.setDataRecebimento(DateUtils.getDataAtual());
-			
-			return repository.save(notificacao);
-		}
-		
-		return notificacao;
-	}
-	
 	/**
 	 * Grava a notificação no banco de dados
 	 * @param titulo
 	 * @param conteudo
 	 */
 	private Notificacao insere(String titulo, String conteudo) {
-		Notificacao notificacao = new Notificacao(null, TipoNotificacao.PUSH, titulo, conteudo, DateUtils.getDataAtual(), "Firebase Cloud Messaging", false, null);
+		Notificacao notificacao = new Notificacao(null, TipoNotificacao.PUSH, titulo, conteudo, DateUtils.getDataAtual(), "Firebase Cloud Messaging");
 		return repository.save(notificacao);
 	}
 }

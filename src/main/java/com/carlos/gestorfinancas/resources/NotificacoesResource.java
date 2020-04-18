@@ -23,9 +23,10 @@ public class NotificacoesResource {
 		return ResponseEntity.ok(notificacaoService.getById(id));
 	}
 	
+	@Deprecated
 	@PutMapping(value = "/{id}/recebido")
 	public ResponseEntity<Void> marcarComoRecebido(@PathVariable Long id) {
-		notificacaoService.markAsReceived(id);
+		//notificacaoService.markAsReceived(id);
 		return ResponseEntity.ok(null);
 	}
 }

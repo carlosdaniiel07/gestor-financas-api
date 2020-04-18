@@ -31,15 +31,12 @@ public class Notificacao implements Serializable {
 	private String conteudo;
 	private Date data;
 	private String origem;
-	private boolean recebido;
-	private Date dataRecebimento;
 	
 	public Notificacao() {
 		
 	}
 	
-	public Notificacao(Long id, TipoNotificacao tipo, String titulo, String conteudo, Date data, String origem,
-			boolean recebido, Date dataRecebimento) {
+	public Notificacao(Long id, TipoNotificacao tipo, String titulo, String conteudo, Date data, String origem) {
 		super();
 		this.id = id;
 		this.tipo = tipo;
@@ -47,8 +44,6 @@ public class Notificacao implements Serializable {
 		this.conteudo = conteudo;
 		this.data = data;
 		this.origem = origem;
-		this.recebido = recebido;
-		this.dataRecebimento = dataRecebimento;
 	}
 
 	public Long getId() {
@@ -97,22 +92,6 @@ public class Notificacao implements Serializable {
 
 	public void setOrigem(String origem) {
 		this.origem = origem;
-	}
-
-	public boolean isRecebido() {
-		return recebido;
-	}
-
-	public void setRecebido(boolean recebido) {
-		this.recebido = recebido;
-	}
-	
-	public Date getDataRecebimento() {
-		return dataRecebimento;
-	}
-
-	public void setDataRecebimento(Date dataRecebimento) {
-		this.dataRecebimento = dataRecebimento;
 	}
 
 	@Override
