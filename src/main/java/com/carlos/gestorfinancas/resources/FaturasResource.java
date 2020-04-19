@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -29,6 +30,13 @@ import com.carlos.gestorfinancas.services.FaturaService;
 public class FaturasResource {
 	@Autowired
 	private FaturaService service;
+	
+	@GetMapping(value = "/periodo")
+	public ResponseEntity<List<Fatura>> listarPorPeriodo(
+		@RequestParam(value = "minDate", required = true) String minDate,
+		@RequestParam(value = "maxDate", required = true) String maxDate) {
+		return ResponseEntity.ok(service.getAllByPeriodo(minDate, maxDate));
+	}
 	
 	@GetMapping(value = "/{id}")
 	public ResponseEntity<Fatura> buscar(@PathVariable Long id){

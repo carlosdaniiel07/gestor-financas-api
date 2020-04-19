@@ -1,5 +1,6 @@
 package com.carlos.gestorfinancas.repositories;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,6 +20,7 @@ public interface FaturaRepository extends JpaRepository<Fatura, Long> {
 	List<Fatura> findByCartaoId(Long cartaoId);
 	List<Fatura> findByCartaoIdAndReferencia(Long cartaoId, String referencia);
 	List<Fatura> findByStatus(StatusFatura status);
+	List<Fatura> findByVencimentoBetween(Date min, Date max);
 	
 	Optional<Fatura> findById(Long id);
 	

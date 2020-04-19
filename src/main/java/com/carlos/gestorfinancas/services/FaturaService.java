@@ -2,6 +2,7 @@ package com.carlos.gestorfinancas.services;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -41,6 +42,13 @@ public class FaturaService {
 	
 	public List<Fatura> getAllByStatus(StatusFatura status) {
 		return repository.findByStatus(status);
+	}
+	
+	public List<Fatura> getAllByPeriodo(String minDate, String maxDate) {
+		Date min = DateUtils.buildCalendarWithLocalDate(LocalDate.parse(minDate)).getTime();
+		Date max = DateUtils.buildCalendarWithLocalDate(LocalDate.parse(maxDate)).getTime();
+		
+		return repository.findByVencimentoBetween(min, max);
 	}
 	
 	public List<Fatura> getByCartaoCredito(Long cartaoCreditoId) {
