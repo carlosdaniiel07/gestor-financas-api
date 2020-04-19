@@ -40,7 +40,7 @@ public class FaturaDTO implements Serializable {
 	}
 	
 	public Fatura toFatura() {
-		return new Fatura(null, getReferencia(), null, null, 0, 0, null, getCartao());
+		return new Fatura(null, getReferencia(), null, null, null, 0, 0, null, getCartao());
 	}
 
 	/**

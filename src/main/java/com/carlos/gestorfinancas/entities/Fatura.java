@@ -43,6 +43,9 @@ public class Fatura implements Serializable {
 	private Date vencimento;
 	
 	@JsonFormat(shape = Shape.STRING, pattern = "dd/MM/yyyy")
+	private Date fechamento;
+	
+	@JsonFormat(shape = Shape.STRING, pattern = "dd/MM/yyyy")
 	private Date dataPagamento;
 	
 	private double valor;
@@ -63,12 +66,13 @@ public class Fatura implements Serializable {
 		super();
 	}
 
-	public Fatura(Long id, String referencia, Date vencimento, Date dataPagamento, double valor,
+	public Fatura(Long id, String referencia, Date vencimento, Date fechamento, Date dataPagamento, double valor,
 			double valorPago, StatusFatura status, CartaoCredito cartao) {
 		super();
 		this.id = id;
 		this.referencia = referencia;
 		this.vencimento = vencimento;
+		this.fechamento = fechamento;
 		this.dataPagamento = dataPagamento;
 		this.valor = valor;
 		this.valorPago = valorPago;
@@ -105,6 +109,14 @@ public class Fatura implements Serializable {
 
 	public void setVencimento(Date vencimento) {
 		this.vencimento = vencimento;
+	}
+
+	public Date getFechamento() {
+		return fechamento;
+	}
+
+	public void setFechamento(Date fechamento) {
+		this.fechamento = fechamento;
 	}
 
 	public Date getDataPagamento() {

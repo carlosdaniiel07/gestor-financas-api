@@ -60,7 +60,8 @@ public class FaturaService {
 			
 			fatura.setReferencia(fatura.getReferencia().toLowerCase());
 			fatura.setDataPagamento(null);
-			fatura.setVencimento(getVencimentoFatura(fatura));
+			fatura.setVencimento(calculaDataVencimento(fatura));
+			fatura.setFechamento(calculaDataFechamento(fatura));
 			fatura.setValor(0);
 			fatura.setValorPago(0);
 			fatura.setStatus(StatusFatura.NAO_FECHADA);
@@ -149,11 +150,13 @@ public class FaturaService {
 			throw new OperacaoInvalidaException("Está fatura já está fechada.");
 		}
 	}
-	
-	/*
+
+	/**
 	 * Calcula a data de vencimento de uma dada fatura
+	 * @param fatura
+	 * @return
 	 */
-	private Date getVencimentoFatura(Fatura fatura) {
+	private Date calculaDataVencimento(Fatura fatura) {
 		Date dataVencimento = null;
 		int diaPagamento = fatura.getCartao().getDiaPagamento();
 		int ultimoDiaDoMes;
@@ -176,6 +179,37 @@ public class FaturaService {
 		}
 		
 		return dataVencimento;
+	}
+	
+	
+	/**
+	 * Calcula a data de fechamento de uma fatura
+	 * @param fatura
+	 * @return
+	 */
+	private Date calculaDataFechamento(Fatura fatura) {
+		Date dataFechamento = null;
+		int diaFechamento = fatura.getCartao().getDiaFechamento();
+		
+		try {
+			Date dataReferencia = new SimpleDateFormat("dd/MMM/yyyy").parse(String.format("01/%s", fatura.getReferencia()));
+			Calendar calendar = Calendar.getInstance();
+			
+			calendar.setTime(dataReferencia);
+			calendar.add(Calendar.MONTH, -1);
+			
+			if (diaFechamento > calendar.getActualMaximum(Calendar.DAY_OF_MONTH)) {
+				calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
+			} else {
+				calendar.set(Calendar.DAY_OF_MONTH, diaFechamento);
+			}
+			
+			dataFechamento = calendar.getTime();
+		} catch(ParseException ex) {
+			ex.printStackTrace();
+		}
+		
+		return dataFechamento;
 	}
 	
 	private Movimento geraMovimentoDebito(FaturaPagamentoDTO faturaDTO) {
