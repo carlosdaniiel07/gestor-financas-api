@@ -33,6 +33,8 @@ public class ContaDTO implements Serializable {
 	@NotEmpty(message = "É obrigatório informar o número da conta")
 	private String conta;
 	
+	private boolean compoemSaldo;
+	
 	private double saldoInicial;
 	
 	@NotNull(message = "É obrigatório informar o tipo da conta")
@@ -53,7 +55,7 @@ public class ContaDTO implements Serializable {
 	}
 
 	public Conta toConta() {
-		return new Conta(null, getNome(), getBanco(), getAgencia(), getConta(), getSaldoInicial(), 0, true, getTipo());
+		return new Conta(null, getNome(), getBanco(), getAgencia(), getConta(), getSaldoInicial(), 0, isCompoemSaldo(), true, getTipo());
 	}
 	
 	public String getNome() {
@@ -94,6 +96,14 @@ public class ContaDTO implements Serializable {
 
 	public void setSaldoInicial(double saldoInicial) {
 		this.saldoInicial = saldoInicial;
+	}
+
+	public boolean isCompoemSaldo() {
+		return compoemSaldo;
+	}
+
+	public void setCompoemSaldo(boolean compoemSaldo) {
+		this.compoemSaldo = compoemSaldo;
 	}
 
 	public TipoConta getTipo() {

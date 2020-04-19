@@ -37,6 +37,7 @@ public class Conta implements Serializable {
 	private String conta;
 	private double saldoInicial;
 	private double saldo;
+	private boolean compoemSaldo;
 	private boolean ativo;
 	
 	@ManyToOne(fetch = FetchType.EAGER)
@@ -52,7 +53,7 @@ public class Conta implements Serializable {
 	}
 
 	public Conta(Long id, String nome, String banco, String agencia, String conta, double saldoInicial, double saldo,
-			boolean ativo, TipoConta tipo) {
+			boolean compoemSaldo, boolean ativo, TipoConta tipo) {
 		super();
 		this.id = id;
 		this.nome = nome;
@@ -61,6 +62,7 @@ public class Conta implements Serializable {
 		this.conta = conta;
 		this.saldoInicial = saldoInicial;
 		this.saldo = saldo;
+		this.compoemSaldo = compoemSaldo;
 		this.ativo = ativo;
 		this.tipo = tipo;
 	}
@@ -119,6 +121,14 @@ public class Conta implements Serializable {
 
 	public void setSaldo(double saldo) {
 		this.saldo = saldo;
+	}
+	
+	public boolean isCompoemSaldo() {
+		return compoemSaldo;
+	}
+
+	public void setCompoemSaldo(boolean compoemSaldo) {
+		this.compoemSaldo = compoemSaldo;
 	}
 
 	public boolean isAtivo() {
