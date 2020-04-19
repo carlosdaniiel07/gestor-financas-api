@@ -40,6 +40,13 @@ public class CobrancasResource {
 		return ResponseEntity.ok(service.getAll(page));
 	}
 	
+	@GetMapping(value = "/periodo")
+	public ResponseEntity<List<Cobranca>> listarPorPeriodo(
+			@RequestParam(name = "minDate", required = true) String minDate,
+			@RequestParam(name = "maxDate", required = true) String maxDate) {
+		return ResponseEntity.ok(service.getAllByPeriodo(minDate, maxDate));
+	}
+	
 	@GetMapping(value = "/{id}")
 	public ResponseEntity<Cobranca> buscar(@PathVariable Long id) {
 		return ResponseEntity.ok(service.getById(id));

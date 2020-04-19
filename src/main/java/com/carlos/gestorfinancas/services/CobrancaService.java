@@ -1,6 +1,8 @@
 package com.carlos.gestorfinancas.services;
 
+import java.time.LocalDate;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,6 +56,13 @@ public class CobrancaService {
 
 	public List<Cobranca> getAllByStatus(Collection<StatusCobranca> status) {
 		return repository.findByStatusIn(status);
+	}
+	
+	public List<Cobranca> getAllByPeriodo(String minDate, String maxDate) {
+		Date min = DateUtils.buildCalendarWithLocalDate(LocalDate.parse(minDate)).getTime();
+		Date max = DateUtils.buildCalendarWithLocalDate(LocalDate.parse(maxDate)).getTime();
+		
+		return repository.findByDataVencimentoBetween(min, max);
 	}
 	
 	public Cobranca getById(Long id) {

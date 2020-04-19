@@ -25,4 +25,6 @@ public interface CobrancaRepository extends JpaRepository<Cobranca, Long> {
 	
 	@Query(value = "SELECT c FROM Cobranca c JOIN FETCH c.beneficiario")
 	List<Cobranca> getAll(Pageable page);
+	
+	List<Cobranca> findByDataVencimentoBetween(Date min, Date max);
 }
