@@ -13,17 +13,26 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import com.carlos.gestorfinancas.filters.AuthenticationFilter;
 import com.carlos.gestorfinancas.filters.AuthorizationFilter;
 import com.carlos.gestorfinancas.utils.JWTUtils;
 
+import springfox.documentation.builders.ApiInfoBuilder;
+import springfox.documentation.builders.RequestHandlerSelectors;
+import springfox.documentation.service.ApiInfo;
+import springfox.documentation.spi.DocumentationType;
+import springfox.documentation.spring.web.plugins.Docket;
+import springfox.documentation.swagger2.annotations.EnableSwagger2;
+
 /**
  * @author Carlos Daniel Martins de Almeida
  * @date 08/08/2019
  */
 @Configuration
+@EnableSwagger2
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {	
@@ -39,7 +48,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	};
 	
 	private final String[] urlsAcessiveisViaGet = {
-		"/status/is-alive"
+		"/status/is-alive",
+		"/swagger-ui.html",
+		"/webjars/springfox-swagger-ui/**",
+		"/swagger-resources/**",
+		"/v2/api-docs"
 	};
 	
 	// Configuração HTTP
@@ -56,7 +69,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			.antMatchers(HttpMethod.POST, urlsAcessiveisViaPost).permitAll()
 			.antMatchers(HttpMethod.GET, urlsAcessiveisViaGet).permitAll()
 		.anyRequest().authenticated();
-		
+				
 		// Back-end não irá salvar sessões
 		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 		
@@ -87,5 +100,24 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	@Bean
 	public BCryptPasswordEncoder bCryptPasswordEncoder() {
 		return new BCryptPasswordEncoder();
+	}
+	
+	@Bean
+	public Docket gestorFinancasApiDocs() {
+		return new Docket(DocumentationType.SWAGGER_2)
+				.select().apis(RequestHandlerSelectors.basePackage("com.carlos.gestorfinancas")).build().apiInfo(metaData());
+	}
+	
+	protected void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry.addResourceHandler("swagger-ui.html").addResourceLocations("classpath:/META-INF/resources/");
+        registry.addResourceHandler("/webjars/**").addResourceLocations("classpath:/META-INF/resources/webjars/");
+	}
+	
+	private ApiInfo metaData() {
+		return new ApiInfoBuilder()
+				.title("Gestor de finanças - REST API Docs")
+				.description("Documentação da API REST do projeto Gestor de finanças - https://github.com/carlosdaniiel07/gestor-financas-api")
+				.version("1.0")
+		.build();
 	}
 }
