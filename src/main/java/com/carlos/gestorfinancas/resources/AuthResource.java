@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.carlos.gestorfinancas.dtos.AutenticacaoDTO;
+import com.carlos.gestorfinancas.dtos.SuccessfulAutenticacaoDTO;
 import com.carlos.gestorfinancas.entities.Usuario;
 import com.carlos.gestorfinancas.services.AuthService;
 import com.carlos.gestorfinancas.services.UsuarioService;
@@ -28,6 +29,12 @@ public class AuthResource {
 	
 	@Autowired
 	private AuthService authService;
+	
+	
+	@PostMapping
+	public ResponseEntity<SuccessfulAutenticacaoDTO> login(@RequestBody AutenticacaoDTO authDTO) {
+		return ResponseEntity.ok(authService.login(authDTO.getLoginOuEmail(), authDTO.getSenha()));
+	}
 	
 	@PostMapping(value = "/refresh-token")
 	public ResponseEntity<Void> refreshToken(HttpServletResponse response) {
