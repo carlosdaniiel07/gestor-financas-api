@@ -74,8 +74,16 @@ public class CategoriasResource {
 		return ResponseEntity.ok().body(null);
 	}
 	
+	@Deprecated
 	@PutMapping(value = "/remover/{id}")
 	public ResponseEntity<Void> remove(@PathVariable Long id){
+		service.remove(id);
+		
+		return ResponseEntity.ok().body(null);
+	}
+	
+	@PutMapping(value = "/{id}/remover")
+	public ResponseEntity<Void> removeById(@PathVariable Long id){
 		service.remove(id);
 		
 		return ResponseEntity.ok().body(null);

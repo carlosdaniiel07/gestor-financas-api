@@ -24,6 +24,7 @@ import com.carlos.gestorfinancas.dtos.CobrancaRemocaoDTO;
 import com.carlos.gestorfinancas.entities.Cobranca;
 import com.carlos.gestorfinancas.entities.OperacaoCobranca;
 import com.carlos.gestorfinancas.services.CobrancaService;
+import com.carlos.gestorfinancas.services.exceptions.OperacaoInvalidaException;
 
 /**
  * @author Carlos Daniel Martins de Almeida
@@ -71,10 +72,21 @@ public class CobrancasResource {
 		return ResponseEntity.ok().body(null);
 	}
 	
+	@Deprecated
 	@PutMapping(value = "/efetua-pagamento")
 	public ResponseEntity<Void> paga(@RequestBody CobrancaPagamentoDTO obj) {
 		service.efetuaPagamento(obj);
 		return ResponseEntity.ok().body(null);
+	}
+	
+	@PutMapping(value = "/{id}/efetua-pagamento")
+	public ResponseEntity<Void> pagaById(@PathVariable Long id, @RequestBody CobrancaPagamentoDTO obj) {
+		if (obj.getCobranca().getId().equals(id)) {
+			service.efetuaPagamento(obj);
+			return ResponseEntity.ok().body(null);
+		} else {
+			throw new OperacaoInvalidaException("As cobranças informadas não conferem");
+		}
 	}
 	
 	@DeleteMapping

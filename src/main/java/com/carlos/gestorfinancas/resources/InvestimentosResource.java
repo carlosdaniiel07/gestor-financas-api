@@ -8,6 +8,7 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,6 +21,7 @@ import com.carlos.gestorfinancas.dtos.InvestimentoDTO;
 import com.carlos.gestorfinancas.entities.Investimento;
 import com.carlos.gestorfinancas.entities.enums.TipoItemInvestimento;
 import com.carlos.gestorfinancas.services.InvestimentoService;
+import com.carlos.gestorfinancas.services.exceptions.OperacaoInvalidaException;
 
 @RestController
 @RequestMapping(value = "/investimentos")
@@ -41,6 +43,7 @@ public class InvestimentosResource {
 		return ResponseEntity.created(uri).body(obj);
 	}
 	
+	@Deprecated
 	@PostMapping(value = "/add-item")
 	public ResponseEntity<Investimento> addAplicacao(@Valid @RequestBody AplicacaoResgateDTO objDTO) {
 		Investimento obj = null;
@@ -52,6 +55,23 @@ public class InvestimentosResource {
 		}
 		
 		return ResponseEntity.created(null).body(obj);
+	}
+	
+	@PostMapping(value = "/{id}/add-item")
+	public ResponseEntity<Investimento> addAplicacaoByInvestimentoId(@PathVariable Long id, @Valid @RequestBody AplicacaoResgateDTO objDTO) {
+		if (objDTO.getInvestimento().getId().equals(id)) {
+			Investimento obj = null;
+			
+			if (objDTO.getItem().getTipo() == TipoItemInvestimento.REINVESTIMENTO) {
+				obj = service.addReinvestimento(objDTO.getInvestimento(), objDTO.getItem());
+			} else {
+				obj = service.addResgate(objDTO.getInvestimento(), objDTO.getItem());
+			}
+			
+			return ResponseEntity.created(null).body(obj);
+		} else {
+			throw new OperacaoInvalidaException("Os investimentos informados não conferem");
+		}
 	}
 	
 	@PutMapping

@@ -28,8 +28,14 @@ public class UsuariosResource {
 	@Autowired
 	private UsuarioService service;
 
+	@Deprecated
 	@GetMapping(value = "/usuario-logado")
 	public ResponseEntity<Usuario> buscarUsuarioLogado() {
+		return ResponseEntity.ok(UsuarioService.getUsuarioLogado());
+	}
+	
+	@GetMapping(value = "/me")
+	public ResponseEntity<Usuario> me() {
 		return ResponseEntity.ok(UsuarioService.getUsuarioLogado());
 	}
 	

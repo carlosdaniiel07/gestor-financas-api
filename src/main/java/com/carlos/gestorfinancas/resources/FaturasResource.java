@@ -20,6 +20,7 @@ import com.carlos.gestorfinancas.dtos.FaturaPagamentoDTO;
 import com.carlos.gestorfinancas.entities.Fatura;
 import com.carlos.gestorfinancas.entities.Movimento;
 import com.carlos.gestorfinancas.services.FaturaService;
+import com.carlos.gestorfinancas.services.exceptions.OperacaoInvalidaException;
 
 /**
  * @author Carlos Daniel Martins de Almeida
@@ -56,20 +57,45 @@ public class FaturasResource {
 		return ResponseEntity.created(uri).body(obj);
 	}
 	
+	@Deprecated
 	@PutMapping(value = "/efetua-pagamento")
 	public ResponseEntity<Void> paga(@RequestBody FaturaPagamentoDTO faturaDTO){
 		service.efetuaPagamento(faturaDTO);
 		return ResponseEntity.ok(null);
 	}
 	
+	@PutMapping(value = "/{id}/efetua-pagamento")
+	public ResponseEntity<Void> pagaById(@PathVariable Long id, @RequestBody FaturaPagamentoDTO faturaDTO){
+		if (faturaDTO.getFatura().getId().equals(id)) {
+			service.efetuaPagamento(faturaDTO);
+			return ResponseEntity.ok(null);
+		} else {
+			throw new OperacaoInvalidaException("As faturas informadas não conferem");
+		}
+	}
+	
+	@Deprecated
 	@PutMapping(value = "/abre/{id}")
 	public ResponseEntity<Void> abre(@PathVariable Long id){
 		service.abre(id);
 		return ResponseEntity.ok(null);
 	}
 	
+	@PutMapping(value = "/{id}/abre")
+	public ResponseEntity<Void> abreById(@PathVariable Long id){
+		service.abre(id);
+		return ResponseEntity.ok(null);
+	}
+	
+	@Deprecated
 	@PutMapping(value = "/fecha/{id}")
 	public ResponseEntity<Void> fecha(@PathVariable Long id){
+		service.fecha(id);
+		return ResponseEntity.ok(null);
+	}
+	
+	@PutMapping(value = "/{id}/fecha")
+	public ResponseEntity<Void> fechaById(@PathVariable Long id){
 		service.fecha(id);
 		return ResponseEntity.ok(null);
 	}

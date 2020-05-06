@@ -55,14 +55,28 @@ public class TransferenciasResource {
 		return ResponseEntity.ok().body(null);
 	}
 	
+	@Deprecated
 	@PutMapping(value = "/efetiva/{id}")
 	public ResponseEntity<Void> efetiva(@PathVariable Long id) {
 		service.efetiva(id);
 		return ResponseEntity.ok().body(null);
 	}
 	
+	@PutMapping(value = "/{id}/efetiva")
+	public ResponseEntity<Void> efetivaById(@PathVariable Long id) {
+		service.efetiva(id);
+		return ResponseEntity.ok().body(null);
+	}
+	
+	@Deprecated
 	@PutMapping(value = "/estorna/{id}")
 	public ResponseEntity<Void> estorna(@PathVariable Long id) {
+		service.estorna(id);
+		return ResponseEntity.ok().body(null);
+	}
+	
+	@PutMapping(value = "/{id}/estorna")
+	public ResponseEntity<Void> estornaById(@PathVariable Long id) {
 		service.estorna(id);
 		return ResponseEntity.ok().body(null);
 	}
