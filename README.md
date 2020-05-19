@@ -1,4 +1,4 @@
-Gestor de finanças API REST
+# Gestor de finanças API REST
 
 [![Build Status](https://travis-ci.org/carlosdaniiel07/gestor-financas-api.svg?branch=master)](https://travis-ci.org/carlosdaniiel07/gestor-financas-api)
 
