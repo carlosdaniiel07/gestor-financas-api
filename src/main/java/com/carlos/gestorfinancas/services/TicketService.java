@@ -149,9 +149,6 @@ public class TicketService {
 		String newExtratoUrl = this.extratoUrl.replace("{userId}", this.userId).replace("{cartaoId}", String.valueOf(TicketService.CARTAO_ID)); 
 		HttpGet request = new HttpGet(newExtratoUrl);
 		
-		// Atualiza cabeçalho da requisição com chave 'Authorization'
-		headers.add(new BasicNameValuePair("Authorization", "Bearer " + this.accessToken));
-		
 		headers.forEach((NameValuePair value) -> {
 			request.addHeader(value.getName(), value.getValue());
 		});
@@ -168,7 +165,6 @@ public class TicketService {
 				while(iterator.hasNext()) {
 					currentNode = iterator.next();
 					transaction = new Transaction(
-							"", 
 							this.dateFormat.parse(currentNode.get("dateParsed").asText()), 
 							currentNode.get("valueParsed").asDouble(), 
 							currentNode.get("description").asText(),
@@ -208,6 +204,9 @@ public class TicketService {
 				
 				this.accessToken = jsonNode.get("access_token").asText();
 				this.userId = jsonNode.get("id_user").asText();
+				
+				// Atualiza cabeçalho da requisição com chave 'Authorization'
+				headers.add(new BasicNameValuePair("Authorization", "Bearer " + this.accessToken));
 			} else {
 				throw new TicketServiceException("Ocorreu um erro ao realizar a autenticação com a API");
 			}

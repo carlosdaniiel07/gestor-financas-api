@@ -20,7 +20,7 @@ public class Transaction implements Serializable {
 		
 	}
 
-	public Transaction(String id, Date dateParsed, double valueParsed, String description, char tipo) {
+	public Transaction(Date dateParsed, double valueParsed, String description, char tipo) {
 		super();
 
 		this.dateParsed = dateParsed;
