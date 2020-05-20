@@ -58,6 +58,9 @@ public class TaskService {
 	@Autowired
 	private NotificacaoService notificacaoService;
 	
+	@Autowired
+	private TicketService ticketService;
+	
 	@Value("${tasks.authorization-code}")
 	private String authorizationCode;
 	
@@ -256,6 +259,19 @@ public class TaskService {
 		}
 		
 		this.gravaLogExecucao("alertaSaldoNegativo");
+	}
+	
+	
+	/**
+	 * Realiza a integração com a API do cartão refeição Ticket
+	 * @param authorizationCode
+	 */
+	public void integracaoTicketRefeicao(String authorizationCode) {
+		checkAuthorizationCode(authorizationCode);
+		
+		ticketService.IntegrarCartaoRefeicao();
+		
+		this.gravaLogExecucao("integracaoTicketRefeicao");
 	}
 	
 	/**
