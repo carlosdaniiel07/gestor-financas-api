@@ -254,6 +254,8 @@ public class TaskService {
 				notificacaoService.send("Saldo negativo", String.format("O saldo da conta %s está negativo em R$ %.2f", conta.getNome(), conta.getSaldo()));
 			}
 		}
+		
+		this.gravaLogExecucao("alertaSaldoNegativo");
 	}
 	
 	/**
