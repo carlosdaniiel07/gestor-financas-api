@@ -66,6 +66,12 @@ public class TasksResource {
 		return ResponseEntity.ok(null);
 	}
 	
+	@PostMapping(value = "/integracao-ticket-refeicao")
+	public ResponseEntity<Void> integrarTicketRefeicao(@RequestParam(required = false) String authorizationCode) {
+		service.integracaoTicketRefeicao(authorizationCode);
+		return ResponseEntity.ok(null);
+	}
+	
 	@GetMapping
 	public ResponseEntity<Collection<LogTask>> listar() {
 		return ResponseEntity.ok(service.getAll());
