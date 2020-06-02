@@ -1,5 +1,6 @@
 package com.carlos.gestorfinancas.utils;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.Calendar;
@@ -16,6 +17,21 @@ public class DateUtils {
 	 */
 	public static Date getDataAtual() {
 		return new Date(System.currentTimeMillis());
+	}
+	
+	/**
+	 * Formata uma data específica para yyyy-mm-dd (não considera horas e minutos)
+	 * @param date
+	 * @return
+	 */
+	public static Date formatAsDate(String dateAsString) {
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		
+		try {
+			return dateFormat.parse(dateAsString);
+		} catch (ParseException ex) {
+			return getDataAtual();
+		}
 	}
 	
 	/**
