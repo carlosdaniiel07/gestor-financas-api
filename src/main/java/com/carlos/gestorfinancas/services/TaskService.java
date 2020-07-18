@@ -12,6 +12,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.carlos.gestorfinancas.entities.Cobranca;
@@ -279,7 +280,7 @@ public class TaskService {
 	 * @return
 	 */
 	public Collection<LogTask> getAll() {		
-		return repository.findAll();
+		return repository.findAll(Sort.by(Sort.Direction.DESC, "dataExecucao"));
 	}
 	
 	/**
